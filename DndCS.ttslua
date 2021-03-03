@@ -139,6 +139,7 @@ end
 
 function DndCS.populateAttributesUI(player_color, player_data, xml)
   attributes = {"str", "dex", "con", "int", "wis", "cha"}
+  skills = {"acrobatics", "animal_handling", "arcana", "deception", "history", "insight", "intimidation", "investigation", "medicine", "nature", "perception", "performance", "persuasion", "religion", "slight_of_hand", "stealth", "survival"}
 
   for _, att in pairs(attributes) do
     stat_label = "cs_" .. att .. "_" .. player_color
@@ -146,13 +147,33 @@ function DndCS.populateAttributesUI(player_color, player_data, xml)
     save_label = "cs_st_" .. att .. "_toggle_" .. player_color
     att_val = player_data.attributes[att]
 
+    found_stat = false
+    found_bonus = false
+    found_save = false
     for i, item in pairs(xml.children) do
       if item.attributes.id == stat_label then
         xml.children[i].attributes.text = att_val
+        found_stat = true
       elseif item.attributes.id == bonus_label then
         xml.children[i].attributes.text = math.floor(att_val / 2 - 5)
+        found_bonus = true
       elseif item.attributes.id == save_label then
         xml.children[i].attributes.isOn = player_data.saves[att]
+        found_save = true
+      end
+      if found_state and found_bonus and found_save then
+        break
+      end
+    end
+  end
+  for _, skill in pairs(skills) do
+    skill_label = "cs_skill_" .. skill .. "_toggle_" .. player_color
+
+    for i, item in pairs(xml.children) do
+      if item.attributes.id == skill_label then
+        if player_data.skills[skill] == DndCSClasses.Proficiency[2] or player_data.skills[skill] == DndCSClasses.Proficiency[3] then
+        xml.children[i].attributes.isOn = true
+        end
       end
     end
   end
