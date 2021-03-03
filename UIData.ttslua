@@ -1,8 +1,7 @@
 -- UI Data --
 local UIData = {}
 
-function UIData.inactive_panel(player)
-  log(dndCS.pc_data[player.steam_id].cs_panel.active)
+function UIData.inactive_panel(player, active)
   return {
     tag = "Panel",
     attributes = {
@@ -13,7 +12,7 @@ function UIData.inactive_panel(player)
       height = 108,
       visibility = player.color,
       position= "-400 -447",
-      active = not dndCS.pc_data[player.steam_id].cs_panel.active
+      active = not active
     },
     children = {
       {
@@ -27,7 +26,7 @@ function UIData.inactive_panel(player)
   }
 end
 
-function UIData.active_panel(player)
+function UIData.active_panel(player, active)
   return {
     ["tag"] ="Panel",
     ["attributes"] = {
@@ -37,7 +36,7 @@ function UIData.active_panel(player)
       ["height"] ="1080",
       ["visibility"] =player.color,
       ["position"] ="0 0",
-      ["active"] =dndCS.pc_data[player.steam_id].cs_panel.active
+      ["active"] = active
     },
     ["children"] = {
       {
@@ -71,7 +70,7 @@ function UIData.active_panel(player)
           ["height"] ="42",
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="68 -18",
-          ["fontSize"] ="25"
+          ["fontSize"] ="25",
         },
         ["children"] = {}
       },

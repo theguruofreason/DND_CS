@@ -1,34 +1,35 @@
 --[[ Lua code. See documentation: https://api.tabletopsimulator.com/ ]]--
 local UIData = require("/DndCS/UIData")
 local DndCSClasses = require("/DndCS/Classes")
+local DndCS = {}
 -- data --
 
-dndCS = {
+DndCS.dndCS = {
   pc_data = {},
   active_pcs = {},
   gm = {}
 }
 -- dndPC functions --
 
-function maybeCreatePlayerData(player)
-  if dndCS.pc_data[player.steam_id] == nil then
-    dndCS.pc_data[player.steam_id] = DndCSClasses.PC:new()
+function DndCS.maybeCreatePlayerData(player)
+  if DndCS.dndCS.pc_data[player.steam_id] == nil then
+    DndCS.dndCS.pc_data[player.steam_id] = DndCSClasses.PC:new()
     log(string.format("Data created for %s", player.steam_name))
   else
     log(string.format("Found data for %s", player.steam_name))
   end
 end
 
-function activatePlayer(player)
+function DndCS.activatePlayer(player)
   log(string.format("dndPC: Activating %s - %s", player.steam_id, player.steam_name))
-  dndCS.active_pcs[player.steam_id] = DndCSClasses.ActivePC:new{
+  DndCS.dndCS.active_pcs[player.steam_id] = DndCSClasses.ActivePC:new{
     steam_name = player.steam_name,
     color = player.color
   }
-  xml = UI.getXmlTable()
-  xml = createInactiveCSPanel(player, xml)
-  xml = createActiveCSPanel(player, xml)
-  if xml ~= null then
+  if (player.color ~= "Grey" and player.color ~= "Black") then
+    xml = UI.getXmlTable()
+    xml = DndCS.createInactiveCSPanel(player, xml)
+    xml = DndCS.createActiveCSPanel(player, xml)
     UI.setXmlTable(xml, _)
   end
   log(string.format("dndPC: %s - %s Activated!", player.steam_id, player.steam_name))
@@ -36,7 +37,7 @@ end
 
 -- helper functions --
 
-function ensureUiAssetsExist()
+function DndCS.ensureUiAssetsExist()
   customAssets = UI.getCustomAssets()
   for _, asset in pairs(UIData.uiAssets) do
     found = false
@@ -60,61 +61,21 @@ function onSave()
   JSON.encode(data)
 end
 
-function table_to_string(tbl, tab_level, has_key)
-  local function tab(level)
-    return string.rep(string.rep(" ", 2), level)
-  end
-  local result = ""
-  if has_key then
-   result = result .. " {"
-  else
-   result = result .. tab(tab_level) .. "{"
-  end
-  local entries = false
-  for k, v in pairs(tbl) do
-    key = false
-    entries = true
-    result = result.."\n"
-    -- Check the key type (ignore any numerical keys - assume its an array)
-    if type(k) == "string" then
-        result = result..tab(tab_level + 1).."[\""..k.."\"] ="
-        key = true
-    end
-
-    -- Check the value type
-    if type(v) == "table" then
-      result = result..table_to_string(v, tab_level + 1, key)
-    elseif type(v) == "boolean" then
-        result = result..tostring(v)
-    else
-        result = result.."\""..v.."\""
-    end
-    result = result..","
-  end
-  if has_key and not entries then
-    result = result.."}"
-  else
-    result = result:sub(1, result:len()-1)
-    result = result.."\n"..tab(tab_level).."}"
-  end
-  return result
-end
-
 function onLoad(save_state)
   data = JSON.decode(save_state)
   if data.dndCS ~= nil then
-    dndCS = data.dndCS
+    DndCS.dndCS = data.dndCS
   end
-  ensureUiAssetsExist()
+  DndCS.ensureUiAssetsExist()
   for _, playerRef in ipairs(Player.getPlayers()) do
-    maybeCreatePlayerData(playerRef)
-    activatePlayer(playerRef)
+    DndCS.maybeCreatePlayerData(playerRef)
+    DndCS.activatePlayer(playerRef)
   end
 end
 
 function onPlayerConnect(player)
-  maybeCreatePlayerData(player)
-  activatePlayer(player)
+  DndCS.maybeCreatePlayerData(player)
+  DndCS.activatePlayer(player)
 end
 
 function onPlayerDisconnect(player)
@@ -124,11 +85,11 @@ end
 
 function onPlayerChangeColor(player_color)
   for _, playerRef in ipairs(Player.getPlayers()) do
-    dndCS.active_pcs[playerRef.steam_id]:setColor(playerRef.color)
-    if dndCS.active_pcs[playerRef.steam_id].color == player_color then
+    if playerRef.color == player_color then
+      DndCS.dndCS.active_pcs[playerRef.steam_id]:setColor(playerRef.color)
       xml = UI.getXmlTable()
-      xml = createInactiveCSPanel(playerRef, xml)
-      xml = createActiveCSPanel(playerRef, xml)
+      xml = DndCS.createInactiveCSPanel(playerRef, xml)
+      xml = DndCS.createActiveCSPanel(playerRef, xml)
       UI.setXmlTable(xml, _)
     end
   end
@@ -136,11 +97,11 @@ end
 
 -- DND CS functions --
 
-function createInactiveCSPanel(player, xml)
+function DndCS.createInactiveCSPanel(player, xml)
   if (player.color == "Grey" or player.color == "Black") then
     return xml
   end
-  inactive_panel_attributes = UIData.inactive_panel(player)
+  inactive_panel_attributes = UIData.inactive_panel(player, DndCS.dndCS.pc_data[player.steam_id].cs_panel.active)
   panel_exists = false
   for _, item in pairs(xml) do
     if item["attributes"]["id"] == inactive_panel_attributes["attributes"]["id"] then
@@ -156,11 +117,12 @@ function createInactiveCSPanel(player, xml)
   return xml
 end
 
-function createActiveCSPanel(player, xml)
+function DndCS.createActiveCSPanel(player, xml)
   if (player.color == "Grey" or player.color == "Black") then
     return xml
   end
-  active_panel_attributes = UIData.active_panel(player)
+  active_panel_attributes = UIData.active_panel(player, DndCS.dndCS.pc_data[player.steam_id].cs_panel.active)
+  active_panel_attributes = DndCS.populateAttributesUI(player.color, DndCS.dndCS.pc_data[player.steam_id], active_panel_attributes)
   panel_exists = false
   for _, item in pairs(xml) do
     if item["attributes"]["id"] == active_panel_attributes["attributes"]["id"] then
@@ -175,7 +137,7 @@ function createActiveCSPanel(player, xml)
   return xml
 end
 
-function activateAttributesUI(player_color, player_data, cs)
+function DndCS.populateAttributesUI(player_color, player_data, xml)
   attributes = {"str", "dex", "con", "int", "wis", "cha"}
 
   for _, att in pairs(attributes) do
@@ -183,35 +145,37 @@ function activateAttributesUI(player_color, player_data, cs)
     bonus_label = "cs_" .. att .. "_bonus_" .. player_color
     save_label = "cs_st_" .. att .. "_toggle_" .. player_color
     att_val = player_data.attributes[att]
-    cs[stat_label] = UI.getAttributes(stat_label)
-    cs[stat_label].text = player_data.attributes[att]
-    cs[bonus_label] = UI.getAttributes(bonus_label)
-    bonus = math.floor(att_val / 2 - 5)
-    cs[bonus_label].text = (bonus > 0) and "+" .. tostring(bonus) or tostring(bonus)
-    cs[save_label] = UI.getAttributes(save_label)
-    cs[save_label].isOn = player_data.saves[att]
+
+    for i, item in pairs(xml.children) do
+      if item.attributes.id == stat_label then
+        xml.children[i].attributes.text = att_val
+      elseif item.attributes.id == bonus_label then
+        xml.children[i].attributes.text = math.floor(att_val / 2 - 5)
+      elseif item.attributes.id == save_label then
+        xml.children[i].attributes.isOn = player_data.saves[att]
+      end
+    end
   end
-  return cs
+  return xml
 end
 
 function toggleCSPane(player, mouse_button, button_name)
-  dndCS.pc_data[player.steam_id].cs_panel.active = not dndCS.pc_data[player.steam_id].cs_panel.active
-  active = not dndCS.pc_data[player.steam_id].cs_panel.active
-  UI.setAttribute("cs_inactive_" .. player.color, "active", active)
-  UI.setAttribute("cs_active_" .. player.color, "active", not active)
-
+  DndCS.dndCS.pc_data[player.steam_id].cs_panel.active = not DndCS.dndCS.pc_data[player.steam_id].cs_panel.active
+  active = DndCS.dndCS.pc_data[player.steam_id].cs_panel.active
+  UI.setAttribute("cs_inactive_" .. player.color, "active", not active)
+  UI.setAttribute("cs_active_" .. player.color, "active", active)
 end
 
 function charNameChange(player, new_name)
-  dndCS.pc_data[player.steam_id].name = new_name
+  DndCS.dndCS.pc_data[player.steam_id].name = new_name
 end
 
 function lvlChange(player, new_lvl)
-  dndCS.pc_data[player.steam_id].level = new_level
+  DndCS.dndCS.pc_data[player.steam_id].level = new_level
 end
 
 function classChange(player, new_class)
-  dndCS.pc_data[player.steam_id].class = new_class
+  DndCS.dndCS.pc_data[player.steam_id].class = new_class
 end
 
 function attributeChange(player, att_val, attribute_input_id)
@@ -219,32 +183,29 @@ function attributeChange(player, att_val, attribute_input_id)
     return
   end
   att = string.sub(attribute_input_id, 4, 6)
-  dndCS.pc_data[player.steam_id].attributes[att] = att_val
+  DndCS.dndCS.pc_data[player.steam_id].attributes[att] = att_val
   bonus = math.floor(att_val / 2 - 5)
-  bonus_string = ""
-  if bonus >= 0 then
-    bonus_string = "+" .. bonus
-  else
-    bonus_string = bonus
-  end
+  bonus_string = (bonus > 0) and "+" .. tostring(bonus) or tostring(bonus)
   UI.setValue("cs_" .. att .. "_bonus_" .. player.color, bonus_string)
 end
 
 function inspirationChange(player, insp_val, attribute_input_id)
-  dndCS.pc_data[player.steam_id].attributes.inspiration = insp_val
+  DndCS.dndCS.pc_data[player.steam_id].attributes.inspiration = insp_val
 end
 
 function proficiencyChange(player, prof_val, attribute_input_id)
-  dndCS.pc_data[player.steam_id].attributes.proficiency_bonus = prof_val
+  DndCS.dndCS.pc_data[player.steam_id].attributes.proficiency_bonus = prof_val
 end
 
 function savingThrowToggle(player, toggle, st_input_id)
   att = string.sub(st_input_id, 7, 9)
-  dndCS.pc_data[player.steam_id].saves[att].proficient = toggle
+  DndCS.dndCS.pc_data[player.steam_id].saves[att].proficient = toggle
 end
 
 function skillToggle(player, toggle, skill_input_id)
   last = string.find(skill_input_id, "_toggle") - 1
   skill_name = string.sub(skill_input_id, 10, last)
-  dndCS.pc_data[player.steam_id].skills[skill_name] = toggle
+  DndCS.dndCS.pc_data[player.steam_id].skills[skill_name] = toggle
 end
+
+return DndCS
