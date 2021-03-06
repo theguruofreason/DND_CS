@@ -1,5 +1,11 @@
+local DndCSClasses = require("/DndCS/Classes")
+local enum = DndCSClasses.enum
 -- UI Data --
 local UIData = {}
+
+UIData.skills = enum{"athletics", "acrobatics", "animal_handling", "arcana", "deception", "history", "insight", "intimidation", "investigation", "medicine", "nature", "perception", "performance", "persuasion", "religion", "slight_of_hand", "stealth", "survival"}
+
+UIData.attributes = enum{"str", "dex", "con", "int", "wis", "cha"}
 
 function UIData.inactive_panel(player, active)
   return {
@@ -80,7 +86,7 @@ function UIData.active_panel(player, active)
           ["id"] ="cs_lvl_"..player.color,
           ["onEndEdit"] ="lvlChange",
           ["placeholder"] ="lvl",
-          ["characterLimit"] ="5",
+          ["characterLimit"] ="2",
           ["width"] ="50",
           ["height"] ="42",
           ["rectAlignment"] ="UpperRight",
