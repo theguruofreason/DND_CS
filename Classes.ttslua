@@ -92,7 +92,7 @@ DndCSClasses.PC = {
   defaults = {
     cs_panel_active = false,
     cs_panel_page = 1,
-    name = "Name",
+    char_name = "Name",
     level = 1,
     class = "Class",
     inspiration = 0,
@@ -113,6 +113,22 @@ DndCSClasses.PC = {
     death_saves_successes = 0,
     death_saves_failures = 0,
     attacks = {}
+  },
+  direct_editables = {
+    "char_name",
+    "level",
+    "class",
+    "inspiration",
+    "passive_perception",
+    "ac",
+    "initiative",
+    "speed",
+    "hp_current",
+    "hp_max",
+    "hit_dice_current",
+    "hit_dice_max",
+    "hit_dice_d",
+    "attacks"
   }
 }
 DndCSClasses.PC.mt = {

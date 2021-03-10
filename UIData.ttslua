@@ -3,9 +3,8 @@ local enum = DndCSClasses.enum
 -- UI Data --
 local UIData = {}
 
-UIData.skills = enum{"athletics", "acrobatics", "animal_handling", "arcana", "deception", "history", "insight", "intimidation", "investigation", "medicine", "nature", "perception", "performance", "persuasion", "religion", "slight_of_hand", "stealth", "survival"}
-
 UIData.attributes = enum{"str", "dex", "con", "int", "wis", "cha"}
+UIData.skills = enum{"athletics", "acrobatics", "animal_handling", "arcana", "deception", "history", "insight", "intimidation", "investigation", "medicine", "nature", "perception", "performance", "persuasion", "religion", "slight_of_hand", "stealth", "survival"}
 
 function UIData.inactive_panel(player, active)
   return {
@@ -69,7 +68,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_char_name_"..player.color,
-          ["onEndEdit"] ="charNameChange",
+          ["onEndEdit"] ="pcEditVal",
           ["placeholder"] ="Name",
           ["characterLimit"] ="60",
           ["width"] ="380",
@@ -83,8 +82,8 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_lvl_"..player.color,
-          ["onEndEdit"] ="lvlChange",
+          ["id"] ="cs_level_"..player.color,
+          ["onEndEdit"] ="pcEditVal",
           ["placeholder"] ="lvl",
           ["characterLimit"] ="2",
           ["width"] ="50",
@@ -99,7 +98,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_class_"..player.color,
-          ["onEndEdit"] ="classChange",
+          ["onEndEdit"] ="pcEditVal",
           ["placeholder"] ="class",
           ["characterLimit"] ="60",
           ["width"] ="230",
@@ -122,7 +121,8 @@ function UIData.active_panel(player, active)
           ["height"] ="65",
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="30 -110",
-          ["fontSize"] ="45"
+          ["fontSize"] ="45",
+          ["alignment"] ="3"
         },
         ["children"] = {}
       },
@@ -282,7 +282,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_inspiration_"..player.color,
-          ["onEndEdit"] ="inspirationChange",
+          ["onEndEdit"] ="pcEditVal",
           ["placeholder"] =" ",
           ["characterLimit"] ="1",
           ["characterValidation"] ="Integer",
@@ -297,7 +297,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_proficiency_"..player.color,
+          ["id"] ="cs_proficiency_bonus_"..player.color,
           ["onEndEdit"] ="proficiencyChange",
           ["placeholder"] =" ",
           ["characterLimit"] ="1",
@@ -324,6 +324,18 @@ function UIData.active_panel(player, active)
         ["children"] = {}
       },
       {
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_st_str_bonus_"..player.color,
+          ["width"] ="40",
+          ["height"] ="40",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="207 -269",
+          ["fontSize"] ="18"
+        },
+        ["children"] = {}
+      },
+      {
         ["tag"] ="ToggleButton",
         ["attributes"] = {
           ["id"] ="cs_st_dex_toggle_"..player.color,
@@ -333,6 +345,18 @@ function UIData.active_panel(player, active)
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="194 -311",
           ["fontSize"] ="24"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_st_dex_bonus_"..player.color,
+          ["width"] ="40",
+          ["height"] ="40",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="207 -294",
+          ["fontSize"] ="18"
         },
         ["children"] = {}
       },
@@ -350,6 +374,18 @@ function UIData.active_panel(player, active)
         ["children"] = {}
       },
       {
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_st_con_bonus_"..player.color,
+          ["width"] ="40",
+          ["height"] ="40",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="207 -318",
+          ["fontSize"] ="18"
+        },
+        ["children"] = {}
+      },
+      {
         ["tag"] ="ToggleButton",
         ["attributes"] = {
           ["id"] ="cs_st_int_toggle_"..player.color,
@@ -359,6 +395,18 @@ function UIData.active_panel(player, active)
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="194 -360",
           ["fontSize"] ="24"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_st_int_bonus_"..player.color,
+          ["width"] ="40",
+          ["height"] ="40",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="207 -342",
+          ["fontSize"] ="18"
         },
         ["children"] = {}
       },
@@ -376,6 +424,18 @@ function UIData.active_panel(player, active)
         ["children"] = {}
       },
       {
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_st_wis_bonus_"..player.color,
+          ["width"] ="40",
+          ["height"] ="40",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="207 -366",
+          ["fontSize"] ="18"
+        },
+        ["children"] = {}
+      },
+      {
         ["tag"] ="ToggleButton",
         ["attributes"] = {
           ["id"] ="cs_st_cha_toggle_"..player.color,
@@ -385,6 +445,18 @@ function UIData.active_panel(player, active)
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="194 -409",
           ["fontSize"] ="24"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_st_cha_bonus_"..player.color,
+          ["width"] ="40",
+          ["height"] ="40",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="207 -391",
+          ["fontSize"] ="18"
         },
         ["children"] = {}
       },
@@ -605,14 +677,19 @@ function UIData.active_panel(player, active)
         ["children"] = {}
       },
       {
-        ["tag"] ="Text",
+        ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_skill_passive_perception_"..player.color,
-          ["onValueChanged"] ="passivePerceptionUpdate",
-          ["width"] ="20",
-          ["height"] ="20",
+          ["onValueChanged"] ="pcEditVal",
+          ["onEndEdit"] ="pcEditVal",
+          ["placeholder"] ="PP",
+          ["characterLimit"] ="2",
+          ["characterValidation"] ="Integer",
+          ["width"] ="40",
+          ["height"] ="40",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="225 -990"
+          ["offsetXY"] ="225 -995",
+          ["fontSize"] ="18"
         },
         ["children"] = {}
       }
