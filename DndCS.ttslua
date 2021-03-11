@@ -103,7 +103,6 @@ function onPlayerDisconnect(player)
 end
 
 function onPlayerChangeColor(player_color)
-  log(player_color)
   for _, playerRef in ipairs(Player.getPlayers()) do
     if playerRef.color == player_color then
       xml = UI.getXmlTable()
@@ -115,12 +114,16 @@ function onPlayerChangeColor(player_color)
           xml = DndCS.createInactiveCSPanel(playerRef, xml)
           xml = DndCS.createActiveCSPanel(playerRef, xml)
         else
-          DndCS.data.active_pcs[playerRef.steam_id]:setColor(playerRef.color)
           DndCS.changeCSPanelsOwner(prev_color, playerRef.color)
           return
         end
       end
-      UI.setXmlTable(xml or {}, _)
+      if #xml == 0 then
+        UI.setXml(" ")
+      else
+        UI.setXmlTable(xml)
+      end
+      DndCS.data.active_pcs[playerRef.steam_id]:setColor(playerRef.color)
     end
   end
 end
@@ -128,9 +131,11 @@ end
 -- DND CS functions --
 
 function DndCS.removeCSPanels(color, xml)
-  for i, item in pairs(xml) do
-    if item.attributes.id == "cs_active_"..color or item.attributes.id == "cs_inactive_"..color then
+  for i=#xml,1,-1 do
+    id = xml[i].attributes.id
+    if id == "cs_active_"..color or id == "cs_inactive_"..color then
       table.remove(xml, i)
+      log("Removed CS Panel: " .. id)
     end
   end
   return xml
@@ -245,6 +250,7 @@ function DndCS.uiElementIdToFunction(color, pc_data)
   for _, field_name in pairs(DndCSClasses.PC.direct_editables) do
     functionLookupTable["cs_"..field_name.."_"..color] = DndCS.popluateFieldUi(pc_data, field_name)
   end
+  functionLookupTable["cs_proficiency_bonus_"..color] = DndCS.popluateFieldUi(pc_data, "proficiency_bonus")
   return functionLookupTable
 end
 
@@ -290,10 +296,8 @@ end
 function pcEditVal(player, val, ui_input_id)
   last = string.find(ui_input_id, "_"..player.color) - 1
   field_name = string.sub(ui_input_id, 4, last)
-  log(field_name)
   pc_data = DndCS.data.pc_data[player.steam_id]
   pc_data[field_name] = val
-  log(pc_data[field_name])
 end
 
 function skillToggle(player, toggle, skill_input_id)
