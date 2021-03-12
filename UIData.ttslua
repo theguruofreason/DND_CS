@@ -126,6 +126,21 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
+          ["id"] ="cs_ac_"..player.color,
+          ["onEndEdit"] ="pcEditVal",
+          ["placeholder"] ="ac",
+          ["characterLimit"] ="2",
+          ["width"] ="60",
+          ["height"] ="50",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="500 -110",
+          ["fontSize"] ="33"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="InputField",
+        ["attributes"] = {
           ["id"] ="cs_str_"..player.color,
           ["onEndEdit"] ="attributeChange",
           ["placeholder"] ="str",
@@ -933,8 +948,8 @@ function UIData.active_panel(player, active)
           ["placeholder"] ="PP",
           ["characterLimit"] ="2",
           ["characterValidation"] ="Integer",
-          ["width"] ="40",
-          ["height"] ="40",
+          ["width"] ="42",
+          ["height"] ="36",
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="225 -995",
           ["fontSize"] ="18"

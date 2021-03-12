@@ -121,7 +121,8 @@ end
 
 function onPlayerDisconnect(player)
   log(player.steam_name .. " disconnected!")
-  dndCS.active_pcs[player.steam_id] = nil
+  log(DndCS.data.active_pcs)
+  DndCS.data.active_pcs[player.steam_id] = nil
   if player.color ~= "Grey" and player.color ~= "Black" then
     xml = UI.getXmlTable()
     xml = DndCS.removeCSPanels(player.color, xml)
@@ -291,11 +292,15 @@ function DndCS.populateCharacterSheetUi(player_color, player_data, xml)
   skills = UIData.skills
   elementIdToFunction = DndCS.uiElementIdToFunction(player_color, player_data)
   for i, element in pairs(xml.children) do
+    if element.tag == "Button" or element.attributes.id == "cs_skill_passive_perception_"..player_color then
+      goto continue
+    end
     if elementIdToFunction[element.attributes.id] ~= nil then
       xml.children[i] = elementIdToFunction[element.attributes.id](element)
     else
       log("Failed to find "..element.attributes.id.." in elementIdToFunction lookup.")
     end
+    ::continue::
   end
   return xml
 end
