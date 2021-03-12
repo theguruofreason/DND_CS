@@ -56,11 +56,25 @@ function UIData.active_panel(player, active)
         ["tag"] ="Button",
         ["attributes"] = {
           ["id"] ="cs_toggle_button_active_"..player.color,
-          ["width"] ="50",
-          ["height"] ="50",
+          ["width"] ="30",
+          ["height"] ="30",
           ["rectAlignment"] ="UpperRight",
+          ["offsetXY"] = "-2 -2",
           ["onClick"] ="toggleCSPane",
           ["sprite"] ="Red_X"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Button",
+        ["attributes"] = {
+          ["id"] ="cs_advanced_options_button_"..player.color,
+          ["width"] ="30",
+          ["height"] ="30",
+          ["rectAlignment"] ="UpperRight",
+          ["offsetXY"] = "-2 -34",
+          ["onClick"] ="toggleAdvancedOptions",
+          ["sprite"] ="Dots_button"
         },
         ["children"] = {}
       },
@@ -318,7 +332,7 @@ function UIData.active_panel(player, active)
           ["width"] ="13",
           ["height"] ="13",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="194 -287",
+          ["offsetXY"] ="194 -283",
           ["fontSize"] ="24"
         },
         ["children"] = {}
@@ -343,7 +357,7 @@ function UIData.active_panel(player, active)
           ["width"] ="13",
           ["height"] ="13",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="194 -311",
+          ["offsetXY"] ="194 -307",
           ["fontSize"] ="24"
         },
         ["children"] = {}
@@ -355,7 +369,7 @@ function UIData.active_panel(player, active)
           ["width"] ="40",
           ["height"] ="40",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="207 -294",
+          ["offsetXY"] ="207 -293",
           ["fontSize"] ="18"
         },
         ["children"] = {}
@@ -368,7 +382,7 @@ function UIData.active_panel(player, active)
           ["width"] ="13",
           ["height"] ="13",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="194 -336",
+          ["offsetXY"] ="194 -332",
           ["fontSize"] ="24"
         },
         ["children"] = {}
@@ -393,7 +407,7 @@ function UIData.active_panel(player, active)
           ["width"] ="13",
           ["height"] ="13",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="194 -360",
+          ["offsetXY"] ="194 -356",
           ["fontSize"] ="24"
         },
         ["children"] = {}
@@ -418,7 +432,7 @@ function UIData.active_panel(player, active)
           ["width"] ="13",
           ["height"] ="13",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="194 -385",
+          ["offsetXY"] ="194 -381",
           ["fontSize"] ="24"
         },
         ["children"] = {}
@@ -443,7 +457,7 @@ function UIData.active_panel(player, active)
           ["width"] ="13",
           ["height"] ="13",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="194 -409",
+          ["offsetXY"] ="194 -405",
           ["fontSize"] ="24"
         },
         ["children"] = {}
@@ -461,218 +475,452 @@ function UIData.active_panel(player, active)
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_acrobatics_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -470"
+          ["offsetXY"] ="200 -464"
         },
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_acrobatics_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -462",
+          ["fontSize"] ="15"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_animal_handling_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -499"
+          ["offsetXY"] ="200 -494"
         },
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_animal_handling_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -491",
+          ["fontSize"] ="15"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_arcana_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -529"
+          ["offsetXY"] ="200 -523"
         },
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_arcana_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -520",
+          ["fontSize"] ="15"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_athletics_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -558"
+          ["offsetXY"] ="200 -553"
         },
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_athletics_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -550",
+          ["fontSize"] ="15"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_deception_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -588"
+          ["offsetXY"] ="200 -583"
         },
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_deception_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -579",
+          ["fontSize"] ="15"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_history_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -617"
+          ["offsetXY"] ="200 -612"
         },
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_history_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -609",
+          ["fontSize"] ="15"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_insight_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -646"
+          ["offsetXY"] ="200 -641"
         },
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_insight_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -638",
+          ["fontSize"] ="15"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_intimidation_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -676"
+          ["offsetXY"] ="200 -671"
         },
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_intimidation_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -668",
+          ["fontSize"] ="15"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_investigation_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -705"
+          ["offsetXY"] ="200 -700"
         },
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_investigation_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -697",
+          ["fontSize"] ="15"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_medicine_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -735"
+          ["offsetXY"] ="200 -730"
         },
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_medicine_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -727",
+          ["fontSize"] ="15"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_nature_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -764"
+          ["offsetXY"] ="200 -759"
         },
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_nature_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -756",
+          ["fontSize"] ="15"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_perception_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -794"
+          ["offsetXY"] ="200 -789"
         },
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_perception_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -786",
+          ["fontSize"] ="15"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_performance_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -823"
+          ["offsetXY"] ="200 -818"
         },
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_performance_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -815",
+          ["fontSize"] ="15"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_persuasion_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -852"
+          ["offsetXY"] ="200 -847"
         },
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_persuasion_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -844",
+          ["fontSize"] ="15"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_religion_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -882"
+          ["offsetXY"] ="200 -877"
         },
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_religion_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -874",
+          ["fontSize"] ="15"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_slight_of_hand_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -911"
+          ["offsetXY"] ="200 -907"
         },
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_slight_of_hand_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -904",
+          ["fontSize"] ="15"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_stealth_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -941"
+          ["offsetXY"] ="200 -936"
         },
         ["children"] = {}
       },
       {
-        ["tag"] ="ToggleButton",
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_stealth_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -933",
+          ["fontSize"] ="15"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_survival_toggle_"..player.color,
-          ["onValueChanged"] ="skillToggle",
-          ["width"] ="13",
-          ["height"] ="13",
+          ["onClick"] ="skillToggle",
+          ["image"] = "NOT_PROFICIENT",
+          ["width"] ="20",
+          ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] ="204 -970"
+          ["offsetXY"] ="200 -965"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="Text",
+        ["attributes"] = {
+          ["id"] ="cs_skill_survival_"..player.color,
+          ["width"] ="25",
+          ["height"] ="20",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="222 -962",
+          ["fontSize"] ="15"
         },
         ["children"] = {}
       },
@@ -700,7 +948,7 @@ end
 UIData.uiAssets = {
   {
     name = "Char_Sheet_1",
-    url = "http://cloud-3.steamusercontent.com/ugc/1638705743368547764/B435527D225D028E9C97D0271DB8F294CA2C847D/"
+    url = "http://cloud-3.steamusercontent.com/ugc/1769324497988994944/E334C29580485F0F98A183C3229F8C78265924E4/"
   },
   {
     name = "Small_CS",
@@ -709,6 +957,22 @@ UIData.uiAssets = {
   {
     name = "Red_X",
     url = "https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Red_x.svg/1024px-Red_x.svg.png"
+  },
+  {
+    name = "Dots_button",
+    url = "http://cloud-3.steamusercontent.com/ugc/1769324470151122974/4E0D36ABA5B1CF3A80EC15DB29BEE1FDEAB7FDC5/"
+  },
+  {
+    name = "NOT_PROFICIENT",
+    url = "http://cloud-3.steamusercontent.com/ugc/1769324497988718473/6463670C3CF4A8A3593DF81F60654A9B44B5F741/"
+  },
+  {
+    name = "PROFICIENT",
+    url = "http://cloud-3.steamusercontent.com/ugc/1769324497988719496/A3147C7B558B18048460CD435215E2391005C089/"
+  },
+  {
+    name = "EXPERTISE",
+    url = "http://cloud-3.steamusercontent.com/ugc/1769324497988719895/B4D78A9E9EE576F9332688B752B569E82F359260/"
   }
 }
 

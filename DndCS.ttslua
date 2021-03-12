@@ -2,6 +2,7 @@
 local UIData = require("/DndCS/UIData")
 local DndCSClasses = require("/DndCS/Classes")
 local DndCS = {}
+
 -- data --
 
 DndCS.data = {
@@ -41,6 +42,7 @@ end
 
 function DndCS.ensureUiAssetsExist()
   customAssets = UI.getCustomAssets()
+  asset_created = false
   for _, asset in pairs(UIData.uiAssets) do
     found = false
     for _, existingAsset in ipairs(customAssets) do
@@ -51,9 +53,11 @@ function DndCS.ensureUiAssetsExist()
     end
     if not found then
       table.insert(customAssets, asset)
+      asset_created = true
     end
   end
   UI.setCustomAssets(customAssets)
+  return not asset_created
 end
 
 function DndCS.enforceSchema(pc_data)
@@ -81,23 +85,33 @@ function onSave()
 end
 
 function onLoad(save_state)
-  if save_state ~= nil and save_state ~= "" then
-    data = JSON.decode(save_state)
-    if data.dndCS ~= nil then
-      DndCS.data = data.dndCS
-      for i, pc in pairs(DndCS.data.pc_data) do
-        DndCS.data[i] = DndCS.enforceSchema(pc)
-        setmetatable(pc, DndCSClasses.PC.mt)
-      end
-    end
-  else
-    log("Failed to load save state. State was blank or nil.")
-  end
-  DndCS.ensureUiAssetsExist()
-  for _, playerRef in ipairs(Player.getPlayers()) do
-    DndCS.maybeCreatePlayerData(playerRef)
-    DndCS.activatePlayer(playerRef)
-  end
+  Wait.condition(
+    function () Wait.frames(
+      function ()
+        if save_state ~= nil and save_state ~= "" then
+          data = JSON.decode(save_state)
+          if data.dndCS ~= nil then
+            DndCS.data = data.dndCS
+            for i, pc in pairs(DndCS.data.pc_data) do
+              DndCS.data[i] = DndCS.enforceSchema(pc)
+              setmetatable(pc, DndCSClasses.PC.mt)
+            end
+          end
+        else
+          log("Failed to load save state. State was blank or nil.")
+        end
+        for _, playerRef in ipairs(Player.getPlayers()) do
+          DndCS.maybeCreatePlayerData(playerRef)
+          DndCS.activatePlayer(playerRef)
+        end
+      end,
+      1
+      )
+    end,
+    DndCS.ensureUiAssetsExist,
+    30,
+    function () log("ensureUiAssetsExist timed out") end
+  )
 end
 
 function onPlayerConnect(player)
@@ -233,7 +247,15 @@ end
 
 function DndCS.populateSkillProficientUi(pc_data, skill)
   return function(ui_element)
-    ui_element.attributes.isOn = (pc_data.skills[skill] == DndCSClasses.Proficiency["PROFICIENT"] or pc_data.skills[skill] == DndCSClasses.Proficiency["EXPERTISE"]) and true or false
+    ui_element.attributes.image = DndCSClasses.Proficiency[pc_data.skills[skill]]
+    return  ui_element
+  end
+end
+
+function DndCS.populateSkillBonusUi(pc_data, skill)
+  return function(ui_element)
+    local bonus = DndCS.calculateSkillBonus(pc_data, skill)
+    ui_element.attributes.text = (bonus >= 0) and "+"..bonus or bonus
     return  ui_element
   end
 end
@@ -247,14 +269,15 @@ end
 
 function DndCS.uiElementIdToFunction(color, pc_data)
   functionLookupTable = {}
-  for att, _ in pairs(UIData.attributes) do
+  for _, att in ipairs(UIData.attributes) do
     functionLookupTable["cs_"..att.."_"..color] = DndCS.populateAttributeUi(pc_data, att)
     functionLookupTable["cs_"..att.."_bonus_"..color] = DndCS.populateAttributeBonusUi(pc_data, att)
     functionLookupTable["cs_st_"..att.."_toggle_"..color] = DndCS.populateAttributeSaveToggleUi(pc_data, att)
     functionLookupTable["cs_st_"..att.."_bonus_"..color] = DndCS.populateAttributeSaveBonusUi(pc_data, att)
   end
-  for skill, _ in pairs(UIData.skills) do
+  for _, skill in ipairs(UIData.skills) do
     functionLookupTable["cs_skill_"..skill.."_toggle_"..color] = DndCS.populateSkillProficientUi(pc_data, skill)
+    functionLookupTable["cs_skill_"..skill.."_"..color] = DndCS.populateSkillBonusUi(pc_data, skill)
   end
   for _, field_name in pairs(DndCSClasses.PC.direct_editables) do
     functionLookupTable["cs_"..field_name.."_"..color] = DndCS.popluateFieldUi(pc_data, field_name)
@@ -284,6 +307,10 @@ function toggleCSPane(player, mouse_button, button_name)
   UI.setAttribute("cs_active_" .. player.color, "active", active)
 end
 
+function toggleAdvancedOptions(player, mouse_button, button_name)
+  -- TODO
+end
+
 function attributeChange(player, att_val, attribute_input_id)
   if att_val == "" then
     log("WARNING: No att_val for "..attribute_input_id.." from "..player.color.."!!!")
@@ -309,24 +336,44 @@ function pcEditVal(player, val, ui_input_id)
   pc_data[field_name] = val
 end
 
-function skillToggle(player, toggle, skill_input_id)
-  last = string.find(skill_input_id, "_toggle") - 1
-  skill_name = string.sub(skill_input_id, 10, last)
-  DndCS.data.pc_data[player.steam_id].skills[skill_name] = (toggle == "True") and DndCSClasses.Proficiency.PROFICIENT or DndCSClasses.Proficiency.NOT_PROFICIENT
+function skillToggle(player, mouse_button, skill_input_id)
+  local last = string.find(skill_input_id, "_toggle") - 1
+  local skill_name = string.sub(skill_input_id, 10, last)
+  local current_val = DndCS.data.pc_data[player.steam_id].skills[skill_name]
+  local new_val = (current_val + 1 > #DndCSClasses.Proficiency) and 1 or current_val + 1
+  DndCS.data.pc_data[player.steam_id].skills[skill_name] = new_val
+  DndCS.setSkillBonus(DndCS.data.pc_data[player.steam_id], player.color, skill_name)
+  UI.setAttributes(
+    skill_input_id,
+    {
+      image = DndCSClasses.Proficiency[new_val]
+    }
+    )
 end
 
 function proficiencyChange(player, val)
   DndCS.data.pc_data[player.steam_id].proficiency_bonus = tonumber(val)
-  for att, _ in pairs(UIData.attributes) do
+  for _, att in ipairs(UIData.attributes) do
     DndCS.setSavingThrowBonus(player, att)
   end
-  for skill, _ in pairs(UIData.skills) do
-    DndCS.setSkillBonus(player, skill)
+  for _, skill in ipairs(UIData.skills) do
+    DndCS.setSkillBonus(DndCS.data.pc_data[player.steam_id], player.color, skill)
   end
 end
 
-function DndCS.setSkillBonus(player, skill)
-  -- TODO
+function DndCS.setSkillBonus(pc_data, color, skill)
+  att = DndCSClasses.skill_to_att[skill]
+  bonus = DndCS.calculateSkillBonus(pc_data, skill)
+  UI.setAttribute(
+  "cs_skill_" .. skill .. "_" .. color,
+  "text",
+  bonus >= 0 and "+"..bonus or bonus)
+end
+
+function DndCS.calculateSkillBonus(pc_data, skill)
+  att = DndCSClasses.skill_to_att[skill]
+  return (pc_data.attributes[att] / 2 - 5) +
+  (pc_data.skills[skill] - 1) * (pc_data.proficiency_bonus)
 end
 
 function DndCS.setSavingThrowBonus(player, att)

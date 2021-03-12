@@ -7,7 +7,7 @@ function DndCSClasses.enum(tbl)
     for i = 1, length do
         local v = tbl[i]
         tbl[v] = i
-        tbl[i] = nil
+        tbl[i] = v
     end
 
     return tbl
@@ -87,6 +87,27 @@ DndCSClasses.Skills = {
 function DndCSClasses.Skills:new(o)
   return setmetatable(o or {}, self.mt)
 end
+
+DndCSClasses.skill_to_att = {
+  acrobatics = "dex",
+  animal_handling = "wis",
+  arcana = "int",
+  athletics = "str",
+  deception = "cha",
+  history = "int",
+  insight = "wis",
+  intimidation = "cha",
+  investigation = "int",
+  medicine = "wis",
+  nature = "int",
+  perception = "wis",
+  performance = "cha",
+  persuasion = "cha",
+  religion = "int",
+  slight_of_hand = "dex",
+  stealth = "dex",
+  survival = "wis"
+}
 
 DndCSClasses.PC = {
   defaults = {
