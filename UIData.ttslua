@@ -141,6 +141,111 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
+          ["id"] ="cs_initiative_"..player.color,
+          ["onEndEdit"] ="pcEditVal",
+          ["placeholder"] ="init",
+          ["characterLimit"] ="2",
+          ["width"] ="90",
+          ["height"] ="80",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="647 -100",
+          ["fontSize"] ="60"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="InputField",
+        ["attributes"] = {
+          ["id"] ="cs_speed_"..player.color,
+          ["onEndEdit"] ="pcEditVal",
+          ["placeholder"] ="speed",
+          ["characterLimit"] ="2",
+          ["width"] ="90",
+          ["height"] ="80",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="827 -100",
+          ["fontSize"] ="60"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="InputField",
+        ["attributes"] = {
+          ["id"] ="cs_hp_current_"..player.color,
+          ["onEndEdit"] ="pcEditVal",
+          ["placeholder"] ="HP",
+          ["characterLimit"] ="3",
+          ["width"] ="100",
+          ["height"] ="65",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="490 -310",
+          ["fontSize"] ="45"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="InputField",
+        ["attributes"] = {
+          ["id"] ="cs_hp_max_"..player.color,
+          ["onEndEdit"] ="pcEditVal",
+          ["placeholder"] ="HP",
+          ["characterLimit"] ="3",
+          ["width"] ="100",
+          ["height"] ="65",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="660 -310",
+          ["fontSize"] ="45"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="InputField",
+        ["attributes"] = {
+          ["id"] ="cs_hp_temp_"..player.color,
+          ["onEndEdit"] ="pcEditVal",
+          ["placeholder"] ="HP",
+          ["characterLimit"] ="3",
+          ["width"] ="100",
+          ["height"] ="65",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="830 -310",
+          ["fontSize"] ="45"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="InputField",
+        ["attributes"] = {
+          ["id"] ="cs_hit_dice_current_"..player.color,
+          ["onEndEdit"] ="pcEditVal",
+          ["placeholder"] ="cur",
+          ["characterLimit"] ="2",
+          ["width"] ="70",
+          ["height"] ="65",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="510 -475",
+          ["fontSize"] ="45"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="InputField",
+        ["attributes"] = {
+          ["id"] ="cs_hit_dice_d_"..player.color,
+          ["onEndEdit"] ="pcEditVal",
+          ["placeholder"] ="D",
+          ["characterLimit"] ="2",
+          ["width"] ="70",
+          ["height"] ="65",
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="600 -475",
+          ["fontSize"] ="45"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="InputField",
+        ["attributes"] = {
           ["id"] ="cs_str_"..player.color,
           ["onEndEdit"] ="attributeChange",
           ["placeholder"] ="str",
