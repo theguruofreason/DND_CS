@@ -121,7 +121,6 @@ end
 
 function onPlayerDisconnect(player)
   log(player.steam_name .. " disconnected!")
-  log(DndCS.data.active_pcs)
   DndCS.data.active_pcs[player.steam_id] = nil
   if player.color ~= "Grey" and player.color ~= "Black" then
     xml = UI.getXmlTable()
@@ -321,18 +320,19 @@ function attributeChange(player, att_val, attribute_input_id)
     log("WARNING: No att_val for "..attribute_input_id.." from "..player.color.."!!!")
     return
   end
-  att = string.sub(attribute_input_id, 4, 6)
+  local att = string.sub(attribute_input_id, 4, 6)
   DndCS.data.pc_data[player.steam_id].attributes[att] = att_val
-  bonus = math.floor(att_val / 2 - 5)
-  bonus_string = (bonus >= 0) and "+" .. tostring(bonus) or tostring(bonus)
+  local bonus = math.floor(att_val / 2 - 5)
+  local bonus_string = (bonus >= 0) and "+" .. tostring(bonus) or tostring(bonus)
   UI.setValue("cs_" .. att .. "_bonus_" .. player.color, bonus_string)
   DndCS.recalculateSkillBonuses(DndCS.data.pc_data[player.steam_id], player.color)
+  DndCS.setSavingThrowBonus(DndCS.data.pc_data[player.steam_id], player.color, att)
 end
 
 function savingThrowToggle(player, toggle, st_input_id)
   att = string.sub(st_input_id, 7, 9)
   DndCS.data.pc_data[player.steam_id].saves[att] = (toggle == "True")
-  DndCS.setSavingThrowBonus(player, att)
+  DndCS.setSavingThrowBonus(DndCS.data.pc_data[player.steam_id], player.color, att)
 end
 
 function pcEditVal(player, val, ui_input_id)
@@ -374,8 +374,8 @@ function DndCS.recalculateSkillBonuses(pc_data, color)
 end
 
 function DndCS.setSkillBonus(pc_data, color, skill)
-  att = DndCSClasses.skill_to_att[skill]
-  bonus = DndCS.calculateSkillBonus(pc_data, skill)
+  local att = DndCSClasses.skill_to_att[skill]
+  local bonus = DndCS.calculateSkillBonus(pc_data, skill)
   UI.setAttribute(
   "cs_skill_" .. skill .. "_" .. color,
   "text",
@@ -388,16 +388,15 @@ function DndCS.calculateSkillBonus(pc_data, skill)
   (pc_data.skills[skill] - 1) * (pc_data.proficiency_bonus)
 end
 
-function DndCS.setSavingThrowBonus(player, att)
-  pc_data = DndCS.data.pc_data[player.steam_id]
-  bonus = (
+function DndCS.setSavingThrowBonus(pc_data, color, att)
+  local bonus = (
   math.floor(pc_data.attributes[att] / 2 - 5) +
   (pc_data.saves[att] == true and pc_data.proficiency_bonus or 0)
   )
   UI.setAttribute(
-    "cs_st_"..att.."_bonus_"..player.color,
+    "cs_st_"..att.."_bonus_"..color,
     "text",
-    (bonus >= 0 and "+"..bonus or bonus)
+    bonus >= 0 and "+"..bonus or bonus
   )
 end
 
