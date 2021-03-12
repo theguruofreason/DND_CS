@@ -324,8 +324,9 @@ function attributeChange(player, att_val, attribute_input_id)
   att = string.sub(attribute_input_id, 4, 6)
   DndCS.data.pc_data[player.steam_id].attributes[att] = att_val
   bonus = math.floor(att_val / 2 - 5)
-  bonus_string = (bonus > 0) and "+" .. tostring(bonus) or tostring(bonus)
+  bonus_string = (bonus >= 0) and "+" .. tostring(bonus) or tostring(bonus)
   UI.setValue("cs_" .. att .. "_bonus_" .. player.color, bonus_string)
+  DndCS.recalculateSkillBonuses(DndCS.data.pc_data[player.steam_id], player.color)
 end
 
 function savingThrowToggle(player, toggle, st_input_id)
@@ -366,6 +367,12 @@ function proficiencyChange(player, val)
   end
 end
 
+function DndCS.recalculateSkillBonuses(pc_data, color)
+  for _, skill in ipairs(UIData.skills) do
+    DndCS.setSkillBonus(pc_data, color, skill)
+  end
+end
+
 function DndCS.setSkillBonus(pc_data, color, skill)
   att = DndCSClasses.skill_to_att[skill]
   bonus = DndCS.calculateSkillBonus(pc_data, skill)
@@ -377,7 +384,7 @@ end
 
 function DndCS.calculateSkillBonus(pc_data, skill)
   att = DndCSClasses.skill_to_att[skill]
-  return (pc_data.attributes[att] / 2 - 5) +
+  return (math.floor(pc_data.attributes[att] / 2 - 5)) +
   (pc_data.skills[skill] - 1) * (pc_data.proficiency_bonus)
 end
 
