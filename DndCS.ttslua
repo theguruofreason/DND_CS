@@ -3,6 +3,8 @@ local UIData = require("/DndCS/UIData")
 local DndCSClasses = require("/DndCS/Classes")
 local DndCS = {}
 
+DIE_CLEANUP_DELAY = 5
+
 -- data --
 
 DndCS.data = {
@@ -74,6 +76,20 @@ function DndCS.setXml(xml_table)
   else
     UI.setXmlTable(xml)
   end
+end
+
+function DndCS.addFunctionOwnerToUiInteractibles(ui_element)
+  if ui_element["children"] ~= nil then
+    ui_element.children = DndCS.addFunctionOwnerToUiInteractibles(ui_element.children)
+  end
+  if ui_element["attributes"] ~= nil then
+    if ui_element.attributes["onClick"] ~= nil then
+      ui_element.attributes.onClick = self.getGUID().."/"..ui_element.attributes.onClick
+    elseif ui_element.attributes["onEndEdit"] ~= nil then
+      ui_element.attributes.onEndEdit = self.getGUID().."/"..ui_element.attributes.onEndEdit
+    end
+  end
+  return ui_element
 end
 
 -- sys functions --
@@ -189,6 +205,9 @@ function DndCS.createInactiveCSPanel(player, xml)
     end
   end
   if not panel_exists then
+    for i, child in pairs(inactive_panel_attributes.children) do
+      inactive_panel_attributes.children[i] = DndCS.addFunctionOwnerToUiInteractibles(child)
+    end
     table.insert(xml, inactive_panel_attributes)
     log("created inactive CS Panel for " .. player.color)
   end
@@ -209,6 +228,11 @@ function DndCS.createActiveCSPanel(player, xml)
     end
   end
   if not panel_exists then
+    for i, child in pairs(active_panel_attributes.children) do
+      active_panel_attributes.children[i] = DndCS.addFunctionOwnerToUiInteractibles(child)
+    end
+    --active_panel_attributes = DndCS.addFunctionOwnerToUiInteractibles({active_panel_attributes})
+    --log(active_panel_attributes, "active_panel_attributes: ")
     table.insert(xml, active_panel_attributes)
     log("created active CS Panel for " .. player.color)
   end
@@ -360,11 +384,58 @@ end
 function proficiencyChange(player, val)
   DndCS.data.pc_data[player.steam_id].proficiency_bonus = tonumber(val)
   for _, att in ipairs(UIData.attributes) do
-    DndCS.setSavingThrowBonus(player, att)
+    DndCS.setSavingThrowBonus(DndCS.data.pc_data[player.steam_id], player.color, att)
   end
   for _, skill in ipairs(UIData.skills) do
     DndCS.setSkillBonus(DndCS.data.pc_data[player.steam_id], player.color, skill)
   end
+end
+
+function rollSavingThrow(player, mouse_button, tag_id)
+  local last = string.find(tag_id, "_bonus") - 1
+  local att = string.sub(tag_id, 7, last)
+  local pc_data = DndCS.data.pc_data[player.steam_id]
+  local bonus = math.floor(pc_data.attributes[att] / 2 - 5) + (pc_data.saves[att] and pc_data.proficiency_bonus or 0)
+  local hand_transform = player.getHandTransform()
+  spawnObject({
+    type = "Die_20",
+    position = hand_transform.position,
+    callback_function = function(obj) DndCS.rollDie(obj, player.color) end
+  })
+end
+
+function DndCS.rollDie(die, color)
+  function coroutine_rollDice()
+    die.setLock(true)
+    wait(3)
+    die.setLock(false)
+    die.roll()
+    DndCS.monitorDie(die, color)
+    return 1
+  end
+  startLuaCoroutine(self, "coroutine_rollDice")
+end
+
+function DndCS.monitorDie(die, color)
+  local function coroutine_monitorDie(die, color)
+    repeat
+      local allRest = true
+      if die ~= nil and die.resting == false then
+        allRest = false
+      end
+      coroutine.yield(0)
+    until allRest == true
+  end
+
+  --Timer starting
+  Timer.destroy("dice_cleanup_"..color)
+  Timer.create({
+      identifier="dice_cleanup_"..color,
+      function_name="DndCS.cleanupDice",
+      function_owner=self,
+      parameters={die},
+      delay=DIE_CLEANUP_DELAY,
+  })
 end
 
 function DndCS.recalculateSkillBonuses(pc_data, color)

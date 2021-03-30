@@ -461,6 +461,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_st_str_bonus_"..player.color,
+          ["onClick"] ="rollSavingThrow",
           ["width"] ="40",
           ["height"] ="40",
           ["rectAlignment"] ="UpperLeft",
