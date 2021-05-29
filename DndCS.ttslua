@@ -7,6 +7,7 @@ local DndCS = {}
 DIE_CLEANUP_DELAY = 5
 DIE_MULTIROLL = false
 ROLL_DELAY = 1
+ROLL_TIMEOUT = 5
 DICE_CLEANUP_DELAY = 3
 
 -- data --
@@ -301,7 +302,7 @@ function DndCS.populateSkillBonusUi(pc_data, skill)
   end
 end
 
-function DndCS.popluateFieldUi(pc_data, field_name)
+function DndCS.populateFieldUi(pc_data, field_name)
   return function(ui_element)
     ui_element.attributes.text = pc_data[field_name]
     return ui_element
@@ -321,9 +322,9 @@ function DndCS.uiElementIdToFunction(color, pc_data)
     functionLookupTable["cs_skill_"..skill.."_"..color] = DndCS.populateSkillBonusUi(pc_data, skill)
   end
   for _, field_name in pairs(DndCSClasses.PC.direct_editables) do
-    functionLookupTable["cs_"..field_name.."_"..color] = DndCS.popluateFieldUi(pc_data, field_name)
+    functionLookupTable["cs_"..field_name.."_"..color] = DndCS.populateFieldUi(pc_data, field_name)
   end
-  functionLookupTable["cs_proficiency_bonus_"..color] = DndCS.popluateFieldUi(pc_data, "proficiency_bonus")
+  functionLookupTable["cs_proficiency_bonus_"..color] = DndCS.populateFieldUi(pc_data, "proficiency_bonus")
   return functionLookupTable
 end
 
@@ -377,7 +378,7 @@ function savingThrowToggle(player, toggle, st_input_id)
 end
 
 function pcEditVal(player, val, ui_input_id)
-  field_name = ui_input_id:find("cs_(.-)_"..player.color)
+  _, _, field_name = ui_input_id:find("cs_(.-)_"..player.color)
   pc_data = DndCS.data.pc_data[player.steam_id]
   pc_data[field_name] = val
 end
@@ -436,7 +437,7 @@ function rollSkillCheck(player, mouse_button, tag_id)
   die.setLock(true)
 end
 
-function DndCS.rollDice(dice, player, bonus, message)
+function DndCS.rollDice(dice, player, bonus, message, only_show_color)
   function coroutine_rollDice()
     wait(ROLL_DELAY)
     for _, die in ipairs(dice) do
@@ -444,14 +445,15 @@ function DndCS.rollDice(dice, player, bonus, message)
       die.roll()
       wait(0.1)
     end
-    DndCS.monitorDice(dice, player, bonus, message)
+    DndCS.monitorDice(dice, player, bonus, message, only_show_color)
     return 1
   end
   startLuaCoroutine(self, "coroutine_rollDice")
 end
 
-function DndCS.monitorDice(dice, player, bonus, message)
+function DndCS.monitorDice(dice, player, bonus, message, only_show_color)
   function coroutine_monitorDice()
+    local start_time = os.time()
     repeat
       local resting = true
       for _, die in ipairs(dice) do
@@ -461,15 +463,15 @@ function DndCS.monitorDice(dice, player, bonus, message)
         end
       end
       coroutine.yield(0)
-    until resting == true
-    DndCS.announceRoll(dice, bonus, message)
+    until resting == true or start_time + ROLL_TIMEOUT < os.time()
+    DndCS.announceRoll(dice, bonus, message, only_show_color)
     DndCS.cleanupDice(dice, player)
     return 1
   end
   startLuaCoroutine(self, "coroutine_monitorDice")
 end
 
-function DndCS.announceRoll(dice, bonus, message)
+function DndCS.announceRoll(dice, bonus, message, only_show_color)
   local total = 0
   local rolls = {}
 
@@ -481,12 +483,11 @@ function DndCS.announceRoll(dice, bonus, message)
   end
   total = total + bonus
   message = message .. string.format(" ("..(bonus >= 0 and "+%d)" or "%d)").." for a total of %d", bonus, total)
-  --[[ TODO
-  if color ~= nil then
-    broadcastToColor(message, color, {1,1,1})
+  if only_show_color ~= nil then
+    broadcastToColor(message, only_show_color, {1,1,1})
   else
-  ]]
-  broadcastToAll(message, {1,1,1})
+    broadcastToAll(message, {1,1,1})
+  end
 end
 
 function DndCS.cleanupDice(dice, player)
