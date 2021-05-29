@@ -487,6 +487,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_st_dex_bonus_"..player.color,
+          ["onClick"] ="rollSavingThrow",
           ["width"] ="40",
           ["height"] ="40",
           ["rectAlignment"] ="UpperLeft",
@@ -512,6 +513,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_st_con_bonus_"..player.color,
+          ["onClick"] ="rollSavingThrow",
           ["width"] ="40",
           ["height"] ="40",
           ["rectAlignment"] ="UpperLeft",
@@ -537,6 +539,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_st_int_bonus_"..player.color,
+          ["onClick"] ="rollSavingThrow",
           ["width"] ="40",
           ["height"] ="40",
           ["rectAlignment"] ="UpperLeft",
@@ -562,6 +565,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_st_wis_bonus_"..player.color,
+          ["onClick"] ="rollSavingThrow",
           ["width"] ="40",
           ["height"] ="40",
           ["rectAlignment"] ="UpperLeft",
@@ -587,6 +591,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_st_cha_bonus_"..player.color,
+          ["onClick"] ="rollSavingThrow",
           ["width"] ="40",
           ["height"] ="40",
           ["rectAlignment"] ="UpperLeft",
@@ -612,6 +617,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_acrobatics_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",

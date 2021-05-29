@@ -7,7 +7,7 @@ local DndCS = {}
 DIE_CLEANUP_DELAY = 5
 DIE_MULTIROLL = false
 ROLL_DELAY = 1
-DICE_CLEANUP_DELAY = 1
+DICE_CLEANUP_DELAY = 3
 
 -- data --
 
@@ -45,6 +45,14 @@ function DndCS.activatePlayer(player)
 end
 
 -- helper functions --
+
+function RGBToHex(rgb)
+    if rgb ~= nil then
+        return "[" .. string.format("%02x%02x%02x", rgb[1]*255,rgb[2]*255,rgb[3]*255) .. "]"
+    else
+        return ""
+    end
+end
 
 function wait(time)
     local start = os.time()
@@ -403,11 +411,23 @@ function proficiencyChange(player, val)
 end
 
 function rollSavingThrow(player, mouse_button, tag_id)
-  local last = string.find(tag_id, "_bonus") - 1
-  local att = string.sub(tag_id, 7, last)
+  local _, _, att = string.find(tag_id, "st_(%a+)_bonus")
   local pc_data = DndCS.data.pc_data[player.steam_id]
   local bonus = DndCS.calculateSavingThrowBonus(pc_data, att)
-  local message = string.format("%s rolled a %s saving throw: ", player.steam_id, string.upper(att))
+  local message = string.format(RGBToHex(stringColorToRGB(player.color)).."%s[-] rolled a %s saving throw: ", player.steam_name, string.upper(att))
+  local die = spawnObject({
+    type = "Die_20",
+    position = player.getHandTransform().position,
+    callback_function = function(obj) DndCS.rollDice({obj}, player.color, bonus, message) end
+  })
+  die.setLock(true)
+end
+
+function rollSkillCheck(player, mouse_button, tag_id)
+  local _, _, skill = string.find(tag_id, "skill_(%a+)_%a+")
+  local pc_data = DndCS.data.pc_data[player.steam_id]
+  local bonus = DndCS.calculateSkillBonus(pc_data, skill)
+  local message = string.format(RGBToHex(stringColorToRGB(player.color)).."%s[-] rolled a(n) %s skill check: ", player.steam_name, skill)
   local die = spawnObject({
     type = "Die_20",
     position = player.getHandTransform().position,
@@ -442,10 +462,31 @@ function DndCS.monitorDice(dice, color, bonus, message)
       end
       coroutine.yield(0)
     until resting == true
+    DndCS.announceRoll(dice, bonus, message)
     DndCS.cleanupDice(dice)
     return 1
   end
   startLuaCoroutine(self, "coroutine_monitorDice")
+end
+
+function DndCS.announceRoll(dice, bonus, message, color)
+  local total = 0
+  local rolls = {}
+
+  for _, die in ipairs(dice) do
+    local value = die.getValue()
+    total = total + value
+    table.insert(rolls, value)
+    message = message .. value .. " + "
+  end
+  total = total + bonus
+  message = string.sub(message, 1, #message - 3)
+  message = message .. string.format(" ("..(bonus >= 0 and "+%d)" or "%d)").." for a total of %d", bonus, total)
+  if color ~= nil then
+    broadcastToColor(message, color, {1,1,1})
+  else
+    broadcastToAll(message, {1,1,1})
+  end
 end
 
 function DndCS.cleanupDice(dice)
