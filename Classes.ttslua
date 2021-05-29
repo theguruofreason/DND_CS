@@ -168,7 +168,7 @@ end
 
 DndCSClasses.ActivePC = {
   steam_name = "",
-  color = nil,
+  color = nil
 }
 function DndCSClasses.ActivePC:new (o)
   o = o or {}

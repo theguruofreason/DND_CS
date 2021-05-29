@@ -643,6 +643,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_animal_handling_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -668,6 +669,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_arcana_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -693,6 +695,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_athletics_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -718,6 +721,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_deception_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -743,6 +747,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_history_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -768,6 +773,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_insight_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -793,6 +799,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_intimidation_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -818,6 +825,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_investigation_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -843,6 +851,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_medicine_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -868,6 +877,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_nature_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -893,6 +903,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_perception_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -918,6 +929,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_performance_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -943,6 +955,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_persuasion_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -968,6 +981,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_religion_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -993,6 +1007,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_slight_of_hand_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -1018,6 +1033,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_stealth_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -1043,6 +1059,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_survival_"..player.color,
+          ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
