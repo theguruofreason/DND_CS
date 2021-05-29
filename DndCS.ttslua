@@ -1,9 +1,13 @@
 --[[ Lua code. See documentation: https://api.tabletopsimulator.com/ ]]--
 local UIData = require("/DndCS/UIData")
 local DndCSClasses = require("/DndCS/Classes")
+local enum = DndCSClasses.enum
 local DndCS = {}
 
 DIE_CLEANUP_DELAY = 5
+DIE_MULTIROLL = false
+ROLL_DELAY = 1
+DICE_CLEANUP_DELAY = 1
 
 -- data --
 
@@ -41,6 +45,11 @@ function DndCS.activatePlayer(player)
 end
 
 -- helper functions --
+
+function wait(time)
+    local start = os.time()
+    repeat coroutine.yield(0) until os.time() > start + time
+end
 
 function DndCS.ensureUiAssetsExist()
   customAssets = UI.getCustomAssets()
@@ -397,47 +406,58 @@ function rollSavingThrow(player, mouse_button, tag_id)
   local last = string.find(tag_id, "_bonus") - 1
   local att = string.sub(tag_id, 7, last)
   local pc_data = DndCS.data.pc_data[player.steam_id]
-  local bonus = math.floor(pc_data.attributes[att] / 2 - 5) + (pc_data.saves[att] and pc_data.proficiency_bonus or 0)
-  local hand_transform = player.getHandTransform()
-  spawnObject({
+  local bonus = DndCS.calculateSavingThrowBonus(pc_data, att)
+  local message = string.format("%s rolled a %s saving throw: ", player.steam_id, string.upper(att))
+  local die = spawnObject({
     type = "Die_20",
-    position = hand_transform.position,
-    callback_function = function(obj) DndCS.rollDie(obj, player.color) end
+    position = player.getHandTransform().position,
+    callback_function = function(obj) DndCS.rollDice({obj}, player.color, bonus, message) end
   })
+  die.setLock(true)
 end
 
-function DndCS.rollDie(die, color)
+function DndCS.rollDice(dice, color, bonus, message)
   function coroutine_rollDice()
-    die.setLock(true)
-    Wait.time(function () end, 3)
-    die.setLock(false)
-    die.roll()
-    DndCS.monitorDie(die, color)
+    wait(ROLL_DELAY)
+    for _, die in ipairs(dice) do
+      die.setLock(false)
+      die.roll()
+      wait(0.1)
+    end
+    DndCS.monitorDice(dice, color, bonus, message)
     return 1
   end
   startLuaCoroutine(self, "coroutine_rollDice")
 end
 
-function DndCS.monitorDie(die, color)
-  local function coroutine_monitorDie(die, color)
+function DndCS.monitorDice(dice, color, bonus, message)
+  function coroutine_monitorDice()
     repeat
-      local allRest = true
-      if die ~= nil and die.resting == false then
-        allRest = false
+      local resting = true
+      for _, die in ipairs(dice) do
+        if die ~= nil and die.resting == false then
+          resting = false
+          break
+        end
       end
       coroutine.yield(0)
-    until allRest == true
+    until resting == true
+    DndCS.cleanupDice(dice)
+    return 1
   end
+  startLuaCoroutine(self, "coroutine_monitorDice")
+end
 
-  --Timer starting
-  Timer.destroy("dice_cleanup_"..color)
-  Timer.create({
-      identifier="dice_cleanup_"..color,
-      function_name="DndCS.cleanupDice",
-      function_owner=self,
-      parameters={die},
-      delay=DIE_CLEANUP_DELAY,
-  })
+function DndCS.cleanupDice(dice)
+  Wait.time(
+  function()
+    for _, die in pairs(dice) do
+      die.destruct()
+    end
+  end
+  ,
+  DICE_CLEANUP_DELAY
+  )
 end
 
 function DndCS.recalculateSkillBonuses(pc_data, color)
@@ -462,14 +482,18 @@ function DndCS.calculateSkillBonus(pc_data, skill)
 end
 
 function DndCS.setSavingThrowBonus(pc_data, color, att)
-  local bonus = (
-  math.floor(pc_data.attributes[att] / 2 - 5) +
-  (pc_data.saves[att] == true and pc_data.proficiency_bonus or 0)
-  )
+  local bonus = DndCS.calculateSavingThrowBonus(pc_data, att)
   UI.setAttribute(
     "cs_st_"..att.."_bonus_"..color,
     "text",
     bonus >= 0 and "+"..bonus or bonus
+  )
+end
+
+function DndCS.calculateSavingThrowBonus(pc_data, att)
+  return(
+  math.floor(pc_data.attributes[att] / 2 - 5) +
+  (pc_data.saves[att] == true and pc_data.proficiency_bonus or 0)
   )
 end
 
