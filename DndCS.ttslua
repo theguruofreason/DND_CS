@@ -85,6 +85,8 @@ function DndCS.addFunctionOwnerToUiInteractibles(ui_element)
   if ui_element["attributes"] ~= nil then
     if ui_element.attributes["onClick"] ~= nil then
       ui_element.attributes.onClick = self.getGUID().."/"..ui_element.attributes.onClick
+    elseif ui_element.attributes["onValueChanged"] ~= nil then
+      ui_element.attributes.onValueChanged = self.getGUID().."/"..ui_element.attributes.onValueChanged
     elseif ui_element.attributes["onEndEdit"] ~= nil then
       ui_element.attributes.onEndEdit = self.getGUID().."/"..ui_element.attributes.onEndEdit
     end
@@ -407,7 +409,7 @@ end
 function DndCS.rollDie(die, color)
   function coroutine_rollDice()
     die.setLock(true)
-    wait(3)
+    Wait.time(function () end, 3)
     die.setLock(false)
     die.roll()
     DndCS.monitorDie(die, color)
