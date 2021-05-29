@@ -407,6 +407,8 @@ function proficiencyChange(player, val)
 end
 
 function rollSavingThrow(player, mouse_button, tag_id)
+  if DndCS.data.active_pcs[player.steam_id].rolling then return end
+  DndCS.data.active_pcs[player.steam_id].rolling = true
   local _, _, att = tag_id:find("st_(%a+)_bonus")
   local pc_data = DndCS.data.pc_data[player.steam_id]
   local bonus = DndCS.calculateSavingThrowBonus(pc_data, att)
@@ -414,12 +416,14 @@ function rollSavingThrow(player, mouse_button, tag_id)
   local die = spawnObject({
     type = "Die_20",
     position = player.getHandTransform().position,
-    callback_function = function(obj) DndCS.rollDice({obj}, player.color, bonus, message) end
+    callback_function = function(obj) DndCS.rollDice({obj}, player, bonus, message) end
   })
   die.setLock(true)
 end
 
 function rollSkillCheck(player, mouse_button, tag_id)
+  if DndCS.data.active_pcs[player.steam_id].rolling then return end
+  DndCS.data.active_pcs[player.steam_id].rolling = true
   local _, _, skill = tag_id:find("skill_(.-)_"..player.color)
   local pc_data = DndCS.data.pc_data[player.steam_id]
   local bonus = DndCS.calculateSkillBonus(pc_data, skill)
@@ -427,12 +431,12 @@ function rollSkillCheck(player, mouse_button, tag_id)
   local die = spawnObject({
     type = "Die_20",
     position = player.getHandTransform().position,
-    callback_function = function(obj) DndCS.rollDice({obj}, player.color, bonus, message) end
+    callback_function = function(obj) DndCS.rollDice({obj}, player, bonus, message) end
   })
   die.setLock(true)
 end
 
-function DndCS.rollDice(dice, color, bonus, message)
+function DndCS.rollDice(dice, player, bonus, message)
   function coroutine_rollDice()
     wait(ROLL_DELAY)
     for _, die in ipairs(dice) do
@@ -440,13 +444,13 @@ function DndCS.rollDice(dice, color, bonus, message)
       die.roll()
       wait(0.1)
     end
-    DndCS.monitorDice(dice, color, bonus, message)
+    DndCS.monitorDice(dice, player, bonus, message)
     return 1
   end
   startLuaCoroutine(self, "coroutine_rollDice")
 end
 
-function DndCS.monitorDice(dice, color, bonus, message)
+function DndCS.monitorDice(dice, player, bonus, message)
   function coroutine_monitorDice()
     repeat
       local resting = true
@@ -459,13 +463,13 @@ function DndCS.monitorDice(dice, color, bonus, message)
       coroutine.yield(0)
     until resting == true
     DndCS.announceRoll(dice, bonus, message)
-    DndCS.cleanupDice(dice)
+    DndCS.cleanupDice(dice, player)
     return 1
   end
   startLuaCoroutine(self, "coroutine_monitorDice")
 end
 
-function DndCS.announceRoll(dice, bonus, message, color)
+function DndCS.announceRoll(dice, bonus, message)
   local total = 0
   local rolls = {}
 
@@ -477,19 +481,21 @@ function DndCS.announceRoll(dice, bonus, message, color)
   end
   total = total + bonus
   message = message .. string.format(" ("..(bonus >= 0 and "+%d)" or "%d)").." for a total of %d", bonus, total)
+  --[[ TODO
   if color ~= nil then
     broadcastToColor(message, color, {1,1,1})
   else
-    broadcastToAll(message, {1,1,1})
-  end
+  ]]
+  broadcastToAll(message, {1,1,1})
 end
 
-function DndCS.cleanupDice(dice)
+function DndCS.cleanupDice(dice, player)
   Wait.time(
   function()
     for _, die in pairs(dice) do
       die.destruct()
     end
+    DndCS.data.active_pcs[player.steam_id].rolling = false
   end
   ,
   DICE_CLEANUP_DELAY
