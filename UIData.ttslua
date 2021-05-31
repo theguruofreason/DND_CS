@@ -1,10 +1,100 @@
 local DndCSClasses = require("/DndCS/Classes")
 local enum = DndCSClasses.enum
+
+t = 15
+s = 30
+m = 45
+l = 60
+xl = 80
+
+T = "15"
+S = "30"
+M = "45"
+L = "60"
+XL = "80"
+
 -- UI Data --
 local UIData = {}
 
 UIData.attributes = enum{"str", "dex", "con", "int", "wis", "cha"}
 UIData.skills = enum{"athletics", "acrobatics", "animal_handling", "arcana", "deception", "history", "insight", "intimidation", "investigation", "medicine", "nature", "perception", "performance", "persuasion", "religion", "slight_of_hand", "stealth", "survival"}
+
+function UIData.advanced_options_panel(player, active)
+  return {
+    tag = "Panel",
+    attributes = {
+      id = "cs_advanced_options_panel_" .. player.color,
+      width = 400,
+      height = 300,
+      visibility = player.color,
+      active = active,
+      showAnimation = "FadeIn",
+      hideAnimation = "FadeOut",
+      animationDuration = 0.1
+    },
+    children = {
+      {
+        tag = "Button",
+        attributes = {
+          id = "cs_advanced_options_toggle_active_"..player.color,
+          width = s,
+          height = s,
+          rectAlignment = "UpperRight",
+          offsetXY = "-2 -2",
+          onClick = "toggleAdvancedOptionsPane",
+          sprite = "Red_X"
+        },
+        children = {}
+      },
+      {
+        tag = "TableLayout",
+        attributes = {
+          rectAlignment = "UpperLeft",
+          offsetXY = "5 30",
+          sizeDelta = "-30 -30"
+        },
+        children = {
+          tag = "Row",
+          attributes = {
+            height = s,
+          },
+          children = {
+            {
+              tag = "Cell",
+              children = {
+                {
+                  tag = "InputText",
+                  id = "character_sheet_import_text_" .. player.color,
+                  attributes = {
+                    width = 200,
+                    height = s,
+                    placeholder = "character sheet URL",
+                    tooltip = "URL for character sheet JSON. Upload your sheet to the cloud and past the URL here."
+                  }
+                }
+              }
+            },
+            {
+              tag = "Cell",
+              children = {
+                {
+                  tag = "Button",
+                  id = "import_character_sheet_button_" .. player.color,
+                  attributes = {
+                    onClick = "importCharacterSheet",
+                    text = "import",
+                    height = s,
+
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+end
 
 function UIData.inactive_panel(player, active)
   return {
@@ -17,11 +107,15 @@ function UIData.inactive_panel(player, active)
       height = 108,
       visibility = player.color,
       position= "-400 -447",
-      active = not active
+      active = active,
+      showAnimation = "FadeIn",
+      hideAnimation = "FadeOut",
+      animationDuration = 0.1
     },
     children = {
       {
         tag = "Button",
+        id = "cs_toggle_pane_active_" .. player.color,
         attributes = {
           icon = "Small_CS",
           onClick = "toggleCSPane"
@@ -41,7 +135,10 @@ function UIData.active_panel(player, active)
       ["height"] ="1080",
       ["visibility"] =player.color,
       ["position"] ="0 0",
-      ["active"] = active
+      ["active"] = active,
+      ["showAnimation"] = "FadeIn",
+      ["hideAnimation"] = "FadeOut",
+      ["animationDuration"] = "0.1"
     },
     ["children"] = {
       {
@@ -56,8 +153,8 @@ function UIData.active_panel(player, active)
         ["tag"] ="Button",
         ["attributes"] = {
           ["id"] ="cs_toggle_button_active_"..player.color,
-          ["width"] ="30",
-          ["height"] ="30",
+          ["width"] =S,
+          ["height"] =S,
           ["rectAlignment"] ="UpperRight",
           ["offsetXY"] = "-2 -2",
           ["onClick"] ="toggleCSPane",
@@ -66,14 +163,14 @@ function UIData.active_panel(player, active)
         ["children"] = {}
       },
       {
-        ["tag"] ="Button",
+        ["tag"] ="ToggleButton",
         ["attributes"] = {
-          ["id"] ="cs_advanced_options_button_"..player.color,
-          ["width"] ="30",
-          ["height"] ="30",
+          ["id"] ="cs_advanced_options_toggle_"..player.color,
+          ["width"] =S,
+          ["height"] =S,
           ["rectAlignment"] ="UpperRight",
           ["offsetXY"] = "-2 -34",
-          ["onClick"] ="toggleAdvancedOptions",
+          ["onClick"] ="toggleAdvancedOptionsPane",
           ["sprite"] ="Dots_button"
         },
         ["children"] = {}
@@ -268,7 +365,7 @@ function UIData.active_panel(player, active)
           ["height"] ="50",
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="55 -175",
-          ["fontSize"] ="30"
+          ["fontSize"] =S
         },
         ["children"] = {}
       },
@@ -296,7 +393,7 @@ function UIData.active_panel(player, active)
           ["height"] ="50",
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="55 -345",
-          ["fontSize"] ="30"
+          ["fontSize"] =S
         },
         ["children"] = {}
       },
@@ -324,7 +421,7 @@ function UIData.active_panel(player, active)
           ["height"] ="50",
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="55 -513",
-          ["fontSize"] ="30"
+          ["fontSize"] =S
         },
         ["children"] = {}
       },
@@ -352,7 +449,7 @@ function UIData.active_panel(player, active)
           ["height"] ="50",
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="55 -680",
-          ["fontSize"] ="30"
+          ["fontSize"] =S
         },
         ["children"] = {}
       },
@@ -380,7 +477,7 @@ function UIData.active_panel(player, active)
           ["height"] ="50",
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="55 -850",
-          ["fontSize"] ="30"
+          ["fontSize"] =S
         },
         ["children"] = {}
       },
@@ -408,7 +505,7 @@ function UIData.active_panel(player, active)
           ["height"] ="50",
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="55 -1018",
-          ["fontSize"] ="30"
+          ["fontSize"] =S
         },
         ["children"] = {}
       },

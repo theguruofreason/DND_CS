@@ -40,6 +40,7 @@ function DndCS.activatePlayer(player)
     xml = UI.getXmlTable()
     xml = DndCS.createInactiveCSPanel(player, xml)
     xml = DndCS.createActiveCSPanel(player, xml)
+    xml = DndCS.createAdvancedOptionsPanel(player, xml)
     UI.setXmlTable(xml, _)
   end
   log(string.format("dndPC: %s - %s Activated!", player.steam_id, player.steam_name))
@@ -215,7 +216,7 @@ function DndCS.createInactiveCSPanel(player, xml)
   if (player.color == "Grey" or player.color == "Black") then
     return xml
   end
-  inactive_panel_attributes = UIData.inactive_panel(player, DndCS.data.pc_data[player.steam_id].cs_panel_active)
+  inactive_panel_attributes = UIData.inactive_panel(player, not DndCS.data.pc_data[player.steam_id].cs_panel_active)
   panel_exists = false
   for _, item in pairs(xml) do
     if item["attributes"]["id"] == inactive_panel_attributes["attributes"]["id"] then
@@ -239,7 +240,6 @@ function DndCS.createActiveCSPanel(player, xml)
     return xml
   end
   active_panel_attributes = UIData.active_panel(player, DndCS.data.pc_data[player.steam_id].cs_panel_active)
-  active_panel_attributes = DndCS.populateCharacterSheetUi(player.color, DndCS.data.pc_data[player.steam_id], active_panel_attributes)
   panel_exists = false
   for _, item in pairs(xml) do
     if item["attributes"]["id"] == active_panel_attributes["attributes"]["id"] then
@@ -248,11 +248,35 @@ function DndCS.createActiveCSPanel(player, xml)
     end
   end
   if not panel_exists then
+    active_panel_attributes = DndCS.populateCharacterSheetUi(player.color, DndCS.data.pc_data[player.steam_id], active_panel_attributes)
     for i, child in pairs(active_panel_attributes.children) do
       active_panel_attributes.children[i] = DndCS.addFunctionOwnerToUiInteractibles(child)
     end
     table.insert(xml, active_panel_attributes)
     log("created active CS Panel for " .. player.color)
+  end
+  return xml
+end
+
+function DndCS.createAdvancedOptionsPanel(player, xml)
+  if (player.color == "Grey" or player.color == "Black") then
+    return xml
+  end
+  advanced_options_panel_attributes = UIData.advanced_options_panel(player, "False")
+  panel_exists = false
+  for _, item in pairs(xml) do
+    if item["attributes"]["id"] == advanced_options_panel_attributes["attributes"]["id"] then
+      panel_exists = true
+      log("found existing panel: " .. item["attributes"]["id"])
+      break
+    end
+  end
+  if not panel_exists then
+    for i, child in pairs(advanced_options_panel_attributes.children) do
+      advanced_options_panel_attributes.children[i] = DndCS.addFunctionOwnerToUiInteractibles(child)
+    end
+    table.insert(xml, advanced_options_panel_attributes)
+    log("created advanced options panel for " .. player.color)
   end
   return xml
 end
@@ -347,14 +371,28 @@ function DndCS.populateCharacterSheetUi(player_color, player_data, xml)
 end
 
 function toggleCSPane(player, mouse_button, button_name)
+  local active = DndCS.data.pc_data[player.steam_id].cs_panel_active
+  local inactiveID, activeID = "cs_inactive_" .. player.color, "cs_active_" .. player.color
+  local inactivePanelState = UI.getAttribute("cs_inactive_" .. player.color, "active") == "true"
+  local activePanelState = UI.getAttribute("cs_active_" .. player.color, "active") == "true"
+  if active then
+    UI.show(inactiveID)
+    UI.hide(activeID)
+  else
+    UI.hide(inactiveID)
+    UI.show(activeID)
+  end
   DndCS.data.pc_data[player.steam_id].cs_panel_active = not DndCS.data.pc_data[player.steam_id].cs_panel_active
-  active = DndCS.data.pc_data[player.steam_id].cs_panel_active
-  UI.setAttribute("cs_inactive_" .. player.color, "active", not active)
-  UI.setAttribute("cs_active_" .. player.color, "active", active)
 end
 
-function toggleAdvancedOptions(player, mouse_button, button_name)
-  -- TODO
+function toggleAdvancedOptionsPane(player, mouse_button, button_name)
+  local id = "cs_advanced_options_panel_" .. player.color
+  local active = UI.getAttribute(id, "active") == "true"
+  if active then
+    UI.hide(id)
+  else
+    UI.show(id)
+  end
 end
 
 function attributeChange(player, att_val, attribute_input_id)
