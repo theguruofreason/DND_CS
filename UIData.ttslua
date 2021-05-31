@@ -144,8 +144,9 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_page_"..player.color,
-          ["image"] ="Char_Sheet_1"
+          ["id"] = "cs_page_"..player.color,
+          ["image"] = "Char_Sheet_1",
+          ["raycastTarget"] = "true"
         },
         ["children"] = {}
       },
