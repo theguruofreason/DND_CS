@@ -97,20 +97,39 @@ function DndCS.setXml(xml_table)
   end
 end
 
-function DndCS.addFunctionOwnerToUiInteractibles(ui_element)
-  if ui_element["children"] ~= nil then
-    ui_element.children = DndCS.addFunctionOwnerToUiInteractibles(ui_element.children)
-  end
-  if ui_element["attributes"] ~= nil then
-    if ui_element.attributes["onClick"] ~= nil then
-      ui_element.attributes.onClick = self.getGUID().."/"..ui_element.attributes.onClick
-    elseif ui_element.attributes["onValueChanged"] ~= nil then
-      ui_element.attributes.onValueChanged = self.getGUID().."/"..ui_element.attributes.onValueChanged
-    elseif ui_element.attributes["onEndEdit"] ~= nil then
-      ui_element.attributes.onEndEdit = self.getGUID().."/"..ui_element.attributes.onEndEdit
+function DndCS.addFunctionOwnerToUiInteractibles(ui_elements, report)
+  local funcs = {
+    "onClick",
+    "onMouseEnter",
+    "onMouseExit",
+    "onDrag",
+    "onBeginDrag",
+    "onEndDrag",
+    "onMouseDown",
+    "onMouseUp",
+    "onSubmit",
+    "onValueChanged",
+    "onEndEdit"
+  }
+  for _, element in ipairs(ui_elements) do
+    if report then
+      log(ui_element)
+    end
+    if element["children"] ~= nil then
+      element.children = DndCS.addFunctionOwnerToUiInteractibles(element.children)
+    end
+    if element["attributes"] ~= nil then
+      for _, func in ipairs(funcs) do
+        if element.attributes[func] ~= nil then
+          element.attributes[func] = self.getGUID().."/"..element.attributes[func]
+          if report then
+            log(string.format("added guid to %s", func))
+          end
+        end
+      end
     end
   end
-  return ui_element
+  return ui_elements
 end
 
 -- sys functions --
@@ -226,9 +245,7 @@ function DndCS.createInactiveCSPanel(player, xml)
     end
   end
   if not panel_exists then
-    for i, child in pairs(inactive_panel_attributes.children) do
-      inactive_panel_attributes.children[i] = DndCS.addFunctionOwnerToUiInteractibles(child)
-    end
+    inactive_panel_attributes = DndCS.addFunctionOwnerToUiInteractibles({inactive_panel_attributes}, true)[1]
     table.insert(xml, inactive_panel_attributes)
     log("created inactive CS Panel for " .. player.color)
   end
@@ -249,9 +266,7 @@ function DndCS.createActiveCSPanel(player, xml)
   end
   if not panel_exists then
     active_panel_attributes = DndCS.populateCharacterSheetUi(player.color, DndCS.data.pc_data[player.steam_id], active_panel_attributes)
-    for i, child in pairs(active_panel_attributes.children) do
-      active_panel_attributes.children[i] = DndCS.addFunctionOwnerToUiInteractibles(child)
-    end
+    active_panel_attributes = DndCS.addFunctionOwnerToUiInteractibles({active_panel_attributes})[1]
     table.insert(xml, active_panel_attributes)
     log("created active CS Panel for " .. player.color)
   end
@@ -272,9 +287,7 @@ function DndCS.createAdvancedOptionsPanel(player, xml)
     end
   end
   if not panel_exists then
-    for i, child in pairs(advanced_options_panel_attributes.children) do
-      advanced_options_panel_attributes.children[i] = DndCS.addFunctionOwnerToUiInteractibles(child)
-    end
+    advanced_options_panel_attributes =  DndCS.addFunctionOwnerToUiInteractibles({advanced_options_panel_attributes})[1]
     table.insert(xml, advanced_options_panel_attributes)
     log("created advanced options panel for " .. player.color)
   end
