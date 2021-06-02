@@ -23,8 +23,8 @@ function UIData.advanced_options_panel(player, active)
   return {
     tag = "Panel",
     attributes = {
-      id = "cs_advanced_options_panel_" .. player.color,
-      width = 400,
+      id = "cs_advanced_options_panel_" .. player.steam_id,
+      width = 600,
       height = 300,
       visibility = player.color,
       active = active,
@@ -36,7 +36,7 @@ function UIData.advanced_options_panel(player, active)
       {
         tag = "Button",
         attributes = {
-          id = "cs_advanced_options_toggle_active_"..player.color,
+          id = "cs_advanced_options_toggle_active_"..player.steam_id,
           width = s,
           height = s,
           rectAlignment = "UpperRight",
@@ -56,20 +56,20 @@ function UIData.advanced_options_panel(player, active)
         children = {
           tag = "Row",
           attributes = {
-            height = s,
+            height = s
           },
           children = {
             {
               tag = "Cell",
               children = {
                 {
-                  tag = "InputText",
-                  id = "character_sheet_import_text_" .. player.color,
+                  tag = "InputField",
+                  id = "character_sheet_import_text_" .. player.steam_id,
                   attributes = {
                     width = 200,
                     height = s,
                     placeholder = "character sheet URL",
-                    tooltip = "URL for character sheet JSON. Upload your sheet to the cloud and past the URL here."
+                    tooltip = "URL for character sheet JSON. Upload your sheet to the cloud and paste the URL here."
                   }
                 }
               }
@@ -79,12 +79,11 @@ function UIData.advanced_options_panel(player, active)
               children = {
                 {
                   tag = "Button",
-                  id = "import_character_sheet_button_" .. player.color,
+                  id = "import_character_sheet_button_" .. player.steam_id,
                   attributes = {
                     onClick = "importCharacterSheet",
                     text = "import",
-                    height = s,
-
+                    height = s
                   }
                 }
               }
@@ -100,7 +99,7 @@ function UIData.inactive_panel(player, active)
   return {
     tag = "Panel",
     attributes = {
-      id = "cs_inactive_" .. player.color,
+      id = "cs_inactive_" .. player.steam_id,
       allowDragging = "true",
       returnToOriginalPositionWhenReleased = "false",
       width = 98,
@@ -115,7 +114,7 @@ function UIData.inactive_panel(player, active)
     children = {
       {
         tag = "Button",
-        id = "cs_toggle_pane_active_" .. player.color,
+        id = "cs_toggle_pane_active_" .. player.steam_id,
         attributes = {
           icon = "Small_CS",
           onClick = "toggleCSPane"
@@ -129,11 +128,11 @@ function UIData.active_panel(player, active)
   return {
     ["tag"] ="Panel",
     ["attributes"] = {
-      ["id"] ="cs_active_"..player.color,
+      ["id"] ="cs_active_"..player.steam_id,
       ["allowDragging"] ="false",
       ["width"] ="979",
       ["height"] ="1080",
-      ["visibility"] =player.color,
+      ["visibility"] = player.color,
       ["position"] ="0 0",
       ["active"] = active,
       ["showAnimation"] = "FadeIn",
@@ -144,7 +143,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] = "cs_page_"..player.color,
+          ["id"] = "cs_page_"..player.steam_id,
           ["image"] = "Char_Sheet_1",
           ["raycastTarget"] = "true"
         },
@@ -153,7 +152,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Button",
         ["attributes"] = {
-          ["id"] ="cs_toggle_button_active_"..player.color,
+          ["id"] ="cs_toggle_button_active_"..player.steam_id,
           ["width"] =S,
           ["height"] =S,
           ["rectAlignment"] ="UpperRight",
@@ -166,7 +165,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="ToggleButton",
         ["attributes"] = {
-          ["id"] ="cs_advanced_options_toggle_"..player.color,
+          ["id"] ="cs_advanced_options_toggle_"..player.steam_id,
           ["width"] =S,
           ["height"] =S,
           ["rectAlignment"] ="UpperRight",
@@ -179,7 +178,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_char_name_"..player.color,
+          ["id"] ="cs_char_name_"..player.steam_id,
           ["onEndEdit"] ="pcEditVal",
           ["placeholder"] ="Name",
           ["characterLimit"] ="60",
@@ -194,7 +193,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_level_"..player.color,
+          ["id"] ="cs_level_"..player.steam_id,
           ["onEndEdit"] ="pcEditVal",
           ["placeholder"] ="lvl",
           ["characterLimit"] ="2",
@@ -209,7 +208,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_class_"..player.color,
+          ["id"] ="cs_class_"..player.steam_id,
           ["onEndEdit"] ="pcEditVal",
           ["placeholder"] ="class",
           ["characterLimit"] ="60",
@@ -224,7 +223,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_ac_"..player.color,
+          ["id"] ="cs_ac_"..player.steam_id,
           ["onEndEdit"] ="pcEditVal",
           ["placeholder"] ="ac",
           ["characterLimit"] ="2",
@@ -239,7 +238,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_initiative_"..player.color,
+          ["id"] ="cs_initiative_"..player.steam_id,
           ["onEndEdit"] ="pcEditVal",
           ["placeholder"] ="init",
           ["characterLimit"] ="2",
@@ -254,7 +253,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_speed_"..player.color,
+          ["id"] ="cs_speed_"..player.steam_id,
           ["onEndEdit"] ="pcEditVal",
           ["placeholder"] ="speed",
           ["characterLimit"] ="2",
@@ -269,7 +268,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_hp_current_"..player.color,
+          ["id"] ="cs_hp_current_"..player.steam_id,
           ["onEndEdit"] ="pcEditVal",
           ["placeholder"] ="HP",
           ["characterLimit"] ="3",
@@ -284,7 +283,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_hp_max_"..player.color,
+          ["id"] ="cs_hp_max_"..player.steam_id,
           ["onEndEdit"] ="pcEditVal",
           ["placeholder"] ="HP",
           ["characterLimit"] ="3",
@@ -299,7 +298,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_hp_temp_"..player.color,
+          ["id"] ="cs_hp_temp_"..player.steam_id,
           ["onEndEdit"] ="pcEditVal",
           ["placeholder"] ="HP",
           ["characterLimit"] ="3",
@@ -314,7 +313,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_hit_dice_current_"..player.color,
+          ["id"] ="cs_hit_dice_current_"..player.steam_id,
           ["onEndEdit"] ="pcEditVal",
           ["placeholder"] ="cur",
           ["characterLimit"] ="2",
@@ -329,7 +328,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_hit_dice_d_"..player.color,
+          ["id"] ="cs_hit_dice_d_"..player.steam_id,
           ["onEndEdit"] ="pcEditVal",
           ["placeholder"] ="D",
           ["characterLimit"] ="2",
@@ -344,7 +343,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_str_"..player.color,
+          ["id"] ="cs_str_"..player.steam_id,
           ["onEndEdit"] ="attributeChange",
           ["placeholder"] ="str",
           ["characterLimit"] ="2",
@@ -361,7 +360,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_str_bonus_"..player.color,
+          ["id"] ="cs_str_bonus_"..player.steam_id,
           ["width"] ="50",
           ["height"] ="50",
           ["rectAlignment"] ="UpperLeft",
@@ -373,7 +372,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_dex_"..player.color,
+          ["id"] ="cs_dex_"..player.steam_id,
           ["onEndEdit"] ="attributeChange",
           ["placeholder"] ="dex",
           ["characterLimit"] ="2",
@@ -389,7 +388,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_dex_bonus_"..player.color,
+          ["id"] ="cs_dex_bonus_"..player.steam_id,
           ["width"] ="50",
           ["height"] ="50",
           ["rectAlignment"] ="UpperLeft",
@@ -401,7 +400,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_con_"..player.color,
+          ["id"] ="cs_con_"..player.steam_id,
           ["onEndEdit"] ="attributeChange",
           ["placeholder"] ="con",
           ["characterLimit"] ="2",
@@ -417,7 +416,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_con_bonus_"..player.color,
+          ["id"] ="cs_con_bonus_"..player.steam_id,
           ["width"] ="50",
           ["height"] ="50",
           ["rectAlignment"] ="UpperLeft",
@@ -429,7 +428,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_int_"..player.color,
+          ["id"] ="cs_int_"..player.steam_id,
           ["onEndEdit"] ="attributeChange",
           ["placeholder"] ="int",
           ["characterLimit"] ="2",
@@ -445,7 +444,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_int_bonus_"..player.color,
+          ["id"] ="cs_int_bonus_"..player.steam_id,
           ["width"] ="50",
           ["height"] ="50",
           ["rectAlignment"] ="UpperLeft",
@@ -457,7 +456,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_wis_"..player.color,
+          ["id"] ="cs_wis_"..player.steam_id,
           ["onEndEdit"] ="attributeChange",
           ["placeholder"] ="wis",
           ["characterLimit"] ="2",
@@ -473,7 +472,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_wis_bonus_"..player.color,
+          ["id"] ="cs_wis_bonus_"..player.steam_id,
           ["width"] ="50",
           ["height"] ="50",
           ["rectAlignment"] ="UpperLeft",
@@ -485,7 +484,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_cha_"..player.color,
+          ["id"] ="cs_cha_"..player.steam_id,
           ["onEndEdit"] ="attributeChange",
           ["placeholder"] ="cha",
           ["characterLimit"] ="2",
@@ -501,7 +500,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_cha_bonus_"..player.color,
+          ["id"] ="cs_cha_bonus_"..player.steam_id,
           ["width"] ="50",
           ["height"] ="50",
           ["rectAlignment"] ="UpperLeft",
@@ -513,7 +512,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_inspiration_"..player.color,
+          ["id"] ="cs_inspiration_"..player.steam_id,
           ["onEndEdit"] ="pcEditVal",
           ["placeholder"] =" ",
           ["characterLimit"] ="1",
@@ -529,7 +528,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_proficiency_bonus_"..player.color,
+          ["id"] ="cs_proficiency_bonus_"..player.steam_id,
           ["onEndEdit"] ="proficiencyChange",
           ["placeholder"] =" ",
           ["characterLimit"] ="1",
@@ -545,7 +544,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="ToggleButton",
         ["attributes"] = {
-          ["id"] ="cs_st_str_toggle_"..player.color,
+          ["id"] ="cs_st_str_toggle_"..player.steam_id,
           ["onValueChanged"] ="savingThrowToggle",
           ["width"] ="13",
           ["height"] ="13",
@@ -558,7 +557,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_st_str_bonus_"..player.color,
+          ["id"] ="cs_st_str_bonus_"..player.steam_id,
           ["onClick"] ="rollSavingThrow",
           ["width"] ="40",
           ["height"] ="40",
@@ -571,7 +570,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="ToggleButton",
         ["attributes"] = {
-          ["id"] ="cs_st_dex_toggle_"..player.color,
+          ["id"] ="cs_st_dex_toggle_"..player.steam_id,
           ["onValueChanged"] ="savingThrowToggle",
           ["width"] ="13",
           ["height"] ="13",
@@ -584,7 +583,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_st_dex_bonus_"..player.color,
+          ["id"] ="cs_st_dex_bonus_"..player.steam_id,
           ["onClick"] ="rollSavingThrow",
           ["width"] ="40",
           ["height"] ="40",
@@ -597,7 +596,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="ToggleButton",
         ["attributes"] = {
-          ["id"] ="cs_st_con_toggle_"..player.color,
+          ["id"] ="cs_st_con_toggle_"..player.steam_id,
           ["onValueChanged"] ="savingThrowToggle",
           ["width"] ="13",
           ["height"] ="13",
@@ -610,7 +609,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_st_con_bonus_"..player.color,
+          ["id"] ="cs_st_con_bonus_"..player.steam_id,
           ["onClick"] ="rollSavingThrow",
           ["width"] ="40",
           ["height"] ="40",
@@ -623,7 +622,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="ToggleButton",
         ["attributes"] = {
-          ["id"] ="cs_st_int_toggle_"..player.color,
+          ["id"] ="cs_st_int_toggle_"..player.steam_id,
           ["onValueChanged"] ="savingThrowToggle",
           ["width"] ="13",
           ["height"] ="13",
@@ -636,7 +635,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_st_int_bonus_"..player.color,
+          ["id"] ="cs_st_int_bonus_"..player.steam_id,
           ["onClick"] ="rollSavingThrow",
           ["width"] ="40",
           ["height"] ="40",
@@ -649,7 +648,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="ToggleButton",
         ["attributes"] = {
-          ["id"] ="cs_st_wis_toggle_"..player.color,
+          ["id"] ="cs_st_wis_toggle_"..player.steam_id,
           ["onValueChanged"] ="savingThrowToggle",
           ["width"] ="13",
           ["height"] ="13",
@@ -662,7 +661,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_st_wis_bonus_"..player.color,
+          ["id"] ="cs_st_wis_bonus_"..player.steam_id,
           ["onClick"] ="rollSavingThrow",
           ["width"] ="40",
           ["height"] ="40",
@@ -675,7 +674,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="ToggleButton",
         ["attributes"] = {
-          ["id"] ="cs_st_cha_toggle_"..player.color,
+          ["id"] ="cs_st_cha_toggle_"..player.steam_id,
           ["onValueChanged"] ="savingThrowToggle",
           ["width"] ="13",
           ["height"] ="13",
@@ -688,7 +687,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_st_cha_bonus_"..player.color,
+          ["id"] ="cs_st_cha_bonus_"..player.steam_id,
           ["onClick"] ="rollSavingThrow",
           ["width"] ="40",
           ["height"] ="40",
@@ -701,7 +700,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_acrobatics_toggle_"..player.color,
+          ["id"] ="cs_skill_acrobatics_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -714,7 +713,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_acrobatics_"..player.color,
+          ["id"] ="cs_skill_acrobatics_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -727,7 +726,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_animal_handling_toggle_"..player.color,
+          ["id"] ="cs_skill_animal_handling_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -740,7 +739,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_animal_handling_"..player.color,
+          ["id"] ="cs_skill_animal_handling_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -753,7 +752,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_arcana_toggle_"..player.color,
+          ["id"] ="cs_skill_arcana_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -766,7 +765,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_arcana_"..player.color,
+          ["id"] ="cs_skill_arcana_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -779,7 +778,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_athletics_toggle_"..player.color,
+          ["id"] ="cs_skill_athletics_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -792,7 +791,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_athletics_"..player.color,
+          ["id"] ="cs_skill_athletics_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -805,7 +804,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_deception_toggle_"..player.color,
+          ["id"] ="cs_skill_deception_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -818,7 +817,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_deception_"..player.color,
+          ["id"] ="cs_skill_deception_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -831,7 +830,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_history_toggle_"..player.color,
+          ["id"] ="cs_skill_history_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -844,7 +843,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_history_"..player.color,
+          ["id"] ="cs_skill_history_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -857,7 +856,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_insight_toggle_"..player.color,
+          ["id"] ="cs_skill_insight_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -870,7 +869,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_insight_"..player.color,
+          ["id"] ="cs_skill_insight_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -883,7 +882,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_intimidation_toggle_"..player.color,
+          ["id"] ="cs_skill_intimidation_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -896,7 +895,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_intimidation_"..player.color,
+          ["id"] ="cs_skill_intimidation_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -909,7 +908,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_investigation_toggle_"..player.color,
+          ["id"] ="cs_skill_investigation_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -922,7 +921,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_investigation_"..player.color,
+          ["id"] ="cs_skill_investigation_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -935,7 +934,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_medicine_toggle_"..player.color,
+          ["id"] ="cs_skill_medicine_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -948,7 +947,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_medicine_"..player.color,
+          ["id"] ="cs_skill_medicine_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -961,7 +960,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_nature_toggle_"..player.color,
+          ["id"] ="cs_skill_nature_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -974,7 +973,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_nature_"..player.color,
+          ["id"] ="cs_skill_nature_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -987,7 +986,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_perception_toggle_"..player.color,
+          ["id"] ="cs_skill_perception_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -1000,7 +999,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_perception_"..player.color,
+          ["id"] ="cs_skill_perception_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -1013,7 +1012,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_performance_toggle_"..player.color,
+          ["id"] ="cs_skill_performance_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -1026,7 +1025,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_performance_"..player.color,
+          ["id"] ="cs_skill_performance_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -1039,7 +1038,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_persuasion_toggle_"..player.color,
+          ["id"] ="cs_skill_persuasion_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -1052,7 +1051,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_persuasion_"..player.color,
+          ["id"] ="cs_skill_persuasion_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -1065,7 +1064,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_religion_toggle_"..player.color,
+          ["id"] ="cs_skill_religion_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -1078,7 +1077,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_religion_"..player.color,
+          ["id"] ="cs_skill_religion_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -1091,7 +1090,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_slight_of_hand_toggle_"..player.color,
+          ["id"] ="cs_skill_slight_of_hand_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -1104,7 +1103,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_slight_of_hand_"..player.color,
+          ["id"] ="cs_skill_slight_of_hand_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -1117,7 +1116,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_stealth_toggle_"..player.color,
+          ["id"] ="cs_skill_stealth_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -1130,7 +1129,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_stealth_"..player.color,
+          ["id"] ="cs_skill_stealth_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -1143,7 +1142,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_survival_toggle_"..player.color,
+          ["id"] ="cs_skill_survival_toggle_"..player.steam_id,
           ["onClick"] ="skillToggle",
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
@@ -1156,7 +1155,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_survival_"..player.color,
+          ["id"] ="cs_skill_survival_"..player.steam_id,
           ["onClick"] ="rollSkillCheck",
           ["width"] ="25",
           ["height"] ="20",
@@ -1169,7 +1168,7 @@ function UIData.active_panel(player, active)
       {
         ["tag"] ="InputField",
         ["attributes"] = {
-          ["id"] ="cs_skill_passive_perception_"..player.color,
+          ["id"] ="cs_passive_perception_"..player.steam_id,
           ["onValueChanged"] ="pcEditVal",
           ["onEndEdit"] ="pcEditVal",
           ["placeholder"] ="PP",

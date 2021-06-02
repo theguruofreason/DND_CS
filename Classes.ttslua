@@ -139,6 +139,7 @@ DndCSClasses.PC = {
     "level",
     "class",
     "inspiration",
+    "proficiency_bonus",
     "passive_perception",
     "ac",
     "initiative",
