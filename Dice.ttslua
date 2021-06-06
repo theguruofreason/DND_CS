@@ -1,0 +1,119 @@
+local DndCSClasses = require("/DndCS/Classes")
+local DndCS = require("/DndCS/DndCS")
+local Position = DndCSClasses.Position
+
+Dice = {}
+
+-- Globals --
+
+DIE_CLEANUP_DELAY = 5
+DIE_MULTIROLL = true
+ROLL_DELAY = 2
+ROLL_TIMEOUT = 10
+DICE_CLEANUP_DELAY = 5
+MAX_DICE = 10 -- WARNING: Set to 0 responsibly.
+MAX_WIDTH = 7
+XYZ_OFFSET = Position.new()
+
+-- Helper Functions --
+
+function calcNewDicePosition(i, numDice, spawnBasePos)
+    local totalWidth = MAX_WIDTH
+    local widthStep = MAX_WIDTH / (numDice-1)
+    local x = -widthStep * i + (widthMaximum/2)
+    local offset = XYZ_OFFSET + {x, 0, 0}
+    return
+end
+
+function wait(time)
+    local start = os.time()
+    repeat coroutine.yield(0) until os.time() > start + time
+end
+
+function calcDiePosOffset(i, diceCount)
+    local widthStep = MAX_WIDTH / (totalDice-1)
+    local x = -widthStep * i + (MAX_WIDTH/2)
+    return Position.new({x = x, y = 0, z = 0})
+end
+
+-- Main Functions --
+
+function Dice.rollDice(dice, player, bonus, message, only_show_color)
+  function coroutine_rollDice()
+    wait(ROLL_DELAY)
+    for _, die in ipairs(dice) do
+      die.setLock(false)
+      die.roll()
+      wait(0.1)
+    end
+    Dice.monitorDice(dice, player, bonus, message, only_show_color)
+    return 1
+  end
+  startLuaCoroutine(self, "coroutine_rollDice")
+end
+
+function Dice.spawnDie(rollInProgress, diceCount, spawnBasePos)
+  local denyRoll = false
+  if MAX_DICE > 0 and diceCount >= MAX_DICE then
+    return
+  end
+  if not rollInProgress and denyRoll == false then
+    for i, die in ipairs(currentDice) do
+      die.setPositionSmooth(getPositionInLine(i), false, true)
+    end
+  end
+
+end
+
+function Dice.monitorDice(dice, player, bonus, message, only_show_color)
+  function coroutine_monitorDice()
+    local start_time = os.time()
+    repeat
+      local resting = true
+      for _, die in ipairs(dice) do
+        if die ~= nil and die.resting == false then
+          resting = false
+          break
+        end
+      end
+      coroutine.yield(0)
+    until resting == true or start_time + ROLL_TIMEOUT < os.time()
+    Dice.announceRoll(dice, bonus, message, only_show_color)
+    Dice.cleanupDice(dice, player)
+    return 1
+  end
+  startLuaCoroutine(self, "coroutine_monitorDice")
+end
+
+function Dice.announceRoll(dice, bonus, message, onlyShowColor)
+  local total = 0
+  local rolls = {}
+
+  for i, die in ipairs(dice) do
+    local value = die.getValue()
+    total = total + value
+    table.insert(rolls, value)
+    message = message .. value .. (i ~= #dice and " + " or "")
+  end
+  total = total + bonus
+  message = message .. string.format(" ("..(bonus >= 0 and "+%d)" or "%d)").." for a total of %d", bonus, total)
+  if onlyShowColor ~= nil then
+    broadcastToColor(message, only_show_color, {1,1,1})
+  else
+    broadcastToAll(message, {1,1,1})
+  end
+end
+
+function Dice.cleanupDice(dice, player)
+  Wait.time(
+  function()
+    for _, die in pairs(dice) do
+      die.destruct()
+    end
+    DndCS.data.active_pcs[player.steam_id].rolling = false
+  end,
+  DICE_CLEANUP_DELAY
+  )
+end
+
+return Dice

@@ -1,6 +1,8 @@
 local DndCSClasses = require("/DndCS/Classes")
 local enum = DndCSClasses.enum
 
+-- Globals --
+
 t = 15
 s = 30
 m = 45

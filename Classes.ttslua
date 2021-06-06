@@ -28,13 +28,14 @@ DndCSClasses.Attributes = {
     cha = 0
   }
 }
-DndCSClasses.Attributes.mt = {
-  __index = function(table, key)
-    return DndCSClasses.Attributes.defaults[key]
-  end
-}
 function DndCSClasses.Attributes:new (o)
-  return setmetatable(o or {}, self.mt)
+  return setmetatable(
+  o or {},
+  {
+    __index = function(table, key)
+      return DndCSClasses.Attributes.defaults[key]
+    end
+  })
 end
 
 DndCSClasses.Saves = {
@@ -47,13 +48,14 @@ DndCSClasses.Saves = {
     cha = false,
   }
 }
-DndCSClasses.Saves.mt = {
-  __index = function(table, key)
-    return DndCSClasses.Saves.defaults[key]
-  end
-}
 function DndCSClasses.Saves:new (o)
-  return setmetatable(o or {}, self.mt)
+  return setmetatable(
+  o or {},
+  {
+    __index = function(table, key)
+      return DndCSClasses.Saves.defaults[key]
+    end
+  })
 end
 
 DndCSClasses.Skills = {
@@ -181,5 +183,65 @@ end
 function DndCSClasses.ActivePC:setColor(color)
   self.color = color
 end
+
+DndCSClasses.Position = {
+  type = "Position",
+  x = 0,
+  y = 0,
+  z = 0,
+  __tostring = function(self)
+    return string.format("<Position: {%d,%d,%d}>", self.x, self.y, self.z)
+  end,
+  __eq = function(self, o)
+    eq = true
+    for key, val in pairs(self) do
+      if o[key] ~= val then
+        eq = false
+        log(string.format"%s %s", key, val)
+        break
+      end
+    end
+    for key, val in pairs(o) do
+      if self[key] ~= val then
+        eq = false
+        log(string.format"%s %s", key, val)
+        break
+      end
+    end
+    return eq
+  end,
+  __add = function(self, o)
+    assert(type(o) == type(table), string.format("Bad variable type: Cannot add %s and %s", self.type, type(o)))
+    if o.mt ~= Position.mt then
+      assert(false, string.format("Bad variable type: Cannot add %s to Position.", type(o)))
+    end
+    local x = self.x + o.x
+    local y = self.y + o.y
+    local z = self.z + o.z
+    return Position.new({x=x,y=y,z=z})
+  end,
+  new = function(o)
+    return setmetatable(
+    o or {},
+    {
+      __index = function (table, key)
+        return DndCSClasses.Position[key]
+      end,
+      __add = DndCSClasses.Position.__add,
+      __eq = DndCSClasses.Position.__eq,
+      __tostring = DndCSClasses.Position.__tostring
+    })
+  end,
+  __sub = function(self, o)
+    assert(type(o) == type(table), string.format("Bad variable type: Cannot add %s and %s", self.type, type(o)))
+    if o.mt ~= Position.mt then
+      assert(false, string.format("Bad variable type: Cannot add %s to Position.", type(o)))
+    end
+    local x = self.x - o.x
+    local y = self.y - o.y
+    local z = self.z - o.z
+    return Position.new({x=x,y=y,z=z})
+  end,
+}
 
 return DndCSClasses

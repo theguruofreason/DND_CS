@@ -1,14 +1,8 @@
---[[ Lua code. See documentation: https://api.tabletopsimulator.com/ ]]--
 local UIData = require("/DndCS/UIData")
 local DndCSClasses = require("/DndCS/Classes")
+local Dice = require("/DndCS/Dice")
 local enum = DndCSClasses.enum
 local DndCS = {}
-
-DIE_CLEANUP_DELAY = 5
-DIE_MULTIROLL = false
-ROLL_DELAY = 1
-ROLL_TIMEOUT = 5
-DICE_CLEANUP_DELAY = 3
 
 -- data --
 
@@ -56,10 +50,6 @@ function RGBToHex(rgb)
     end
 end
 
-function wait(time)
-    local start = os.time()
-    repeat coroutine.yield(0) until os.time() > start + time
-end
 
 function DndCS.ensureUiAssetsExist()
   customAssets = UI.getCustomAssets()
@@ -97,7 +87,7 @@ function DndCS.setXml(xml_table)
   end
 end
 
-function DndCS.addFunctionOwnerToUiInteractibles(ui_elements, report)
+function DndCS.addFunctionOwnerToUiInteractibles(ui_elements)
   local funcs = {
     "onClick",
     "onMouseEnter",
@@ -112,9 +102,6 @@ function DndCS.addFunctionOwnerToUiInteractibles(ui_elements, report)
     "onEndEdit"
   }
   for _, element in ipairs(ui_elements) do
-    if report then
-      log(ui_element)
-    end
     if element["children"] ~= nil then
       element.children = DndCS.addFunctionOwnerToUiInteractibles(element.children)
     end
@@ -122,9 +109,6 @@ function DndCS.addFunctionOwnerToUiInteractibles(ui_elements, report)
       for _, func in ipairs(funcs) do
         if element.attributes[func] ~= nil then
           element.attributes[func] = self.getGUID().."/"..element.attributes[func]
-          if report then
-            log(string.format("added guid to %s", func))
-          end
         end
       end
     end
@@ -239,7 +223,7 @@ function DndCS.createInactiveCSPanel(player, xml)
     end
   end
   if not panel_exists then
-    inactive_panel_attributes = DndCS.addFunctionOwnerToUiInteractibles({inactive_panel_attributes}, true)[1]
+    inactive_panel_attributes = DndCS.addFunctionOwnerToUiInteractibles({inactive_panel_attributes})[1]
     table.insert(xml, inactive_panel_attributes)
     log("created inactive CS Panel for " .. player.color)
   end
@@ -471,7 +455,7 @@ function rollSavingThrow(player, mouse_button, tag_id)
   local die = spawnObject({
     type = "Die_20",
     position = player.getHandTransform().position,
-    callback_function = function(obj) DndCS.rollDice({obj}, player, bonus, message) end
+    callback_function = function(obj) Dice.rollDice({obj}, player, bonus, message) end
   })
   die.setLock(true)
 end
@@ -486,75 +470,9 @@ function rollSkillCheck(player, mouse_button, tag_id)
   local die = spawnObject({
     type = "Die_20",
     position = player.getHandTransform().position,
-    callback_function = function(obj) DndCS.rollDice({obj}, player, bonus, message) end
+    callback_function = function(obj) Dice.rollDice({obj}, player, bonus, message) end
   })
   die.setLock(true)
-end
-
-function DndCS.rollDice(dice, player, bonus, message, only_show_color)
-  function coroutine_rollDice()
-    wait(ROLL_DELAY)
-    for _, die in ipairs(dice) do
-      die.setLock(false)
-      die.roll()
-      wait(0.1)
-    end
-    DndCS.monitorDice(dice, player, bonus, message, only_show_color)
-    return 1
-  end
-  startLuaCoroutine(self, "coroutine_rollDice")
-end
-
-function DndCS.monitorDice(dice, player, bonus, message, only_show_color)
-  function coroutine_monitorDice()
-    local start_time = os.time()
-    repeat
-      local resting = true
-      for _, die in ipairs(dice) do
-        if die ~= nil and die.resting == false then
-          resting = false
-          break
-        end
-      end
-      coroutine.yield(0)
-    until resting == true or start_time + ROLL_TIMEOUT < os.time()
-    DndCS.announceRoll(dice, bonus, message, only_show_color)
-    DndCS.cleanupDice(dice, player)
-    return 1
-  end
-  startLuaCoroutine(self, "coroutine_monitorDice")
-end
-
-function DndCS.announceRoll(dice, bonus, message, only_show_color)
-  local total = 0
-  local rolls = {}
-
-  for i, die in ipairs(dice) do
-    local value = die.getValue()
-    total = total + value
-    table.insert(rolls, value)
-    message = message .. value .. (i ~= #dice and " + " or "")
-  end
-  total = total + bonus
-  message = message .. string.format(" ("..(bonus >= 0 and "+%d)" or "%d)").." for a total of %d", bonus, total)
-  if only_show_color ~= nil then
-    broadcastToColor(message, only_show_color, {1,1,1})
-  else
-    broadcastToAll(message, {1,1,1})
-  end
-end
-
-function DndCS.cleanupDice(dice, player)
-  Wait.time(
-  function()
-    for _, die in pairs(dice) do
-      die.destruct()
-    end
-    DndCS.data.active_pcs[player.steam_id].rolling = false
-  end
-  ,
-  DICE_CLEANUP_DELAY
-  )
 end
 
 function DndCS.recalculateSkillBonuses(pc_data, steam_id)
