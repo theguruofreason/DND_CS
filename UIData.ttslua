@@ -18,8 +18,34 @@ XL = "80"
 -- UI Data --
 local UIData = {}
 
-UIData.attributes = enum{"str", "dex", "con", "int", "wis", "cha"}
-UIData.skills = enum{"athletics", "acrobatics", "animal_handling", "arcana", "deception", "history", "insight", "intimidation", "investigation", "medicine", "nature", "perception", "performance", "persuasion", "religion", "slight_of_hand", "stealth", "survival"}
+UIData.attributes = enum{
+  "str",
+  "dex",
+  "con",
+  "int",
+  "wis",
+  "cha"
+}
+UIData.skills = enum{
+  "athletics",
+  "acrobatics",
+  "animal_handling",
+  "arcana",
+  "deception",
+  "history",
+  "insight",
+  "intimidation",
+  "investigation",
+  "medicine",
+  "nature",
+  "perception",
+  "performance",
+  "persuasion",
+  "religion",
+  "slight_of_hand",
+  "stealth",
+  "survival"
+}
 
 function UIData.advanced_options_panel(player, active)
   return {
