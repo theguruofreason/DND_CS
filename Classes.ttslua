@@ -28,7 +28,7 @@ DndCSClasses.Attributes = {
     cha = 0
   }
 }
-function DndCSClasses.Attributes:new (o)
+function DndCSClasses.Attributes:new(o)
   return setmetatable(
   o or {},
   {
@@ -48,7 +48,7 @@ DndCSClasses.Saves = {
     cha = false,
   }
 }
-function DndCSClasses.Saves:new (o)
+function DndCSClasses.Saves:new(o)
   return setmetatable(
   o or {},
   {
@@ -60,33 +60,34 @@ end
 
 DndCSClasses.Skills = {
   defaults = {
-      acrobatics = DndCSClasses.Proficiency.NOT_PROFICIENT,
-      animal_handling = DndCSClasses.Proficiency.NOT_PROFICIENT,
-      arcana = DndCSClasses.Proficiency.NOT_PROFICIENT,
-      athletics = DndCSClasses.Proficiency.NOT_PROFICIENT,
-      deception = DndCSClasses.Proficiency.NOT_PROFICIENT,
-      history = DndCSClasses.Proficiency.NOT_PROFICIENT,
-      insight = DndCSClasses.Proficiency.NOT_PROFICIENT,
-      intimidation = DndCSClasses.Proficiency.NOT_PROFICIENT,
-      investigation = DndCSClasses.Proficiency.NOT_PROFICIENT,
-      medicine = DndCSClasses.Proficiency.NOT_PROFICIENT,
-      nature = DndCSClasses.Proficiency.NOT_PROFICIENT,
-      perception = DndCSClasses.Proficiency.NOT_PROFICIENT,
-      performance = DndCSClasses.Proficiency.NOT_PROFICIENT,
-      persuasion = DndCSClasses.Proficiency.NOT_PROFICIENT,
-      religion = DndCSClasses.Proficiency.NOT_PROFICIENT,
-      slight_of_hand = DndCSClasses.Proficiency.NOT_PROFICIENT,
-      stealth = DndCSClasses.Proficiency.NOT_PROFICIENT,
-      survival = DndCSClasses.Proficiency.NOT_PROFICIENT
-    },
-  mt = {
-    __index = function(table, key)
-      return self.defaults[key]
-    end
+    acrobatics = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    animal_handling = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    arcana = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    athletics = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    deception = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    history = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    insight = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    intimidation = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    investigation = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    medicine = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    nature = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    perception = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    performance = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    persuasion = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    religion = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    slight_of_hand = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    stealth = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    survival = DndCSClasses.Proficiency.NOT_PROFICIENT
   }
 }
 function DndCSClasses.Skills:new(o)
-  return setmetatable(o or {}, self.mt)
+  return setmetatable(
+  o or {},
+  {
+    __index = function(table, key)
+      return DndCSClasses.Skills.defaults[key]
+    end
+  })
 end
 
 DndCSClasses.skill_to_att = {
@@ -155,93 +156,29 @@ DndCSClasses.PC = {
     "attacks"
   }
 }
-DndCSClasses.PC.mt = {
-  __index = function(table, key)
-    return DndCSClasses.PC.defaults[key]
-  end
-}
-function DndCSClasses.PC:new (o)
-  o = o or {}
-  setmetatable(o or {}, self.mt)
-  o.attributes = DndCSClasses.Attributes:new(o.attributes)
-  o.saves = DndCSClasses.Saves:new(o.saves)
-  o.skills = DndCSClasses.Skills:new(o.skills)
-  return o
+function DndCSClasses.PC:new(o)
+  return setmetatable(o or {},
+  {
+    __index = function(table, key)
+      return DndCSClasses.PC.defaults[key]
+    end
+  })
 end
 
-DndCSClasses.ActivePC = {
-  steam_name = "",
-  color = nil,
-  rolling = false
+DndCSClasses.RollStatus = {
+  rolling = false,
+  dice = {},
+  waiting_to_roll = false,
+  message = "",
+  bonus = 0,
+  allowMultiroll = false,
+  onlyAnnounceToColor = nil,
+  timerName = ""
 }
-function DndCSClasses.ActivePC:new (o)
-  o = o or {}
-  setmetatable(o, self)
-  self.__index = self
-  return o
+function DndCSClasses.RollStatus:new (o)
+  return setmetatable(o or {}, {
+    __index = DndCSClasses.RollStatus.__index
+  })
 end
-function DndCSClasses.ActivePC:setColor(color)
-  self.color = color
-end
-
-DndCSClasses.Position = {
-  type = "Position",
-  x = 0,
-  y = 0,
-  z = 0,
-  __tostring = function(self)
-    return string.format("<Position: {%d,%d,%d}>", self.x, self.y, self.z)
-  end,
-  __eq = function(self, o)
-    eq = true
-    for key, val in pairs(self) do
-      if o[key] ~= val then
-        eq = false
-        log(string.format"%s %s", key, val)
-        break
-      end
-    end
-    for key, val in pairs(o) do
-      if self[key] ~= val then
-        eq = false
-        log(string.format"%s %s", key, val)
-        break
-      end
-    end
-    return eq
-  end,
-  __add = function(self, o)
-    assert(type(o) == type(table), string.format("Bad variable type: Cannot add %s and %s", self.type, type(o)))
-    if o.mt ~= Position.mt then
-      assert(false, string.format("Bad variable type: Cannot add %s to Position.", type(o)))
-    end
-    local x = self.x + o.x
-    local y = self.y + o.y
-    local z = self.z + o.z
-    return Position.new({x=x,y=y,z=z})
-  end,
-  new = function(o)
-    return setmetatable(
-    o or {},
-    {
-      __index = function (table, key)
-        return DndCSClasses.Position[key]
-      end,
-      __add = DndCSClasses.Position.__add,
-      __eq = DndCSClasses.Position.__eq,
-      __tostring = DndCSClasses.Position.__tostring
-    })
-  end,
-  __sub = function(self, o)
-    assert(type(o) == type(table), string.format("Bad variable type: Cannot add %s and %s", self.type, type(o)))
-    if o.mt ~= Position.mt then
-      assert(false, string.format("Bad variable type: Cannot add %s to Position.", type(o)))
-    end
-    local x = self.x - o.x
-    local y = self.y - o.y
-    local z = self.z - o.z
-    return Position.new({x=x,y=y,z=z})
-  end,
-}
 
 return DndCSClasses
