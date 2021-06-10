@@ -165,20 +165,4 @@ function DndCSClasses.PC:new(o)
   })
 end
 
-DndCSClasses.RollStatus = {
-  rolling = false,
-  dice = {},
-  waiting_to_roll = false,
-  message = "",
-  bonus = 0,
-  allowMultiroll = false,
-  onlyAnnounceToColor = nil,
-  timerName = ""
-}
-function DndCSClasses.RollStatus:new (o)
-  return setmetatable(o or {}, {
-    __index = DndCSClasses.RollStatus.__index
-  })
-end
-
 return DndCSClasses

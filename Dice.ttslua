@@ -1,13 +1,48 @@
 Dice = {}
 
+-- Classes --
+
+Dice.RollStatus = {
+  rolling = false,
+  dice = {},
+  waiting_to_roll = false,
+  message = "",
+  bonus = 0,
+  allowMultiroll = false,
+  onlyAnnounceToColor = nil,
+  timerName = nil,
+  basePosition = nil,
+  individualBonus = false,
+  showTotal = false,
+  maxMin = false,
+  colorDie = true
+}
+function Dice.RollStatus:new(o)
+  return setmetatable(
+  o or {},
+  {
+    __index = function(table, key)
+      return Dice.RollStatus[key]
+    end
+  })
+end
+function Dice.RollStatus:mergeFrom(o)
+    assert(o.__index == Dice.RollStatus.__index, "Cannot merge non-RollStatus with RollStatus.")
+    for key, val in pairs(o) do
+      self.key = val
+    end
+  end
+-- Note that this will only merge set values, not values from metatable
+
 -- Globals --
 
 DIE_CLEANUP_DELAY = 5
 ROLL_DELAY = 2
+MULTIROLL_DELAY = 0.1
 ROLL_TIMEOUT = 10
 DICE_CLEANUP_DELAY = 5
 MAX_DICE = 10 -- WARNING: Set to 0 responsibly.
-MAX_WIDTH = 7
+MAX_WIDTH = 10
 XYZ_OFFSET = Vector()
 
 Dice.DIE_TYPE = {
@@ -19,7 +54,21 @@ Dice.DIE_TYPE = {
   [20] = "Die_20"
 }
 
-Dice.RollStatus = {}
+function ColorToHex(color)
+  local rgb = stringColorToRGB(color)
+  return string.format("[" .. "%02x%02x%02x", rgb[1]*255,rgb[2]*255,rgb[3]*255) .. "]"
+end
+
+TYPE_TO_HEX_COLOR = {
+  Die_4 = ColorToHex("Blue"),
+  Die_6 = ColorToHex("White"),
+  Die_8 = ColorToHex("Red"),
+  Die_10 = ColorToHex("Green"),
+  Die_12 = ColorToHex("Orange"),
+  Die_20 = ColorToHex("Purple")
+}
+
+Dice.RollStatuses = {}
 
 -- Helper Functions --
 
@@ -39,69 +88,75 @@ function wait(time)
 end
 
 function calcDiePosOffsetInRow(i, diceCount)
-  local width = MAX_WIDTH * diceCount / MAX_DICE
+  local width = (MAX_WIDTH * 2) / (1 + math.exp(-diceCount/2)) - 10
   local sep = diceCount > 1 and width / (diceCount - 1) or 0
-  local x = sep * (i - ((diceCount - 1) / 2))
-  return Vector(x, 0, 0)
+  local z = sep * ((i - 1) - (diceCount - 1) / 2)
+  return Vector(0, 0, z)
 end
 
 -- Main Functions --
 
-function Dice.click(steam_id, newDieType, allowMultiroll, basePos, bonus, message, onlyAnnounceToColor, existingTimerName)
-  if Dice.RollStatus[steam_id] ~= nil and not allowMultiroll then return end
-  if Dice.RollStatus.rolling or (not DIE_MULTIROLL and #dice ~= 0) then return end
-  for i, die in ipairs(active_pc.dice) do
-    die.setPositionSmooth(basePos + calcDiePosOffsetInRow(i, dice), false, true)
+function Dice.click(steamId, newDieType, rollStatus)
+  assert(
+  (rollStatus.basePosition ~= nil or
+  Dice.RollStatuses[steamId] ~= nil and
+  Dice.RollStatuses[steamId].basePosition ~= nil),
+  "Cannot generate roll with no basePosition."
+  )
+  if Dice.RollStatuses[steamId] ~= nil then
+    Dice.RollStatuses[steamId]:mergeFrom(rollStatus)
+  else
+    Dice.RollStatuses[steamId] = rollStatus
   end
-  table.insert(active_pc.dice, spawnObject({
+  local rollStatus = Dice.RollStatuses[steamId]
+  if (MAX_DICE > 0 and #rollStatus.dice >= MAX_DICE) or
+  rollStatus.rolling or
+  ((#rollStatus.dice > 0) and (not rollStatus.allowMultiroll)) then return end
+  for i, die in ipairs(rollStatus.dice) do
+    die.setPositionSmooth(rollStatus.basePosition + calcDiePosOffsetInRow(i, #rollStatus.dice + 1), false, true)
+  end
+  local numDice = #Dice.RollStatuses[steamId].dice
+  if numDice == 0 then Dice.RollStatuses[steamId].dice = {} end
+  table.insert(Dice.RollStatuses[steamId].dice, spawnObject({
     type = newDieType,
-    position = basePos + calcDiePosOffsetInRow(#dice + 1, #dice + 1),
+    position = rollStatus.basePosition + calcDiePosOffsetInRow(numDice + 1, numDice + 1),
     callback_function = function(die) die.setLock(true) end
   }))
-  return Dice.waitForRoll(dice, bonus, message, existingTimerName, onlyAnnounceToColor)
+  Wait.frames(function () Dice.RollStatuses[steamId].timerName = Dice.waitForRoll(steamId) end, 1)
 end
 
-function Dice.waitForRoll(dice, active_pc, bonus, message, onlyAnnounceToColor, existingTimerName)
-  if existingTimerName ~= nil then Wait.stop(existingTimerName) end
+function Dice.waitForRoll(steamId)
+  rollStatus = Dice.RollStatuses[steamId]
+  if rollStatus.timerName ~= nil then Wait.stop(rollStatus.timerName) end
   return Wait.time(
-  function () Dice.rollDice(dice, bonus, message, onlyAnnounceToColor) end,
+  function () Dice.rollDice(steamId) end,
   ROLL_DELAY
   )
 end
 
-function Dice.rollDice(dice, active_pc, bonus, message, onlyAnnounceToColor)
+function Dice.rollDice(steamId)
+  Dice.RollStatuses[steamId].rolling = true
+  rollStatus = Dice.RollStatuses[steamId]
   function coroutine_rollDice()
-    wait(ROLL_DELAY)
-    for _, die in ipairs(dice) do
+    for _, die in ipairs(rollStatus.dice) do
       die.setLock(false)
       die.roll()
-      wait(0.1)
+      local start = os.time()
+      repeat coroutine.yield(0) until os.time() > start + MULTIROLL_DELAY
     end
-    Dice.monitorDice(dice, player, bonus, message, onlyAnnounceToColor)
+    Dice.monitorDice(steamId)
     return 1
   end
   startLuaCoroutine(self, "coroutine_rollDice")
 end
 
-function Dice.spawnDie(rollInProgress, diceCount, spawnBasePos)
-  local denyRoll = false
-  if MAX_DICE > 0 and diceCount >= MAX_DICE then
-    return
-  end
-  if not rollInProgress and denyRoll == false then
-    for i, die in ipairs(currentDice) do
-      die.setPositionSmooth(getPositionInLine(i), false, true)
-    end
-  end
-
-end
-
-function Dice.monitorDice(dice, bonus, message, onlyAnnounceToColor)
+function Dice.monitorDice(steamId)
+  rollStatus = Dice.RollStatuses[steamId]
   function coroutine_monitorDice()
     local start_time = os.time()
     repeat
       local resting = true
-      for _, die in ipairs(dice) do
+      for _, die in ipairs(rollStatus.dice) do
         if die ~= nil and die.resting == false then
           resting = false
           break
@@ -109,43 +164,62 @@ function Dice.monitorDice(dice, bonus, message, onlyAnnounceToColor)
       end
       coroutine.yield(0)
     until resting == true or start_time + ROLL_TIMEOUT < os.time()
-    Dice.announceRoll(dice, bonus, message, onlyAnnounceToColor)
-    Dice.cleanupDice(dice)
+    Dice.announceRoll(steamId)
+    Dice.cleanupDice(rollStatus.dice, steamId)
     return 1
   end
   startLuaCoroutine(self, "coroutine_monitorDice")
 end
 
-function Dice.announceRoll(dice, bonus, message, onlyAnnounceToColor)
+-- I dare you to try to trace this
+function Dice.announceRoll(steamId)
+  rollStatus = Dice.RollStatuses[steamId]
+  local dice = rollStatus.dice
+  local message = rollStatus.message
+  local bonus = rollStatus.bonus
   local total = 0
   local rolls = {}
 
   for i, die in ipairs(dice) do
     local value = die.getValue()
     total = total + value
-    table.insert(rolls, value)
-    message = message .. value .. (i ~= #dice and ", " or "")
+    table.insert(rolls, (rollStatus.bonus and rollStatus.individualBonus and (value + bonus) or value))
+    message = message..(rollStatus.colorDie and RGBToHex(die.getColorTint())..value.."[-]" or value)
+    if #rollStatus.dice > 1 and rollStatus.individualBonus and rollStatus.bonus ~= 0 then
+      message = message..string.format(" ("..(bonus >= 0 and "+%d) = %d" or "%d) = %d"), bonus, value + bonus)
+    end
+    if rollStatus.individualBonus then total = total + bonus end
+    message = message..(i ~= #dice and ", " or "")
   end
-  if bonus ~= nil then
+  if rollStatus.bonus ~= 0 and (not rollStatus.individualBonus or #rollStatus.dice == 1) then
     message = message .. string.format(" ("..(bonus >= 0 and "+%d)" or "%d)"), bonus)
     total = total + bonus
   end
-  if #dice ~= 1 or bonus ~= nil then
+  if ((#dice ~= 1 or bonus ~= 0) and rollStatus.showTotal) or (bonus ~= 0 and #rollStatus.dice == 1) then
     message = message .. string.format(" for a total of %d", total)
   end
-  if onlyAnnounceToColor ~= nil then
-    broadcastToColor(message, onlyAnnounceToColor, {1,1,1})
+  if rollStatus.showMaxMin then
+    message = message..
+    string.format(
+    "\nHighest roll: %d, Lowest roll: %d",
+    math.max(unpack(rolls)),
+    math.min(unpack(rolls))
+    )
+  end
+  if rollStatus.onlyAnnounceToColor ~= nil then
+    broadcastToColor(message, rollStatus.onlyAnnounceToColor, {1,1,1})
   else
     broadcastToAll(message, {1,1,1})
   end
 end
 
-function Dice.cleanupDice(dice, active_pc)
+function Dice.cleanupDice(dice, steamId)
   Wait.time(
   function()
     for _, die in pairs(dice) do
       die.destruct()
     end
+    Dice.RollStatuses[steamId] = nil
   end,
   DICE_CLEANUP_DELAY
   )

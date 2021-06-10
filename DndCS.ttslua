@@ -32,8 +32,7 @@ end
 
 DndCS.data = {
   pc_data = {},
-  gm = {},
-  roll_statuses = {}
+  gm = {}
 }
 
 -- dndPC functions --
@@ -449,7 +448,14 @@ function rollSavingThrow(player, mouse_button, tag_id)
   local pc_data = DndCS.data.pc_data[player.steam_id]
   local bonus = DndCS.calculateSavingThrowBonus(pc_data, att)
   local message = string.format(RGBToHex(stringColorToRGB(player.color)).."%s[-] rolled a %s saving throw: ", player.steam_name, att:upper())
-  -- implement click roll
+  Dice.click(player.steam_id, Dice.DIE_TYPE[20], Dice.RollStatus:new({
+    message = message,
+    bonus = bonus,
+    basePosition = player.getHandTransform().position,
+    allowMultiroll = true,
+    individualBonus = true,
+    showMaxMin = true
+  }))
 end
 
 function rollSkillCheck(player, mouse_button, tag_id)
