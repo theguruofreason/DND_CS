@@ -11,7 +11,7 @@ Dice.RollStatus = {
   allowMultiroll = false,
   onlyAnnounceToColor = nil,
   timerName = nil,
-  basePosition = nil,
+  baseTransform = nil,
   individualBonus = false,
   showTotal = false,
   maxMin = false,
@@ -87,39 +87,40 @@ function wait(time)
     repeat coroutine.yield(0) until os.time() > start + time
 end
 
-function calcDiePosOffsetInRow(i, diceCount)
+function calcDiePosOffsetInRow(i, diceCount, yRot)
   local width = (MAX_WIDTH * 2) / (1 + math.exp(-diceCount/2)) - 10
   local sep = diceCount > 1 and width / (diceCount - 1) or 0
-  local z = sep * ((i - 1) - (diceCount - 1) / 2)
-  return Vector(0, 0, z)
+  local offset = sep * ((i - 1) - (diceCount - 1) / 2)
+  return Vector(math.cos(math.rad(yRot))*offset, 0, -math.sin(math.rad(yRot))*offset)
 end
 
 -- Main Functions --
 
 function Dice.click(steamId, newDieType, rollStatus)
-  assert(
-  (rollStatus.basePosition ~= nil or
-  Dice.RollStatuses[steamId] ~= nil and
-  Dice.RollStatuses[steamId].basePosition ~= nil),
-  "Cannot generate roll with no basePosition."
-  )
   if Dice.RollStatuses[steamId] ~= nil then
     Dice.RollStatuses[steamId]:mergeFrom(rollStatus)
   else
     Dice.RollStatuses[steamId] = rollStatus
   end
   local rollStatus = Dice.RollStatuses[steamId]
+  assert(
+  (rollStatus.baseTransform ~= nil or
+  Dice.RollStatuses[steamId] ~= nil and
+  Dice.RollStatuses[steamId].baseTransform ~= nil),
+  "Cannot generate roll with no baseTransform."
+  )
   if (MAX_DICE > 0 and #rollStatus.dice >= MAX_DICE) or
   rollStatus.rolling or
   ((#rollStatus.dice > 0) and (not rollStatus.allowMultiroll)) then return end
+  local yRot = rollStatus.baseTransform.rotation.y
   for i, die in ipairs(rollStatus.dice) do
-    die.setPositionSmooth(rollStatus.basePosition + calcDiePosOffsetInRow(i, #rollStatus.dice + 1), false, true)
+    die.setPositionSmooth(rollStatus.baseTransform.position + calcDiePosOffsetInRow(i, #rollStatus.dice + 1, yRot), false, true)
   end
   local numDice = #Dice.RollStatuses[steamId].dice
   if numDice == 0 then Dice.RollStatuses[steamId].dice = {} end
   table.insert(Dice.RollStatuses[steamId].dice, spawnObject({
     type = newDieType,
-    position = rollStatus.basePosition + calcDiePosOffsetInRow(numDice + 1, numDice + 1),
+    position = rollStatus.baseTransform.position + calcDiePosOffsetInRow(numDice + 1, numDice + 1, yRot),
     callback_function = function(die) die.setLock(true) end
   }))
   Wait.frames(function () Dice.RollStatuses[steamId].timerName = Dice.waitForRoll(steamId) end, 1)
@@ -193,12 +194,12 @@ function Dice.announceRoll(steamId)
   end
   if rollStatus.bonus ~= 0 and (not rollStatus.individualBonus or #rollStatus.dice == 1) then
     message = message .. string.format(" ("..(bonus >= 0 and "+%d)" or "%d)"), bonus)
-    total = total + bonus
+    if (not rollStatus.individualBonus) then total = total + bonus end
   end
   if ((#dice ~= 1 or bonus ~= 0) and rollStatus.showTotal) or (bonus ~= 0 and #rollStatus.dice == 1) then
     message = message .. string.format(" for a total of %d", total)
   end
-  if rollStatus.showMaxMin then
+  if rollStatus.showMaxMin and #dice ~= 1 then
     message = message..
     string.format(
     "\nHighest roll: %d, Lowest roll: %d",

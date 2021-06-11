@@ -451,7 +451,7 @@ function rollSavingThrow(player, mouse_button, tag_id)
   Dice.click(player.steam_id, Dice.DIE_TYPE[20], Dice.RollStatus:new({
     message = message,
     bonus = bonus,
-    basePosition = player.getHandTransform().position,
+    baseTransform = player.getHandTransform(),
     allowMultiroll = true,
     individualBonus = true,
     showMaxMin = true
