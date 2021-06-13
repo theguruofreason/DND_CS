@@ -132,7 +132,7 @@ function UIData.inactive_panel(player, active)
       returnToOriginalPositionWhenReleased = "false",
       width = 98,
       height = 108,
-      visibility = player.color,
+      visibility = player.color, --"Red"
       position= "-400 -447",
       active = active,
       showAnimation = "FadeIn",
