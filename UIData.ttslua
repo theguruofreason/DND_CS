@@ -3,6 +3,8 @@ local enum = DndCSClasses.enum
 
 -- Globals --
 
+ANIMATION_DURATION = 0.3
+
 t = 15
 s = 30
 m = 45
@@ -58,7 +60,7 @@ function UIData.advanced_options_panel(player, active)
       active = active,
       showAnimation = "FadeIn",
       hideAnimation = "FadeOut",
-      animationDuration = 0.1
+      animationDuration = ANIMATION_DURATION
     },
     children = {
       {
@@ -132,12 +134,12 @@ function UIData.inactive_panel(player, active)
       returnToOriginalPositionWhenReleased = "false",
       width = 98,
       height = 108,
-      visibility = player.color, --"Red"
+      visibility = player.color,
       position= "-400 -447",
       active = active,
       showAnimation = "FadeIn",
       hideAnimation = "FadeOut",
-      animationDuration = 0.1
+      animationDuration = ANIMATION_DURATION
     },
     children = {
       {
@@ -165,7 +167,7 @@ function UIData.active_panel(player, active)
       ["active"] = active,
       ["showAnimation"] = "FadeIn",
       ["hideAnimation"] = "FadeOut",
-      ["animationDuration"] = "0.1"
+      ["animationDuration"] = ANIMATION_DURATION
     },
     ["children"] = {
       {

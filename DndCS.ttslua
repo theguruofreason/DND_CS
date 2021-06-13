@@ -29,7 +29,7 @@ local LOG_LEVEL = enum {
   "WARN",
   "ERROR"
 }
-local LEVEL = LOG_LEVEL["INFO"]
+local LEVEL = LOG_LEVEL["DEBUG"]
 local log = function (value, label, tags, level)
   if level == nil then level = LOG_LEVEL["INFO"] end
   if LEVEL <= level then log(value, label, tags) end
@@ -154,18 +154,18 @@ function onLoad(save_state)
   Wait.condition(
   function ()
     if save_state ~= nil and save_state ~= "" then
-      -- data = JSON.decode(save_state)
-      -- if data.dndCS ~= nil then
-      --   DndCS.data = data.dndCS
-      --   for i, pc in pairs(DndCS.data.pc_data) do
-      --     DndCS.data[i] = DndCS.enforceSchema(pc)
-      --     setmetatable(pc, {
-      --       __index = function(table, key)
-      --         return DndCSClasses.PC.defaults[key]
-      --       end
-      --     })
-      --   end
-      -- end
+      data = JSON.decode(save_state)
+      if data.dndCS ~= nil then
+        DndCS.data = data.dndCS
+        for i, pc in pairs(DndCS.data.pc_data) do
+          DndCS.data[i] = DndCS.enforceSchema(pc)
+          setmetatable(pc, {
+            __index = function(table, key)
+              return DndCSClasses.PC.defaults[key]
+            end
+          })
+        end
+      end
     else
       log("Failed to load save state. State was blank or nil.")
     end
@@ -209,10 +209,16 @@ function onPlayerChangeColor(player_color)
       end
       for id, func in pairs(CS_PANEL_ID_TO_GEN(steam_id)) do
         if UI.getAttributes(id) == nil then
-          func(playerRef, xml)
+          xml = func(playerRef, xml)
         end
       end
       xml = DndCS.changeCSPanelsOwner(xml, playerRef.steam_id, player_color)
+      for i, element in pairs(xml) do
+        if element.attributes.id == "cs_active_"..playerRef.steam_id then
+          xml[i] = DndCS.populateCharacterSheetUi(xml[i], playerRef.steam_id)
+          break
+        end
+      end
       DndCS.setXml(xml)
     end
   end
@@ -254,10 +260,11 @@ function DndCS.changeCSPanelsOwner(xml, steam_id, new_color)
         log(string.format("Changed panel(%s) owner to %s", id, xml[i].attributes["visibility"]), nil, nil, LOG_LEVEL["DEBUG"])
         if id == "cs_active_"..steam_id then
           xml[i].attributes["active"] = csActive
+          log(string.format("Set %s.active to %s", id, tostring(xml[i].attributes["active"])), nil, nil, LOG_LEVEL["DEBUG"])
         elseif id == "cs_inactive_"..steam_id then
           xml[i].attributes["active"] = (not csActive)
+          log(string.format("Set %s.active to %s", id, tostring(xml[i].attributes["active"])), nil, nil, LOG_LEVEL["DEBUG"])
         end
-        log(string.format("Set %s.active to %s", id, tostring(xml[i].attributes["active"])), nil, nil, LOG_LEVEL["DEBUG"])
         break
       end
     end
@@ -275,7 +282,7 @@ end
 
 function DndCS.createActiveCSPanel(player, xml)
   active_panel_xml = UIData.active_panel(player, DndCS.data.pc_data[player.steam_id].cs_panel_active)
-  active_panel_xml = DndCS.populateCharacterSheetUi(player.steam_id, DndCS.data.pc_data[player.steam_id], active_panel_xml)
+  active_panel_xml = DndCS.populateCharacterSheetUi(active_panel_xml, player.steam_id)
   active_panel_xml = DndCS.addFunctionOwnerToUiInteractibles({active_panel_xml})[1]
   table.insert(xml, active_panel_xml)
   log("created active CS Panel for " .. player.steam_name, nil, nil, LOG_LEVEL["DEBUG"])
@@ -341,7 +348,8 @@ function DndCS.populateFieldUi(pc_data, field_name)
   end
 end
 
-function DndCS.uiElementIdToFunction(steam_id, pc_data)
+function DndCS.uiElementIdToFunction(steam_id)
+  pc_data = DndCS.data.pc_data[steam_id]
   functionLookupTable = {}
   for _, att in ipairs(UIData.attributes) do
     functionLookupTable["cs_"..att.."_"..steam_id] = DndCS.populateAttributeUi(pc_data, att)
@@ -359,7 +367,8 @@ function DndCS.uiElementIdToFunction(steam_id, pc_data)
   return functionLookupTable
 end
 
-function DndCS.populateCharacterSheetUi(player_steam_id, player_data, xml)
+function DndCS.populateCharacterSheetUi(active_panel_xml, steam_id)
+  player_data = DndCS.data.pc_data[steam_id]
   local omissions = {
     "toggle_button_active",
     "advanced_options_toggle",
@@ -367,10 +376,10 @@ function DndCS.populateCharacterSheetUi(player_steam_id, player_data, xml)
   }
   local attributes = UIData.attributes
   local skills = UIData.skills
-  local elementIdToFunction = DndCS.uiElementIdToFunction(player_steam_id, player_data)
-  for i, element in pairs(xml.children) do
+  local elementIdToFunction = DndCS.uiElementIdToFunction(steam_id)
+  for i, element in pairs(active_panel_xml.children) do
     if elementIdToFunction[element.attributes.id] ~= nil then
-      xml.children[i] = elementIdToFunction[element.attributes.id](element)
+      active_panel_xml.children[i] = elementIdToFunction[element.attributes.id](element)
     else
       local found = false
       for _, omission in ipairs(omissions) do
@@ -384,7 +393,7 @@ function DndCS.populateCharacterSheetUi(player_steam_id, player_data, xml)
       end
     end
   end
-  return xml
+  return active_panel_xml
 end
 
 function toggleCSPane(player, mouse_button, button_name)
