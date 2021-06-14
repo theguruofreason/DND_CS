@@ -179,22 +179,19 @@ function onPlayerDisconnect(player)
 end
 
 function onPlayerChangeColor(player_color)
-  for _, playerRef in ipairs(Player.getPlayers()) do
-    if playerRef.color == player_color then
-      local steam_id = playerRef.steam_id
-      xml = UI.getXmlTable()
+  for _, player in ipairs(Player.getPlayers()) do
+    if player.color == player_color then
+      local steam_id = player.steam_id
       if (player_color == "Grey" or player_color == "Black") then
-        xml = setCSPanelsActive(steam_id, xml, false)
-        setXml(xml)
+        log(player_color)
+        UI.setAttribute("DNDCS_UI_"..player.steam_id, "visibility", "Garbage")
         return
       end
       if UI.getAttributes("DNDCS_UI_"..steam_id) == nil then
-        xml = createUI(playerRef, xml)
+        xml = createUI(player, UI.getXmlTable())
+        setXml(xml)
       end
-      xml = changeCSPanelsOwner(xml, playerRef)
-      xml = setCSPanelsActive(steam_id, xml, true)
-      log(xml[1])
-      setXml(xml)
+      UI.setAttribute("DNDCS_UI_"..player.steam_id, "visibility", player_color)
     end
   end
 end
@@ -221,11 +218,12 @@ function createUI(player, xml)
   return xml
 end
 
-function setCSPanelsActive(steam_id, xml, active)
+function setPanelVisibility(xml, panel_id, visibility)
   for i, element in pairs(xml) do
-    if element.attributes.id == "DNDCS_UI_"..steam_id then
-      xml[i].attributes["active"] = active
-      log("Deactivated CS Panel: " .. element.attributes.id, nil, nil, LOG_LEVEL["DEBUG"])
+    if element.attributes.id == panel_id then
+      xml[i].attributes["visibility"] = visibility
+      log(string.format("set panel(%s) visibility to: %s", panel_id, visibility), nil, nil, LOG_LEVEL["DEBUG"])
+      log(xml[i])
       break
     end
   end
@@ -237,17 +235,6 @@ function removeCSPanels(xml, steam_id)
     if element.attributes.id == "DNDCS_UI_"..steam_id then
       table.remove(xml, i)
       log("Removed CS Panel: " .. id, nil, nil, LOG_LEVEL["DEBUG"])
-      break
-    end
-  end
-  return xml
-end
-
-function changeCSPanelsOwner(xml, player)
-  for i, element in pairs(xml) do
-    if element.attributes.id == "DNDCS_UI_"..player.steam_id then
-      xml[i].attributes["visibility"] = player.color
-      log(string.format("Changed panel(%s) owner to %s", element.attributes.id, xml[i].attributes["visibility"]), nil, nil, LOG_LEVEL["DEBUG"])
       break
     end
   end
