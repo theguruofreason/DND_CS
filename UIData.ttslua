@@ -49,14 +49,27 @@ UIData.skills = enum{
   "survival"
 }
 
-function UIData.advanced_options_panel(player, active)
+function UIData.uiPanel(player)
+  return {
+    tag = "Panel",
+    attributes = {
+      id = "DNDCS_UI_"..player.steam_id,
+      visibility = player.color,
+      active = "true",
+      width = "100%",
+      height = "100%",
+    },
+    children = {}
+  }
+end
+
+function UIData.advanced_options_panel(player, active, functionOwnerGuid)
   return {
     tag = "Panel",
     attributes = {
       id = "cs_advanced_options_panel_" .. player.steam_id,
       width = 600,
       height = 300,
-      visibility = player.color,
       active = active,
       showAnimation = "FadeIn",
       hideAnimation = "FadeOut",
@@ -71,7 +84,7 @@ function UIData.advanced_options_panel(player, active)
           height = s,
           rectAlignment = "UpperRight",
           offsetXY = "-2 -2",
-          onClick = "toggleAdvancedOptionsPane",
+          onClick = string.format("%s/toggleAdvancedOptionsPane", functionOwnerGuid),
           sprite = "Red_X"
         },
         children = {}
@@ -111,7 +124,7 @@ function UIData.advanced_options_panel(player, active)
                   tag = "Button",
                   id = "import_character_sheet_button_" .. player.steam_id,
                   attributes = {
-                    onClick = "importCharacterSheet",
+                    onClick = string.format("%s/importCharacterSheet", functionOwnerGuid),
                     text = "import",
                     height = s
                   }
@@ -125,7 +138,7 @@ function UIData.advanced_options_panel(player, active)
   }
 end
 
-function UIData.inactive_panel(player, active)
+function UIData.inactive_panel(player, active, functionOwnerGuid)
   return {
     tag = "Panel",
     attributes = {
@@ -134,8 +147,7 @@ function UIData.inactive_panel(player, active)
       returnToOriginalPositionWhenReleased = "false",
       width = 98,
       height = 108,
-      visibility = player.color,
-      position= "-400 -447",
+      position = "-400 -447",
       active = active,
       showAnimation = "FadeIn",
       hideAnimation = "FadeOut",
@@ -147,22 +159,22 @@ function UIData.inactive_panel(player, active)
         id = "cs_toggle_pane_active_" .. player.steam_id,
         attributes = {
           icon = "Small_CS",
-          onClick = "toggleCSPane"
+          onClick = string.format("%s/toggleCSPane", functionOwnerGuid)
         }
       }
     }
   }
 end
 
-function UIData.active_panel(player, active)
+function UIData.active_panel(player, active, functionOwnerGuid)
   return {
     ["tag"] ="Panel",
     ["attributes"] = {
       ["id"] ="cs_active_"..player.steam_id,
-      ["allowDragging"] ="false",
+      ["allowDragging"] ="true",
+      ["returnToOriginalPositionWhenReleased"] = "false",
       ["width"] ="979",
       ["height"] ="1080",
-      ["visibility"] = player.color,
       ["position"] ="0 0",
       ["active"] = active,
       ["showAnimation"] = "FadeIn",
@@ -187,7 +199,7 @@ function UIData.active_panel(player, active)
           ["height"] =S,
           ["rectAlignment"] ="UpperRight",
           ["offsetXY"] = "-2 -2",
-          ["onClick"] ="toggleCSPane",
+          ["onClick"] = string.format("%s/toggleCSPane", functionOwnerGuid),
           ["sprite"] ="Red_X"
         },
         ["children"] = {}
@@ -200,7 +212,7 @@ function UIData.active_panel(player, active)
           ["height"] =S,
           ["rectAlignment"] ="UpperRight",
           ["offsetXY"] = "-2 -34",
-          ["onClick"] ="toggleAdvancedOptionsPane",
+          ["onClick"] =string.format("%s/toggleAdvancedOptionsPane", functionOwnerGuid),
           ["sprite"] ="Dots_button"
         },
         ["children"] = {}
@@ -209,7 +221,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_char_name_"..player.steam_id,
-          ["onEndEdit"] ="pcEditVal",
+          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
           ["placeholder"] ="Name",
           ["characterLimit"] ="60",
           ["width"] ="380",
@@ -224,7 +236,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_level_"..player.steam_id,
-          ["onEndEdit"] ="pcEditVal",
+          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
           ["placeholder"] ="lvl",
           ["characterLimit"] ="2",
           ["width"] ="50",
@@ -239,7 +251,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_class_"..player.steam_id,
-          ["onEndEdit"] ="pcEditVal",
+          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
           ["placeholder"] ="class",
           ["characterLimit"] ="60",
           ["width"] ="230",
@@ -254,7 +266,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_ac_"..player.steam_id,
-          ["onEndEdit"] ="pcEditVal",
+          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
           ["placeholder"] ="ac",
           ["characterLimit"] ="2",
           ["width"] ="60",
@@ -269,7 +281,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_initiative_"..player.steam_id,
-          ["onEndEdit"] ="pcEditVal",
+          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
           ["placeholder"] ="init",
           ["characterLimit"] ="2",
           ["width"] ="90",
@@ -284,7 +296,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_speed_"..player.steam_id,
-          ["onEndEdit"] ="pcEditVal",
+          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
           ["placeholder"] ="speed",
           ["characterLimit"] ="2",
           ["width"] ="90",
@@ -299,7 +311,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_hp_current_"..player.steam_id,
-          ["onEndEdit"] ="pcEditVal",
+          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
           ["placeholder"] ="HP",
           ["characterLimit"] ="3",
           ["width"] ="100",
@@ -314,7 +326,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_hp_max_"..player.steam_id,
-          ["onEndEdit"] ="pcEditVal",
+          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
           ["placeholder"] ="HP",
           ["characterLimit"] ="3",
           ["width"] ="100",
@@ -329,7 +341,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_hp_temp_"..player.steam_id,
-          ["onEndEdit"] ="pcEditVal",
+          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
           ["placeholder"] ="HP",
           ["characterLimit"] ="3",
           ["width"] ="100",
@@ -344,7 +356,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_hit_dice_current_"..player.steam_id,
-          ["onEndEdit"] ="pcEditVal",
+          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
           ["placeholder"] ="cur",
           ["characterLimit"] ="2",
           ["width"] ="70",
@@ -359,7 +371,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_hit_dice_d_"..player.steam_id,
-          ["onEndEdit"] ="pcEditVal",
+          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
           ["placeholder"] ="D",
           ["characterLimit"] ="2",
           ["width"] ="70",
@@ -374,7 +386,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_str_"..player.steam_id,
-          ["onEndEdit"] ="attributeChange",
+          ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
           ["placeholder"] ="str",
           ["characterLimit"] ="2",
           ["characterValidation"] ="Integer",
@@ -403,7 +415,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_dex_"..player.steam_id,
-          ["onEndEdit"] ="attributeChange",
+          ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
           ["placeholder"] ="dex",
           ["characterLimit"] ="2",
           ["characterValidation"] ="Integer",
@@ -431,7 +443,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_con_"..player.steam_id,
-          ["onEndEdit"] ="attributeChange",
+          ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
           ["placeholder"] ="con",
           ["characterLimit"] ="2",
           ["characterValidation"] ="Integer",
@@ -459,7 +471,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_int_"..player.steam_id,
-          ["onEndEdit"] ="attributeChange",
+          ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
           ["placeholder"] ="int",
           ["characterLimit"] ="2",
           ["characterValidation"] ="Integer",
@@ -487,7 +499,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_wis_"..player.steam_id,
-          ["onEndEdit"] ="attributeChange",
+          ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
           ["placeholder"] ="wis",
           ["characterLimit"] ="2",
           ["characterValidation"] ="Integer",
@@ -515,7 +527,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_cha_"..player.steam_id,
-          ["onEndEdit"] ="attributeChange",
+          ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
           ["placeholder"] ="cha",
           ["characterLimit"] ="2",
           ["characterValidation"] ="Integer",
@@ -543,7 +555,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_inspiration_"..player.steam_id,
-          ["onEndEdit"] ="pcEditVal",
+          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
           ["placeholder"] =" ",
           ["characterLimit"] ="1",
           ["characterValidation"] ="Integer",
@@ -559,7 +571,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_proficiency_bonus_"..player.steam_id,
-          ["onEndEdit"] ="proficiencyChange",
+          ["onEndEdit"] =string.format("%s/proficiencyChange", functionOwnerGuid),
           ["placeholder"] =" ",
           ["characterLimit"] ="1",
           ["characterValidation"] ="Integer",
@@ -588,7 +600,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_st_str_bonus_"..player.steam_id,
-          ["onClick"] ="rollSavingThrow",
+          ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
           ["width"] ="40",
           ["height"] ="40",
           ["rectAlignment"] ="UpperLeft",
@@ -614,7 +626,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_st_dex_bonus_"..player.steam_id,
-          ["onClick"] ="rollSavingThrow",
+          ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
           ["width"] ="40",
           ["height"] ="40",
           ["rectAlignment"] ="UpperLeft",
@@ -640,7 +652,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_st_con_bonus_"..player.steam_id,
-          ["onClick"] ="rollSavingThrow",
+          ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
           ["width"] ="40",
           ["height"] ="40",
           ["rectAlignment"] ="UpperLeft",
@@ -666,7 +678,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_st_int_bonus_"..player.steam_id,
-          ["onClick"] ="rollSavingThrow",
+          ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
           ["width"] ="40",
           ["height"] ="40",
           ["rectAlignment"] ="UpperLeft",
@@ -692,7 +704,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_st_wis_bonus_"..player.steam_id,
-          ["onClick"] ="rollSavingThrow",
+          ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
           ["width"] ="40",
           ["height"] ="40",
           ["rectAlignment"] ="UpperLeft",
@@ -718,7 +730,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_st_cha_bonus_"..player.steam_id,
-          ["onClick"] ="rollSavingThrow",
+          ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
           ["width"] ="40",
           ["height"] ="40",
           ["rectAlignment"] ="UpperLeft",
@@ -731,7 +743,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_acrobatics_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -744,7 +756,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_acrobatics_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -757,7 +769,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_animal_handling_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -770,7 +782,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_animal_handling_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -783,7 +795,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_arcana_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -796,7 +808,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_arcana_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -809,7 +821,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_athletics_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -822,7 +834,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_athletics_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -835,7 +847,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_deception_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -848,7 +860,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_deception_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -861,7 +873,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_history_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -874,7 +886,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_history_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -887,7 +899,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_insight_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -900,7 +912,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_insight_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -913,7 +925,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_intimidation_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -926,7 +938,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_intimidation_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -939,7 +951,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_investigation_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -952,7 +964,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_investigation_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -965,7 +977,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_medicine_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -978,7 +990,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_medicine_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -991,7 +1003,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_nature_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -1004,7 +1016,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_nature_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -1017,7 +1029,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_perception_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -1030,7 +1042,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_perception_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -1043,7 +1055,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_performance_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -1056,7 +1068,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_performance_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -1069,7 +1081,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_persuasion_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -1082,7 +1094,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_persuasion_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -1095,7 +1107,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_religion_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -1108,7 +1120,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_religion_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -1121,7 +1133,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_slight_of_hand_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -1134,7 +1146,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_slight_of_hand_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -1147,7 +1159,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_stealth_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -1160,7 +1172,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_stealth_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -1173,7 +1185,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Image",
         ["attributes"] = {
           ["id"] ="cs_skill_survival_toggle_"..player.steam_id,
-          ["onClick"] ="skillToggle",
+          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] ="20",
           ["height"] ="20",
@@ -1186,7 +1198,7 @@ function UIData.active_panel(player, active)
         ["tag"] ="Text",
         ["attributes"] = {
           ["id"] ="cs_skill_survival_"..player.steam_id,
-          ["onClick"] ="rollSkillCheck",
+          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] ="25",
           ["height"] ="20",
           ["rectAlignment"] ="UpperLeft",
@@ -1200,7 +1212,7 @@ function UIData.active_panel(player, active)
         ["attributes"] = {
           ["id"] ="cs_passive_perception_"..player.steam_id,
           ["onValueChanged"] ="pcEditVal",
-          ["onEndEdit"] ="pcEditVal",
+          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
           ["placeholder"] ="PP",
           ["characterLimit"] ="2",
           ["characterValidation"] ="Integer",

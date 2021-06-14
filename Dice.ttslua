@@ -183,7 +183,6 @@ function Dice.monitorDice(steamId)
   startLuaCoroutine(self, "coroutine_monitorDice")
 end
 
--- I dare you to try to trace this
 function Dice.announceRoll(steamId)
   rollStatus = Dice.RollStatuses[steamId]
   local dice = rollStatus.dice
