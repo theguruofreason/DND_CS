@@ -11,6 +11,7 @@ Dice.RollStatus = {
   allowMultiroll = false,
   onlyAnnounceToColor = nil,
   timerName = nil,
+  cleanupTimer = nil,
   baseTransform = nil,
   individualBonus = false,
   showTotal = false,
@@ -36,7 +37,6 @@ function Dice.RollStatus:mergeFrom(o)
 
 -- Globals --
 
-DIE_CLEANUP_DELAY = 5
 ROLL_DELAY = 2
 MULTIROLL_DELAY = 0.1
 ROLL_TIMEOUT = 10
@@ -97,20 +97,30 @@ end
 -- Main Functions --
 
 function Dice.click(steamId, newDieType, rollStatus)
-  if Dice.RollStatuses[steamId] ~= nil then
-    Dice.RollStatuses[steamId]:mergeFrom(rollStatus)
-  else
+  if Dice.RollStatuses[steamId] == nil then
     Dice.RollStatuses[steamId] = rollStatus
+  else
+    if Dice.RollStatuses[steamId].rolling then return end
+    if (
+    (#Dice.RollStatuses[steamId].dice) and
+    (Dice.RollStatuses[steamId].cleanupTimer)) then
+      for _, die in pairs(Dice.RollStatuses[steamId].dice) do
+        die.destruct()
+      end
+      Wait.stop(Dice.RollStatuses[steamId].cleanupTimer)
+      Dice.RollStatuses[steamId] = rollStatus
+    elseif (rollStatus.allowMultiroll) then
+      Dice.RollStatuses[steamId]:mergeFrom(rollStatus)
+    else
+      return
+    end
   end
   local rollStatus = Dice.RollStatuses[steamId]
   assert(
-  (rollStatus.baseTransform ~= nil or
-  Dice.RollStatuses[steamId] ~= nil and
-  Dice.RollStatuses[steamId].baseTransform ~= nil),
+  rollStatus.baseTransform ~= nil,
   "Cannot generate roll with no baseTransform."
   )
   if (MAX_DICE > 0 and #rollStatus.dice >= MAX_DICE) or
-  rollStatus.rolling or
   ((#rollStatus.dice > 0) and (not rollStatus.allowMultiroll)) then return end
   local yRot = rollStatus.baseTransform.rotation.y
   for i, die in ipairs(rollStatus.dice) do
@@ -123,7 +133,7 @@ function Dice.click(steamId, newDieType, rollStatus)
     position = rollStatus.baseTransform.position + calcDiePosOffsetInRow(numDice + 1, numDice + 1, yRot),
     callback_function = function(die) die.setLock(true) end
   }))
-  Wait.frames(function () Dice.RollStatuses[steamId].timerName = Dice.waitForRoll(steamId) end, 1)
+  Dice.RollStatuses[steamId].timerName = Dice.waitForRoll(steamId)
 end
 
 function Dice.waitForRoll(steamId)
@@ -165,8 +175,9 @@ function Dice.monitorDice(steamId)
       end
       coroutine.yield(0)
     until resting == true or start_time + ROLL_TIMEOUT < os.time()
+    Dice.RollStatuses[steamId].rolling = false
     Dice.announceRoll(steamId)
-    Dice.cleanupDice(rollStatus.dice, steamId)
+    Dice.RollStatuses[steamId].cleanupTimer = Dice.cleanupDice(rollStatus.dice, steamId)
     return 1
   end
   startLuaCoroutine(self, "coroutine_monitorDice")
@@ -215,7 +226,7 @@ function Dice.announceRoll(steamId)
 end
 
 function Dice.cleanupDice(dice, steamId)
-  Wait.time(
+  return Wait.time(
   function()
     for _, die in pairs(dice) do
       die.destruct()
