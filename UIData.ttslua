@@ -332,7 +332,7 @@ function UIData.active_panel(player, active, functionOwnerGuid)
           ["height"] ="65",
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="490 -310",
-          ["fontSize"] ="45"
+          ["fontSize"] ="45",
         },
         ["children"] = {}
       },
@@ -1247,6 +1247,8 @@ function UIData.active_panel(player, active, functionOwnerGuid)
           ["height"] =t,
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="851 -481",
+          ["outline"] = "#000000",
+          ["outlineSize"] = "2 2",
         },
         ["children"] = {}
       },
@@ -1259,6 +1261,8 @@ function UIData.active_panel(player, active, functionOwnerGuid)
           ["height"] =t,
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="875 -481",
+          ["outline"] = "#000000",
+          ["outlineSize"] = "2 2",
         },
         ["children"] = {}
       },
@@ -1271,6 +1275,8 @@ function UIData.active_panel(player, active, functionOwnerGuid)
           ["height"] =t,
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="900 -481",
+          ["outline"] = "#000000",
+          ["outlineSize"] = "2 2",
         },
         ["children"] = {}
       },
@@ -1283,6 +1289,8 @@ function UIData.active_panel(player, active, functionOwnerGuid)
           ["height"] =t,
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="851 -508",
+          ["outline"] = "#000000",
+          ["outlineSize"] = "2 2",
         },
         ["children"] = {}
       },
@@ -1295,6 +1303,8 @@ function UIData.active_panel(player, active, functionOwnerGuid)
           ["height"] =t,
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="875 -508",
+          ["outline"] = "#000000",
+          ["outlineSize"] = "2 2",
         },
         ["children"] = {}
       },
@@ -1307,6 +1317,8 @@ function UIData.active_panel(player, active, functionOwnerGuid)
           ["height"] =t,
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="900 -508",
+          ["outline"] = "#000000",
+          ["outlineSize"] = "2 2",
         },
         ["children"] = {}
       }

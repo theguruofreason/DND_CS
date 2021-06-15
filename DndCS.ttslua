@@ -210,7 +210,7 @@ function createUI(player, xml)
   table.insert(ui_panel.children, active_panel)
   log("created active CS Panel for " .. player.steam_name, nil, nil, LOG_LEVEL["DEBUG"])
 
-  local advanced_options_panel = UIData.advanced_options_panel(player, false, self.guid)
+  local advanced_options_panel_xml = UIData.advanced_options_panel(player, false, self.guid)
   table.insert(ui_panel.children, advanced_options_panel_xml)
   log("created advanced options panel for " .. player.steam_name, nil, nil, LOG_LEVEL["DEBUG"])
 
@@ -356,6 +356,9 @@ function toggleCSPane(player, mouse_button, button_name)
   if active then
     UI.show(inactiveID)
     UI.hide(activeID)
+    if UI.getAttribute("cs_advanced_options_panel_" .. player.steam_id, "active") == "true" then
+      UI.hide("cs_advanced_options_panel_" .. player.steam_id)
+    end
   else
     UI.hide(inactiveID)
     UI.show(activeID)
@@ -365,8 +368,7 @@ end
 
 function toggleAdvancedOptionsPane(player, mouse_button, button_name)
   local id = "cs_advanced_options_panel_" .. player.steam_id
-  log(UI.getAttributes(id))
-  if UI.getAttribute(id, "active") then
+  if UI.getAttribute(id, "active") == "true" then
     UI.hide(id)
   else
     UI.show(id)
