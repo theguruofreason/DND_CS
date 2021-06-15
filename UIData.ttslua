@@ -82,14 +82,26 @@ function UIData.advanced_options_panel(player, active, functionOwnerGuid)
     tag = "Panel",
     attributes = {
       id = "cs_advanced_options_panel_" .. player.steam_id,
-      width = 600,
-      height = 300,
+      width = "50%",
+      height = "50%",
       active = active,
       showAnimation = "FadeIn",
       hideAnimation = "FadeOut",
-      animationDuration = ANIMATION_DURATION
+      animationDuration = ANIMATION_DURATION,
+      allowDragging = "true",
+      returnToOriginalPositionWhenReleased = "false",
     },
     children = {
+      {
+        tag = "Image",
+        attributes = {
+          width = "100%",
+          height = "100%",
+          raycastTarget = true,
+          image = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAA1BMVEX///+nxBvIAAAASElEQVR4nO3BgQAAAADDoPlTX+AIVQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwDcaiAAFXD1ujAAAAAElFTkSuQmCC",
+          outline = "#000000"
+        }
+      },
       {
         tag = "Button",
         attributes = {
@@ -107,45 +119,89 @@ function UIData.advanced_options_panel(player, active, functionOwnerGuid)
         tag = "TableLayout",
         attributes = {
           rectAlignment = "UpperLeft",
-          offsetXY = "5 30",
-          sizeDelta = "-30 -30"
+          offsetXY = "30 -30",
+          width = "90%",
+          height = "90%",
+          cellSpacing = 5,
+          outline = "#FFFFFF",
         },
         children = {
-          tag = "Row",
-          attributes = {
-            height = s
-          },
-          children = {
-            {
-              tag = "Cell",
-              children = {
-                {
-                  tag = "InputField",
-                  id = "character_sheet_import_text_" .. player.steam_id,
-                  attributes = {
-                    width = 200,
-                    height = s,
-                    placeholder = "character sheet URL",
-                    tooltip = "URL for character sheet JSON. Upload your sheet to the cloud and paste the URL here."
+          {
+            tag = "Row",
+            attributes = {
+              preferredHeight = s
+            },
+            children = {
+              {
+                tag = "Cell",
+                children = {
+                  {
+                    tag = "InputField",
+                    id = "character_sheet_import_text_" .. player.steam_id,
+                    attributes = {
+                      placeholder = "character sheet URL",
+                      tooltip = "URL for character sheet JSON. Upload your sheet to the cloud and paste the URL here."
+                    }
                   }
                 }
-              }
-            },
-            {
-              tag = "Cell",
-              children = {
-                {
-                  tag = "Button",
-                  id = "import_character_sheet_button_" .. player.steam_id,
-                  attributes = {
-                    onClick = string.format("%s/importCharacterSheet", functionOwnerGuid),
-                    text = "import",
-                    height = s
+              },
+              {
+                tag = "Cell",
+                attributes = {
+                  childForceExpandWidth = false,
+                },
+                children = {
+                  {
+                    tag = "Button",
+                    id = "import_character_sheet_button_" .. player.steam_id,
+                    attributes = {
+                      preferredWidth = 90,
+                      onClick = string.format("%s/importCharacterSheet", functionOwnerGuid),
+                      text = "import"
+                    }
                   }
                 }
               }
             }
-          }
+          }, -- /Row
+          {
+            tag = "Row",
+            attributes = {
+              preferredHeight = s
+            },
+            children = {
+              {
+                tag = "Cell",
+                children = {
+                  {
+                    tag = "InputField",
+                    id = "character_sheet_import_text_" .. player.steam_id,
+                    attributes = {
+                      placeholder = "character sheet URL",
+                      tooltip = "URL for character sheet JSON. Upload your sheet to the cloud and paste the URL here."
+                    }
+                  }
+                }
+              },
+              {
+                tag = "Cell",
+                attributes = {
+                  childForceExpandWidth = false,
+                },
+                children = {
+                  {
+                    tag = "Button",
+                    id = "import_character_sheet_button_" .. player.steam_id,
+                    attributes = {
+                      preferredWidth = 90,
+                      onClick = string.format("%s/importCharacterSheet", functionOwnerGuid),
+                      text = "import"
+                    }
+                  }
+                }
+              }
+            }
+          }, -- /Row
         }
       }
     }
