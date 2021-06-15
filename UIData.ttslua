@@ -17,6 +17,22 @@ M = "45"
 L = "60"
 XL = "80"
 
+DIMENSIONS = enum {
+  "WIDTH",
+  "HEIGHT",
+  "LENGTH"
+}
+
+-- Helpers --
+
+function pixelToPercent(dimension, pixelVal)
+  if DIMENSIONS[dimension] == 1 then
+    return tostring((pixelVal/1920) * 100).."%"
+  elseif DIMENSIONS[dimension] == 2 then
+    return tostring((pixelVal/1080) * 100).."%"
+  end
+end
+
 -- UI Data --
 local UIData = {}
 
@@ -55,9 +71,7 @@ function UIData.uiPanel(player)
     attributes = {
       id = "DNDCS_UI_"..player.steam_id,
       visibility = player.color,
-      active = "true",
-      width = "100%",
-      height = "100%",
+      active = "true"
     },
     children = {}
   }
@@ -145,8 +159,8 @@ function UIData.inactive_panel(player, active, functionOwnerGuid)
       id = "cs_inactive_" .. player.steam_id,
       allowDragging = "true",
       returnToOriginalPositionWhenReleased = "false",
-      width = 98,
-      height = 108,
+      width = pixelToPercent("WIDTH", 98),
+      height = pixelToPercent("HEIGHT", 108),
       position = "-400 -447",
       active = active,
       showAnimation = "FadeIn",
@@ -173,8 +187,8 @@ function UIData.active_panel(player, active, functionOwnerGuid)
       ["id"] ="cs_active_"..player.steam_id,
       ["allowDragging"] ="true",
       ["returnToOriginalPositionWhenReleased"] = "false",
-      ["width"] ="979",
-      ["height"] ="1080",
+      ["width"] = 979,
+      ["height"] = 1080,
       ["position"] ="0 0",
       ["active"] = active,
       ["showAnimation"] = "FadeIn",
@@ -587,7 +601,7 @@ function UIData.active_panel(player, active, functionOwnerGuid)
         ["tag"] ="ToggleButton",
         ["attributes"] = {
           ["id"] ="cs_st_str_toggle_"..player.steam_id,
-          ["onValueChanged"] ="savingThrowToggle",
+          ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
           ["width"] ="13",
           ["height"] ="13",
           ["rectAlignment"] ="UpperLeft",
@@ -613,7 +627,7 @@ function UIData.active_panel(player, active, functionOwnerGuid)
         ["tag"] ="ToggleButton",
         ["attributes"] = {
           ["id"] ="cs_st_dex_toggle_"..player.steam_id,
-          ["onValueChanged"] ="savingThrowToggle",
+          ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
           ["width"] ="13",
           ["height"] ="13",
           ["rectAlignment"] ="UpperLeft",
@@ -639,7 +653,7 @@ function UIData.active_panel(player, active, functionOwnerGuid)
         ["tag"] ="ToggleButton",
         ["attributes"] = {
           ["id"] ="cs_st_con_toggle_"..player.steam_id,
-          ["onValueChanged"] ="savingThrowToggle",
+          ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
           ["width"] ="13",
           ["height"] ="13",
           ["rectAlignment"] ="UpperLeft",
@@ -665,7 +679,7 @@ function UIData.active_panel(player, active, functionOwnerGuid)
         ["tag"] ="ToggleButton",
         ["attributes"] = {
           ["id"] ="cs_st_int_toggle_"..player.steam_id,
-          ["onValueChanged"] ="savingThrowToggle",
+          ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
           ["width"] ="13",
           ["height"] ="13",
           ["rectAlignment"] ="UpperLeft",
@@ -691,7 +705,7 @@ function UIData.active_panel(player, active, functionOwnerGuid)
         ["tag"] ="ToggleButton",
         ["attributes"] = {
           ["id"] ="cs_st_wis_toggle_"..player.steam_id,
-          ["onValueChanged"] ="savingThrowToggle",
+          ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
           ["width"] ="13",
           ["height"] ="13",
           ["rectAlignment"] ="UpperLeft",
@@ -717,7 +731,7 @@ function UIData.active_panel(player, active, functionOwnerGuid)
         ["tag"] ="ToggleButton",
         ["attributes"] = {
           ["id"] ="cs_st_cha_toggle_"..player.steam_id,
-          ["onValueChanged"] ="savingThrowToggle",
+          ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
           ["width"] ="13",
           ["height"] ="13",
           ["rectAlignment"] ="UpperLeft",
@@ -1211,8 +1225,8 @@ function UIData.active_panel(player, active, functionOwnerGuid)
         ["tag"] ="InputField",
         ["attributes"] = {
           ["id"] ="cs_passive_perception_"..player.steam_id,
-          ["onValueChanged"] ="pcEditVal",
-          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
+          ["onValueChanged"] = string.format("%s/pcEditVal", functionOwnerGuid),
+          ["onEndEdit"] = string.format("%s/pcEditVal", functionOwnerGuid),
           ["placeholder"] ="PP",
           ["characterLimit"] ="2",
           ["characterValidation"] ="Integer",
@@ -1221,6 +1235,78 @@ function UIData.active_panel(player, active, functionOwnerGuid)
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="225 -995",
           ["fontSize"] ="18"
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="ToggleButton",
+        ["attributes"] = {
+          ["id"] ="cs_death_save_success_1_"..player.steam_id,
+          ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
+          ["width"] =t,
+          ["height"] =t,
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="851 -481",
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="ToggleButton",
+        ["attributes"] = {
+          ["id"] ="cs_death_save_success_2_"..player.steam_id,
+          ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
+          ["width"] =t,
+          ["height"] =t,
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="875 -481",
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="ToggleButton",
+        ["attributes"] = {
+          ["id"] ="cs_death_save_success_3_"..player.steam_id,
+          ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
+          ["width"] =t,
+          ["height"] =t,
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="900 -481",
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="ToggleButton",
+        ["attributes"] = {
+          ["id"] ="cs_death_save_failure_1_"..player.steam_id,
+          ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
+          ["width"] =t,
+          ["height"] =t,
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="851 -508",
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="ToggleButton",
+        ["attributes"] = {
+          ["id"] ="cs_death_save_failure_2_"..player.steam_id,
+          ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
+          ["width"] =t,
+          ["height"] =t,
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="875 -508",
+        },
+        ["children"] = {}
+      },
+      {
+        ["tag"] ="ToggleButton",
+        ["attributes"] = {
+          ["id"] ="cs_death_save_failure_3_"..player.steam_id,
+          ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
+          ["width"] =t,
+          ["height"] =t,
+          ["rectAlignment"] ="UpperLeft",
+          ["offsetXY"] ="900 -508",
         },
         ["children"] = {}
       }

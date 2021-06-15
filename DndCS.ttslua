@@ -210,8 +210,8 @@ function createUI(player, xml)
   table.insert(ui_panel.children, active_panel)
   log("created active CS Panel for " .. player.steam_name, nil, nil, LOG_LEVEL["DEBUG"])
 
-  local advanced_options_panel = UIData.advanced_options_panel(player, "False", self.guid)
-  table.insert(xml, advanced_options_panel_xml)
+  local advanced_options_panel = UIData.advanced_options_panel(player, false, self.guid)
+  table.insert(ui_panel.children, advanced_options_panel_xml)
   log("created advanced options panel for " .. player.steam_name, nil, nil, LOG_LEVEL["DEBUG"])
 
   table.insert(xml, ui_panel)
@@ -293,6 +293,13 @@ function populateFieldUi(pc_data, field_name)
   end
 end
 
+function populateDeathSaveUi(pc_data, saveNum, successOrFailure)
+  return function(ui_element)
+    ui_element.attributes.isOn = pc_data[successOrFailure] >= saveNum and true or false
+    return ui_element
+  end
+end
+
 function uiElementIdToFunction(steam_id)
   pc_data = Data.pc_data[steam_id]
   functionLookupTable = {}
@@ -308,6 +315,10 @@ function uiElementIdToFunction(steam_id)
   end
   for _, field_name in pairs(DndCSClasses.PC.direct_editables) do
     functionLookupTable["cs_"..field_name.."_"..steam_id] = populateFieldUi(pc_data, field_name)
+  end
+  for i=1,3 do
+    functionLookupTable[string.format("cs_death_save_failure_%d_%s", i, steam_id)] = populateDeathSaveUi(pc_data, i, "death_save_failures")
+    functionLookupTable[string.format("cs_death_save_success_%d_%s", i, steam_id)] = populateDeathSaveUi(pc_data, i, "death_save_successes")
   end
   return functionLookupTable
 end
@@ -354,8 +365,8 @@ end
 
 function toggleAdvancedOptionsPane(player, mouse_button, button_name)
   local id = "cs_advanced_options_panel_" .. player.steam_id
-  local active = UI.getAttribute(id, "active") == "true"
-  if active then
+  log(UI.getAttributes(id))
+  if UI.getAttribute(id, "active") then
     UI.hide(id)
   else
     UI.show(id)
@@ -440,6 +451,13 @@ function rollSkillCheck(player, mouse_button, tag_id)
     individualBonus = true,
     showMaxMin = true
   }))
+end
+
+function deathSaveToggle(player, on, tag_id)
+  local on = on == "True"
+  local successOrFailure = tag_id:find("success") and "death_save_successes" or "death_save_failures"
+  Data.pc_data[player.steam_id][successOrFailure] = Data.pc_data[player.steam_id][successOrFailure] + (on and 1 or -1)
+  log(Data.pc_data[player.steam_id][successOrFailure])
 end
 
 function recalculateSkillBonuses(pc_data, steam_id)
