@@ -426,6 +426,21 @@ function proficiencyChange(player, val)
   end
 end
 
+function rollAtt(player, mouse_button, tag_id)
+  _, _, att = tag_id:find("cs_(%a+)_bonus")
+  local pc_data = Data.pc_data[player.steam_id]
+  local bonus = math.floor(pc_data.attributes[att] / 2 - 5)
+  local message = fs(RGBToHex(stringColorToRGB(player.color)).."%s[-] rolled a %s check: ", player.steam_name, att:upper())
+  Dice.click(player.steam_id, Dice.DIE_TYPE[20], Dice.RollStatus:new({
+    message = message,
+    bonus = bonus,
+    baseTransform = player.getHandTransform(),
+    allowMultiroll = true,
+    individualBonus = true,
+    showMaxMin = true
+  }))
+end
+
 function rollSavingThrow(player, mouse_button, tag_id)
   local _, _, att = tag_id:find("st_(%a+)_bonus")
   local pc_data = Data.pc_data[player.steam_id]
