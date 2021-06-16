@@ -116,88 +116,44 @@ function UIData.advanced_options_panel(player, active, functionOwnerGuid)
         children = {}
       },
       {
-        tag = "TableLayout",
+        tag = "VerticalLayout",
         attributes = {
           rectAlignment = "UpperLeft",
           offsetXY = "30 -30",
           width = "90%",
           height = "90%",
-          cellSpacing = 5,
-          outline = "#FFFFFF",
+          spacing = 5,
+          childForceExpandHeight = false,
         },
         children = {
           {
-            tag = "Row",
+            tag = "HorizontalLayout",
             attributes = {
-              preferredHeight = s
+              spacing = 5,
+              childForceExpandHeight = false,
             },
             children = {
               {
-                tag = "Cell",
-                children = {
-                  {
-                    tag = "InputField",
-                    id = "character_sheet_import_text_" .. player.steam_id,
-                    attributes = {
-                      placeholder = "character sheet URL",
-                      tooltip = "URL for character sheet JSON. Upload your sheet to the cloud and paste the URL here."
-                    }
-                  }
-                }
+                tag = "InputField",
+                id = "character_sheet_import_text_" .. player.steam_id,
+                attributes = {
+                  flexibleWidth = 8,
+                  preferredHeight = s,
+                  placeholder = "character sheet URL",
+                  tooltip = "URL for character sheet JSON. Upload your sheet to the cloud and paste the URL here.",
+                  resizeTextForBestFit = true,
+                },
               },
               {
-                tag = "Cell",
+                tag = "Button",
+                id = "import_character_sheet_button_" .. player.steam_id,
                 attributes = {
-                  childForceExpandWidth = false,
-                },
-                children = {
-                  {
-                    tag = "Button",
-                    id = "import_character_sheet_button_" .. player.steam_id,
-                    attributes = {
-                      preferredWidth = 90,
-                      onClick = string.format("%s/importCharacterSheet", functionOwnerGuid),
-                      text = "import"
-                    }
-                  }
-                }
-              }
-            }
-          }, -- /Row
-          {
-            tag = "Row",
-            attributes = {
-              preferredHeight = s
-            },
-            children = {
-              {
-                tag = "Cell",
-                children = {
-                  {
-                    tag = "InputField",
-                    id = "character_sheet_import_text_" .. player.steam_id,
-                    attributes = {
-                      placeholder = "character sheet URL",
-                      tooltip = "URL for character sheet JSON. Upload your sheet to the cloud and paste the URL here."
-                    }
-                  }
-                }
-              },
-              {
-                tag = "Cell",
-                attributes = {
-                  childForceExpandWidth = false,
-                },
-                children = {
-                  {
-                    tag = "Button",
-                    id = "import_character_sheet_button_" .. player.steam_id,
-                    attributes = {
-                      preferredWidth = 90,
-                      onClick = string.format("%s/importCharacterSheet", functionOwnerGuid),
-                      text = "import"
-                    }
-                  }
+                  flexibleWidth = 1,
+                  minWidth = 20,
+                  preferredHeight = s,
+                  onClick = string.format("%s/importCharacterSheet", functionOwnerGuid),
+                  text = "import",
+                  resizeTextForBestFit = true,
                 }
               }
             }
