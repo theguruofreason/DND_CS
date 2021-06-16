@@ -658,11 +658,13 @@ function UIData.active_panel(player, active, functionOwnerGuid)
         ["attributes"] = {
           ["id"] ="cs_st_str_toggle_"..player.steam_id,
           ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
-          ["width"] ="13",
-          ["height"] ="13",
+          ["width"] =t,
+          ["height"] =t,
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="194 -283",
-          ["fontSize"] ="24"
+          ["fontSize"] ="24",
+          ["outline"] = "#000000",
+          ["outlineSize"] = "1 1",
         },
         ["children"] = {}
       },
@@ -684,11 +686,13 @@ function UIData.active_panel(player, active, functionOwnerGuid)
         ["attributes"] = {
           ["id"] ="cs_st_dex_toggle_"..player.steam_id,
           ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
-          ["width"] ="13",
-          ["height"] ="13",
+          ["width"] =t,
+          ["height"] =t,
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="194 -307",
-          ["fontSize"] ="24"
+          ["fontSize"] ="24",
+          ["outline"] = "#000000",
+          ["outlineSize"] = "1 1",
         },
         ["children"] = {}
       },
@@ -710,11 +714,13 @@ function UIData.active_panel(player, active, functionOwnerGuid)
         ["attributes"] = {
           ["id"] ="cs_st_con_toggle_"..player.steam_id,
           ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
-          ["width"] ="13",
-          ["height"] ="13",
+          ["width"] =t,
+          ["height"] =t,
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="194 -332",
-          ["fontSize"] ="24"
+          ["fontSize"] ="24",
+          ["outline"] = "#000000",
+          ["outlineSize"] = "1 1",
         },
         ["children"] = {}
       },
@@ -736,11 +742,13 @@ function UIData.active_panel(player, active, functionOwnerGuid)
         ["attributes"] = {
           ["id"] ="cs_st_int_toggle_"..player.steam_id,
           ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
-          ["width"] ="13",
-          ["height"] ="13",
+          ["width"] =t,
+          ["height"] =t,
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="194 -356",
-          ["fontSize"] ="24"
+          ["fontSize"] ="24",
+          ["outline"] = "#000000",
+          ["outlineSize"] = "1 1",
         },
         ["children"] = {}
       },
@@ -762,11 +770,13 @@ function UIData.active_panel(player, active, functionOwnerGuid)
         ["attributes"] = {
           ["id"] ="cs_st_wis_toggle_"..player.steam_id,
           ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
-          ["width"] ="13",
-          ["height"] ="13",
+          ["width"] =t,
+          ["height"] =t,
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="194 -381",
-          ["fontSize"] ="24"
+          ["fontSize"] ="24",
+          ["outline"] = "#000000",
+          ["outlineSize"] = "1 1",
         },
         ["children"] = {}
       },
@@ -788,11 +798,13 @@ function UIData.active_panel(player, active, functionOwnerGuid)
         ["attributes"] = {
           ["id"] ="cs_st_cha_toggle_"..player.steam_id,
           ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
-          ["width"] ="13",
-          ["height"] ="13",
+          ["width"] =t,
+          ["height"] =t,
           ["rectAlignment"] ="UpperLeft",
           ["offsetXY"] ="194 -405",
-          ["fontSize"] ="24"
+          ["fontSize"] ="24",
+          ["outline"] = "#000000",
+          ["outlineSize"] = "1 1",
         },
         ["children"] = {}
       },
