@@ -364,10 +364,10 @@ end
 function toggleAdvancedOptionsPane(player, mouse_button, button_name)
   local id = "cs_advanced_options_panel_" .. player.steam_id
   local active = UI.getAttribute(id, "active")
-  if UI.getAttribute(id, "active") == "true" then
-    UI.hide(id)
+  if UI.getAttribute(id, "active"):lower() == "true" then
+    UI.setAttribute(id, "active", false)
   else
-    UI.show(id)
+    UI.setAttribute(id, "active", true)
   end
 end
 
@@ -556,11 +556,7 @@ function parseCharacterSheet(player)
       local val = tonumber(val)
       local att = DndCSClasses.skill_to_att[skill]
       local expectedBonus = calculateAttributeBonus(pc_data.attributes[att])
-      log(att)
-      log(expectedBonus)
-      log(val)
       if val ~= expectedBonus then
-        log(val == expectedBonus + pc_data.proficiency_bonus)
         if (val == expectedBonus + pc_data.proficiency_bonus) then
           pc_data.skills[skill] = DndCSClasses.Proficiency.PROFICIENT
         elseif (val == expectedBonus + 2 * pc_data.proficiency_bonus) then
