@@ -1,3 +1,5 @@
+local Version = require("/DndCS/Version")
+
 -- DnDCS classes --
 local DndCSClasses = {}
 
@@ -75,7 +77,7 @@ DndCSClasses.Skills = {
     performance = DndCSClasses.Proficiency.NOT_PROFICIENT,
     persuasion = DndCSClasses.Proficiency.NOT_PROFICIENT,
     religion = DndCSClasses.Proficiency.NOT_PROFICIENT,
-    slight_of_hand = DndCSClasses.Proficiency.NOT_PROFICIENT,
+    sleight_of_hand = DndCSClasses.Proficiency.NOT_PROFICIENT,
     stealth = DndCSClasses.Proficiency.NOT_PROFICIENT,
     survival = DndCSClasses.Proficiency.NOT_PROFICIENT
   }
@@ -106,13 +108,19 @@ DndCSClasses.skill_to_att = {
   performance = "cha",
   persuasion = "cha",
   religion = "int",
-  slight_of_hand = "dex",
+  sleight_of_hand = "dex",
   stealth = "dex",
   survival = "wis"
 }
 
+DndCSClasses.PlayerData = {}
+function DndCSClasses.PlayerData:new(o)
+  return setmetatable(o or {}, DndCSClasses.PlayerData)
+end
+
 DndCSClasses.PC = {
   defaults = {
+    version = string.format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_FEATURE),
     cs_panel_active = false,
     cs_panel_page = 1,
     char_name = "",

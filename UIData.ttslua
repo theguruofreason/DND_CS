@@ -1,4 +1,5 @@
 local DndCSClasses = require("/DndCS/Classes")
+local Version = require("/DndCS/Version")
 local enum = DndCSClasses.enum
 
 -- Globals --
@@ -60,7 +61,7 @@ UIData.skills = enum{
   "performance",
   "persuasion",
   "religion",
-  "slight_of_hand",
+  "sleight_of_hand",
   "stealth",
   "survival"
 }
@@ -139,6 +140,7 @@ function UIData.advanced_options_panel(player, active, functionOwnerGuid)
                 attributes = {
                   flexibleWidth = 8,
                   preferredHeight = s,
+                  onEndEdit = string.format("%s/setCharSheetUrl", functionOwnerGuid),
                   placeholder = "character sheet URL",
                   tooltip = "URL for character sheet JSON. Upload your sheet to the cloud and paste the URL here.",
                   resizeTextForBestFit = true,
@@ -1228,7 +1230,7 @@ function UIData.active_panel(player, active, functionOwnerGuid)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] ="cs_skill_slight_of_hand_toggle_"..player.steam_id,
+          ["id"] ="cs_skill_sleight_of_hand_toggle_"..player.steam_id,
           ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
           ["image"] = "NOT_PROFICIENT",
           ["width"] = rescale(20,width,WIDTH),
@@ -1241,7 +1243,7 @@ function UIData.active_panel(player, active, functionOwnerGuid)
       {
         ["tag"] ="Text",
         ["attributes"] = {
-          ["id"] ="cs_skill_slight_of_hand_"..player.steam_id,
+          ["id"] ="cs_skill_sleight_of_hand_"..player.steam_id,
           ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
           ["width"] = rescale(25,width,WIDTH),
           ["height"] = rescale(20,height,HEIGHT),
