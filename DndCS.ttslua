@@ -264,6 +264,10 @@ end
 
 function populateFieldUi(pc_data, field_name)
   return function(ui_element)
+    if field_name == "initiative" then
+      ui_element.attributes.text = (pc_data[field_name] > 0 and "+"..pc_data[field_name]) or pc_data[field_name]
+      return ui_element
+    end
     ui_element.attributes.text = pc_data[field_name]
     return ui_element
   end
@@ -525,15 +529,16 @@ function parseCharacterSheet(player)
   if data.schema_version ~= 1 then log("Schema version not 1. This may not work...", "WARN") end
   local charData = data.character[1]
   local pc_data = Data.pc_data[player.steam_id]
-  pc_data.passive_perception = charData.passive_perception
-  pc_data.ac = charData.ac
-  pc_data.proficiency_bonus = tonumber(charData.proficiency_bonus)
-  pc_data.char_name = charData.character_name
+  pc_data.passive_perception = (charData.passive_perception ~= nil and charData.passive_perception) or 0
+  pc_data.ac = (charData.ac ~= nil and charData.ac) or 0
+  pc_data.proficiency_bonus = (charData.proficiency_bonus ~= nil and tonumber(charData.proficiency_bonus)) or 0
+  pc_data.char_name = (charData.character_name ~= nil and charData.character_name) or ""
+  pc_data.initiative = (charData.initiative_bonus ~= nil and charData.initiative_bonus) or 0
   for att, val in pairs(charData["abilities_bonuses"][1]["abilities"]) do
     pc_data.attributes[att] = val
   end
   for skill, val in pairs(charData.skills) do
-    skill:gsub("-", "_")
+    skill = skill:gsub("-", "_")
     if UIData.skills[skill] then
       local val = tonumber(val)
       local att = DndCSClasses.skill_to_att[skill]
