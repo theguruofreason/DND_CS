@@ -1,0 +1,49 @@
+local Logging = {}
+local enum = require("/DndCS/Enum")
+
+-- Logging --
+
+Logging.LOG_LEVEL = enum {
+  "DEBUG",
+  "INFO",
+  "WARN",
+  "ERROR"
+}
+
+function Logging.defaultLogStyles()
+  logStyle("DEBUG", {0.1, 0.1, 0.7}, "DEBUG: ")
+  logStyle("INFO", {0.7, 0.7, 0.7}, "INFO: ")
+  logStyle("WARN", {0.6, 0.6, 0}, "WARNING: ")
+  logStyle("ERROR", {0.9, 0, 0}, "ERROR: ")
+end
+
+Logging.LEVEL = Logging.LOG_LEVEL["DEBUG"]
+Logging.log = function (message, level, label, tags)
+  if level == nil then level = 2
+  elseif type(level == type("")) then level = Logging.LOG_LEVEL[level]
+  end
+  local levelString = Logging.LOG_LEVEL[level]
+  tags = tags == nil and levelString or tags..","..levelString
+  if Logging.LEVEL <= level then log(message, label, tags) end
+end
+
+-- Aliases --
+
+function Logging.logDebug(message, label, tags)
+  return Logging.log(message, "DEBUG", label, tags)
+end
+
+function Logging.logInfo(message, label, tags)
+  return Logging.log(message, "INFO", label, tags)
+end
+
+function Logging.logWarn(message, label, tags)
+  return Logging.log(message, "WARN", label, tags)
+end
+
+function Logging.logError(message, label, tags)
+  return Logging.log(message, "ERROR", label, tags)
+end
+
+Logging.defaultLogStyles()
+return Logging

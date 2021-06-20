@@ -1,3 +1,6 @@
+local Logging = require("/DndCS/BetterLogging")
+local log = Logging.log
+
 Dice = {}
 
 -- Classes --

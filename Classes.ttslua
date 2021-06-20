@@ -1,20 +1,12 @@
 local Version = require("/DndCS/Version")
+local Logging = require("/DndCS/BetterLogging")
+local enum = require("/DndCS/Enum")
+local log = Logging.log
 
 -- DnDCS classes --
 local DndCSClasses = {}
 
--- enum setup
-function DndCSClasses.enum(tbl)
-    local length = #tbl
-    for i = 1, length do
-        local v = tbl[i]
-        tbl[v] = i
-        tbl[i] = v
-    end
-    return tbl
-end
-
-DndCSClasses.Proficiency = DndCSClasses.enum {
+DndCSClasses.Proficiency = enum {
   "NOT_PROFICIENT",
   "PROFICIENT",
   "EXPERTISE"

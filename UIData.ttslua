@@ -1,6 +1,8 @@
 local DndCSClasses = require("/DndCS/Classes")
 local Version = require("/DndCS/Version")
-local enum = DndCSClasses.enum
+local enum = require("/DndCS/Enum")
+local Logging = require("/DndCS/BetterLogging")
+local log = Logging.log
 
 -- Globals --
 
@@ -213,8 +215,8 @@ function UIData.active_panel(player, active, functionOwnerGuid)
       {
         ["tag"] ="Image",
         ["attributes"] = {
-          ["id"] = "cs_page_"..player.steam_id,
-          ["image"] = "Char_Sheet_1",
+          ["id"] = "cs_page_1_"..player.steam_id,
+          ["image"] = "CS_P1_4k",
           ["raycastTarget"] = "true"
         },
         ["children"] = {}
@@ -241,7 +243,7 @@ function UIData.active_panel(player, active, functionOwnerGuid)
           ["rectAlignment"] ="UpperRight",
           ["offsetXY"] = xyOffset("-2 -34", width, height),
           ["onClick"] =string.format("%s/toggleAdvancedOptionsPane", functionOwnerGuid),
-          ["sprite"] ="Dots_button"
+          ["sprite"] ="Dots_button",
         },
         ["children"] = {}
       },

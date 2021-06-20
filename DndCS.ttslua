@@ -2,36 +2,17 @@ local UIData = require("/DndCS/UIData")
 local DndCSClasses = require("/DndCS/Classes")
 local Dice = require("/DndCS/Dice")
 local Version = require("/DndCS/Version")
-local enum = DndCSClasses.enum
+local Logging = require("/DndCS/BetterLogging")
+local log = Logging.log
+local logDebug = Logging.logDebug
+local logInfo = Logging.logInfo
+local logWarn = Logging.logWarn
+local logError = Logging.logError
+local enum = require("/DndCS/Enum")
 
 local fs = string.format
 
--- logging --
 
-local LOG_LEVEL = enum {
-  "DEBUG",
-  "INFO",
-  "WARN",
-  "ERROR"
-}
-
-logStyle("DEBUG", {0.1, 0.1, 0.7}, "DEBUG: ")
-logStyle("INFO", {0.7, 0.7, 0.7}, "INFO: ")
-logStyle("WARN", {0.6, 0.6, 0}, "WARNING: ")
-logStyle("ERROR", {0.9, 0, 0}, "ERROR: ")
-
-local LEVEL = LOG_LEVEL["DEBUG"]
-local log = function (value, level, label, tags)
-  if level == nil then level = "INFO" end
-  if level ~= nil and type(level) == type("") then
-    levelString = level
-    level = LOG_LEVEL[level]
-  else
-    levelString = LOG_LEVEL[level]
-  end
-  tags = tags == nil and levelString or tags..","..levelString
-  if LEVEL <= level then log(value, label, tags) end
-end
 
 -- data --
 
@@ -323,7 +304,7 @@ function populateCharacterSheetUi(active_panel_xml, steam_id)
   local omissions = {
     "toggle_button_active",
     "advanced_options_toggle",
-    "cs_page"
+    "cs_page_1"
   }
   local elementIdToFunction = uiElementIdToFunction(steam_id)
   for i, element in pairs(active_panel_xml.children) do
@@ -366,6 +347,7 @@ function toggleAdvancedOptionsPane(player, mouse_button, button_name)
   local active = UI.getAttribute(id, "active")
   if UI.getAttribute(id, "active"):lower() == "true" then
     UI.setAttribute(id, "active", false)
+    UI.setAttribute("cs_advanced_options_toggle_"..player.steam_id, "isOn", false)
   else
     UI.setAttribute(id, "active", true)
   end
