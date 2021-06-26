@@ -136,7 +136,8 @@ DndCSClasses.PC = {
     hit_dice_d = 8,
     death_save_successes = 0,
     death_save_failures = 0,
-    attacks = {}
+    attacks = {},
+    features_and_traits = "",
   },
   direct_editables = {
     "char_name",
@@ -154,7 +155,8 @@ DndCSClasses.PC = {
     "hit_dice_current",
     "hit_dice_max",
     "hit_dice_d",
-    "attacks"
+    "attacks",
+    "features_and_traits"
   }
 }
 function DndCSClasses.PC:new(o)

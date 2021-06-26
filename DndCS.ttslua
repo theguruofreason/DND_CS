@@ -297,12 +297,12 @@ function uiElementIdToFunction(steam_id)
     functionLookupTable["cs_skill_"..skill.."_toggle_"..steam_id] = populateSkillProficientUi(pc_data, skill)
     functionLookupTable["cs_skill_"..skill.."_"..steam_id] = populateSkillBonusUi(pc_data, skill)
   end
-  for _, field_name in pairs(DndCSClasses.PC.direct_editables) do
-    functionLookupTable["cs_"..field_name.."_"..steam_id] = populateFieldUi(pc_data, field_name)
-  end
   for i=1,3 do
     functionLookupTable[fs("cs_death_save_failure_%d_%s", i, steam_id)] = populateDeathSaveUi(pc_data, i, "death_save_failures")
     functionLookupTable[fs("cs_death_save_success_%d_%s", i, steam_id)] = populateDeathSaveUi(pc_data, i, "death_save_successes")
+  end
+  for _, field_name in pairs(DndCSClasses.PC.direct_editables) do
+    functionLookupTable["cs_"..field_name.."_"..steam_id] = populateFieldUi(pc_data, field_name)
   end
   return functionLookupTable
 end
@@ -584,6 +584,11 @@ function parseCharacterSheet(player)
   if charData.hp[1].hp_current ~= nil then pc_data.hp_current = charData.hp[1].hp_current end
   if charData.hp[1].hp_max ~= nil then pc_data.hp_max = charData.hp[1].hp_max end
   if charData.characteristics[1].speed then pc_data.speed = charData.characteristics[1].speed end
+  local features_and_traits = ""
+  for _, info in pairs(charData.traits) do
+    features_and_traits = features_and_traits..info.."\n"
+  end
+  pc_data.features_and_traits = features_and_traits
   Data.pc_data[player.steam_id] = pc_data
   xml = UI.getXmlTable()
   active_panel = {}

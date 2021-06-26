@@ -1413,9 +1413,11 @@ function UIData.active_panel(player, active, functionOwnerGuid)
           {
             ["tag"] ="InputField",
             ["attributes"] = {
-              ["id"] = "cs_attributes_and_talents_"..player.steam_id,
+              ["id"] = "cs_features_and_traits_"..player.steam_id,
               ["width"] = rescale(900, width, height),
               ["height"] = rescale(950, width, height),
+              ["lineType"] = "MultiLineNewLine",
+              ["fontSize"] = t,
             },
           }
         }
