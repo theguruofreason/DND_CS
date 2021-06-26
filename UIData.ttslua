@@ -32,12 +32,13 @@ function rescale(pixelVal, parentVal, globalDim)
 end
 
 function xyOffset(offsetString, parentWidth, parentHeight)
-  _, _, x, y = string.find(offsetString, "([+-]?%d+) ([+-]+%d+)")
+  _, _, x, y = string.find(offsetString, "([+-]?%d+) ([+-]?%d+)")
   return string.format("%d %d", x * parentWidth/WIDTH, y * parentHeight/HEIGHT)
 end
 
 -- UI Data --
 local UIData = {}
+UIData.numPages = 2
 
 UIData.attributes = enum{
   "str",
@@ -213,13 +214,1211 @@ function UIData.active_panel(player, active, functionOwnerGuid)
     },
     ["children"] = {
       {
-        ["tag"] ="Image",
+        ["tag"] ="Panel",
         ["attributes"] = {
-          ["id"] = "cs_page_1_"..player.steam_id,
-          ["image"] = "CS_P1_4k",
-          ["raycastTarget"] = "true"
+          ["id"] ="cs_page_1_"..player.steam_id,
         },
-        ["children"] = {}
+        ["children"] = {
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] = "cs_page_1_image_"..player.steam_id,
+              ["image"] = "CS_P1_4k",
+              ["raycastTarget"] = "true"
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_char_name_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
+              ["placeholder"] ="Name",
+              ["characterLimit"] ="60",
+              ["width"] = rescale(380,width,WIDTH),
+              ["height"] = rescale(42,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("68 -18", width, height),
+              ["fontSize"] = 25,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_level_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
+              ["placeholder"] ="lvl",
+              ["characterLimit"] ="2",
+              ["width"] = rescale(50,width,WIDTH),
+              ["height"] = rescale(42,height,HEIGHT),
+              ["rectAlignment"] ="UpperRight",
+              ["offsetXY"] = xyOffset("-380 -18", width, height),
+              ["fontSize"] = 25,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_class_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
+              ["placeholder"] ="class",
+              ["characterLimit"] ="60",
+              ["width"] = rescale(230,width,WIDTH),
+              ["height"] = rescale(42,height,HEIGHT),
+              ["rectAlignment"] ="UpperRight",
+              ["offsetXY"] = xyOffset("-88 -18", width, height),
+              ["fontSize"] = 25,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_ac_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
+              ["placeholder"] ="ac",
+              ["characterLimit"] ="2",
+              ["width"] = rescale(60,width,WIDTH),
+              ["height"] = rescale(50,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("500 -110", width, height),
+              ["fontSize"] = 33,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_initiative_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
+              ["placeholder"] ="init",
+              ["characterLimit"] ="2",
+              ["width"] = rescale(90,width,WIDTH),
+              ["height"] = rescale(80,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("647 -100", width, height),
+              ["fontSize"] = 60,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_speed_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
+              ["placeholder"] ="speed",
+              ["characterLimit"] ="2",
+              ["width"] = rescale(90,width,WIDTH),
+              ["height"] = rescale(80,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("827 -100", width, height),
+              ["fontSize"] = 60,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_hp_current_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
+              ["placeholder"] ="HP",
+              ["characterLimit"] ="3",
+              ["width"] = rescale(100,width,WIDTH),
+              ["height"] = rescale(65,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("490 -310", width, height),
+              ["fontSize"] = 45,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_hp_max_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
+              ["placeholder"] ="HP",
+              ["characterLimit"] ="3",
+              ["width"] = rescale(100,width,WIDTH),
+              ["height"] = rescale(65,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("660 -310", width, height),
+              ["fontSize"] = 45,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_hp_temp_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
+              ["placeholder"] ="HP",
+              ["characterLimit"] ="3",
+              ["width"] = rescale(100,width,WIDTH),
+              ["height"] = rescale(65,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("830 -310", width, height),
+              ["fontSize"] = 45,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_hit_dice_current_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
+              ["placeholder"] ="cur",
+              ["characterLimit"] ="2",
+              ["width"] = rescale(70,width,WIDTH),
+              ["height"] = rescale(65,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("510 -475", width, height),
+              ["fontSize"] = 45,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_hit_dice_d_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
+              ["placeholder"] ="D",
+              ["characterLimit"] ="2",
+              ["width"] = rescale(70,width,WIDTH),
+              ["height"] = rescale(65,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("600 -475", width, height),
+              ["fontSize"] = 45,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_str_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
+              ["placeholder"] ="str",
+              ["characterLimit"] ="2",
+              ["characterValidation"] ="Integer",
+              ["width"] = rescale(100,width,WIDTH),
+              ["height"] = rescale(65,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("30 -110", width, height),
+              ["fontSize"] = 45,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+              ["alignment"] ="3"
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_str_bonus_"..player.steam_id,
+              ["onClick"] = string.format("%s/rollAtt", functionOwnerGuid),
+              ["width"] = rescale(50,width,WIDTH),
+              ["height"] = rescale(50,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("55 -175", width, height),
+              ["fontSize"] = s,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_dex_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
+              ["placeholder"] ="dex",
+              ["characterLimit"] ="2",
+              ["characterValidation"] ="Integer",
+              ["width"] = rescale(100,width,WIDTH),
+              ["height"] = rescale(65,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("30 -278", width, height),
+              ["fontSize"] = 45,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_dex_bonus_"..player.steam_id,
+              ["onClick"] = string.format("%s/rollAtt", functionOwnerGuid),
+              ["width"] = rescale(50,width,WIDTH),
+              ["height"] = rescale(50,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("55 -345", width, height),
+              ["fontSize"] = s,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_con_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
+              ["placeholder"] ="con",
+              ["characterLimit"] ="2",
+              ["characterValidation"] ="Integer",
+              ["width"] = rescale(100,width,WIDTH),
+              ["height"] = rescale(65,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("30 -446", width, height),
+              ["fontSize"] = 45,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_con_bonus_"..player.steam_id,
+              ["onClick"] = string.format("%s/rollAtt", functionOwnerGuid),
+              ["width"] = rescale(50,width,WIDTH),
+              ["height"] = rescale(50,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("55 -513", width, height),
+              ["fontSize"] = s,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_int_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
+              ["placeholder"] ="int",
+              ["characterLimit"] ="2",
+              ["characterValidation"] ="Integer",
+              ["width"] = rescale(100,width,WIDTH),
+              ["height"] = rescale(65,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("30 -615", width, height),
+              ["fontSize"] = 45,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_int_bonus_"..player.steam_id,
+              ["onClick"] = string.format("%s/rollAtt", functionOwnerGuid),
+              ["width"] = rescale(50,width,WIDTH),
+              ["height"] = rescale(50,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("55 -680", width, height),
+              ["fontSize"] = s,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_wis_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
+              ["placeholder"] ="wis",
+              ["characterLimit"] ="2",
+              ["characterValidation"] ="Integer",
+              ["width"] = rescale(100,width,WIDTH),
+              ["height"] = rescale(65,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("30 -783", width, height),
+              ["fontSize"] = 45,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_wis_bonus_"..player.steam_id,
+              ["onClick"] = string.format("%s/rollAtt", functionOwnerGuid),
+              ["width"] = rescale(50,width,WIDTH),
+              ["height"] = rescale(50,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("55 -850", width, height),
+              ["fontSize"] = s,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_cha_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
+              ["placeholder"] ="cha",
+              ["characterLimit"] ="2",
+              ["characterValidation"] ="Integer",
+              ["width"] = rescale(100,width,WIDTH),
+              ["height"] = rescale(65,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("30 -952", width, height),
+              ["fontSize"] = 45,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_cha_bonus_"..player.steam_id,
+              ["onClick"] = string.format("%s/rollAtt", functionOwnerGuid),
+              ["width"] = rescale(50,width,WIDTH),
+              ["height"] = rescale(50,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("55 -1018", width, height),
+              ["fontSize"] = s,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_inspiration_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
+              ["placeholder"] =" ",
+              ["characterLimit"] ="1",
+              ["characterValidation"] ="Integer",
+              ["width"] = rescale(40,width,WIDTH),
+              ["height"] = rescale(40,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("180 -90", width, height),
+              ["fontSize"] = 24,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_proficiency_bonus_"..player.steam_id,
+              ["onEndEdit"] =string.format("%s/proficiencyChange", functionOwnerGuid),
+              ["placeholder"] =" ",
+              ["characterLimit"] ="1",
+              ["characterValidation"] ="Integer",
+              ["width"] = rescale(40,width,WIDTH),
+              ["height"] = rescale(40,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("183 -186", width, height),
+              ["fontSize"] = 24,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="ToggleButton",
+            ["attributes"] = {
+              ["id"] ="cs_st_str_toggle_"..player.steam_id,
+              ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
+              ["width"] = rescale(t, width, WIDTH),
+              ["height"] = rescale(t, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("194 -283", width, height),
+              ["fontSize"] = 24,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+              ["outline"] = "#000000",
+              ["outlineSize"] = "1 1",
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_st_str_bonus_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
+              ["width"] = rescale(40,width,WIDTH),
+              ["height"] = rescale(40,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("207 -269", width, height),
+              ["fontSize"] = 18,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="ToggleButton",
+            ["attributes"] = {
+              ["id"] ="cs_st_dex_toggle_"..player.steam_id,
+              ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
+              ["width"] = rescale(t, width, WIDTH),
+              ["height"] = rescale(t, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("194 -307", width, height),
+              ["fontSize"] = 24,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+              ["outline"] = "#000000",
+              ["outlineSize"] = "1 1",
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_st_dex_bonus_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
+              ["width"] = rescale(40,width,WIDTH),
+              ["height"] = rescale(40,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("207 -293", width, height),
+              ["fontSize"] = 18,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="ToggleButton",
+            ["attributes"] = {
+              ["id"] ="cs_st_con_toggle_"..player.steam_id,
+              ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
+              ["width"] = rescale(t, width, WIDTH),
+              ["height"] = rescale(t, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("194 -332", width, height),
+              ["fontSize"] = 24,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+              ["outline"] = "#000000",
+              ["outlineSize"] = "1 1",
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_st_con_bonus_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
+              ["width"] = rescale(40,width,WIDTH),
+              ["height"] = rescale(40,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("207 -318", width, height),
+              ["fontSize"] = 18,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="ToggleButton",
+            ["attributes"] = {
+              ["id"] ="cs_st_int_toggle_"..player.steam_id,
+              ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
+              ["width"] = rescale(t, width, WIDTH),
+              ["height"] = rescale(t, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("194 -356", width, height),
+              ["fontSize"] = 24,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+              ["outline"] = "#000000",
+              ["outlineSize"] = "1 1",
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_st_int_bonus_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
+              ["width"] = rescale(40,width,WIDTH),
+              ["height"] = rescale(40,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("207 -342", width, height),
+              ["fontSize"] = 18,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="ToggleButton",
+            ["attributes"] = {
+              ["id"] ="cs_st_wis_toggle_"..player.steam_id,
+              ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
+              ["width"] = rescale(t, width, WIDTH),
+              ["height"] = rescale(t, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("194 -381", width, height),
+              ["fontSize"] = 24,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+              ["outline"] = "#000000",
+              ["outlineSize"] = "1 1",
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_st_wis_bonus_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
+              ["width"] = rescale(40,width,WIDTH),
+              ["height"] = rescale(40,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("207 -366", width, height),
+              ["fontSize"] = 18,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="ToggleButton",
+            ["attributes"] = {
+              ["id"] ="cs_st_cha_toggle_"..player.steam_id,
+              ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
+              ["width"] = rescale(t, width, WIDTH),
+              ["height"] = rescale(t, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("194 -405", width, height),
+              ["fontSize"] = 24,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+              ["outline"] = "#000000",
+              ["outlineSize"] = "1 1",
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_st_cha_bonus_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
+              ["width"] = rescale(40,width,WIDTH),
+              ["height"] = rescale(40,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("207 -391", width, height),
+              ["fontSize"] = 18,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_acrobatics_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -464", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_acrobatics_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -462", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_animal_handling_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -494", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_animal_handling_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -491", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_arcana_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -523", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_arcana_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -520", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_athletics_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -553", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_athletics_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -550", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_deception_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -583", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_deception_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -579", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_history_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -612", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_history_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -609", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_insight_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -641", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_insight_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -638", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_intimidation_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -671", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_intimidation_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -668", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_investigation_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -700", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_investigation_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -697", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_medicine_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -730", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_medicine_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -727", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_nature_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -759", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_nature_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -756", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_perception_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -789", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_perception_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -786", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_performance_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -818", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_performance_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -815", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_persuasion_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -847", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_persuasion_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -844", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_religion_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -877", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_religion_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -874", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_sleight_of_hand_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -907", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_sleight_of_hand_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -904", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_stealth_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -936", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_stealth_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -933", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] ="cs_skill_survival_toggle_"..player.steam_id,
+              ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
+              ["image"] = "NOT_PROFICIENT",
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("200 -965", width, height),
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] ="cs_skill_survival_"..player.steam_id,
+              ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
+              ["width"] = rescale(25,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("222 -962", width, height),
+              ["fontSize"] = 15,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] ="cs_passive_perception_"..player.steam_id,
+              ["onValueChanged"] = string.format("%s/pcEditVal", functionOwnerGuid),
+              ["onEndEdit"] = string.format("%s/pcEditVal", functionOwnerGuid),
+              ["placeholder"] ="PP",
+              ["characterLimit"] ="2",
+              ["characterValidation"] ="Integer",
+              ["width"] = rescale(42,width,WIDTH),
+              ["height"] = rescale(36,height,HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("225 -995", width, height),
+              ["fontSize"] = 18,
+              ["resizeTextForBestFit"] = width ~= WIDTH,
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="ToggleButton",
+            ["attributes"] = {
+              ["id"] ="cs_death_save_success_1_"..player.steam_id,
+              ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
+              ["width"] = rescale(t, width, WIDTH),
+              ["height"] = rescale(t, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("851 -481", width, height),
+              ["outline"] = "#000000",
+              ["outlineSize"] = "2 2",
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="ToggleButton",
+            ["attributes"] = {
+              ["id"] ="cs_death_save_success_2_"..player.steam_id,
+              ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
+              ["width"] = rescale(t, width, WIDTH),
+              ["height"] = rescale(t, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("875 -481", width, height),
+              ["outline"] = "#000000",
+              ["outlineSize"] = "2 2",
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="ToggleButton",
+            ["attributes"] = {
+              ["id"] ="cs_death_save_success_3_"..player.steam_id,
+              ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
+              ["width"] = rescale(t, width, WIDTH),
+              ["height"] = rescale(t, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("900 -481", width, height),
+              ["outline"] = "#000000",
+              ["outlineSize"] = "2 2",
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="ToggleButton",
+            ["attributes"] = {
+              ["id"] ="cs_death_save_failure_1_"..player.steam_id,
+              ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
+              ["width"] = rescale(t, width, WIDTH),
+              ["height"] = rescale(t, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("851 -508", width, height),
+              ["outline"] = "#000000",
+              ["outlineSize"] = "2 2",
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="ToggleButton",
+            ["attributes"] = {
+              ["id"] ="cs_death_save_failure_2_"..player.steam_id,
+              ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
+              ["width"] = rescale(t, width, WIDTH),
+              ["height"] = rescale(t, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("875 -508", width, height),
+              ["outline"] = "#000000",
+              ["outlineSize"] = "2 2",
+            },
+            ["children"] = {}
+          },
+          {
+            ["tag"] ="ToggleButton",
+            ["attributes"] = {
+              ["id"] ="cs_death_save_failure_3_"..player.steam_id,
+              ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
+              ["width"] = rescale(t, width, WIDTH),
+              ["height"] = rescale(t, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("900 -508", width, height),
+              ["outline"] = "#000000",
+              ["outlineSize"] = "2 2",
+            },
+            ["children"] = {}
+          }
+        }
+      },
+      {
+        ["tag"] ="Panel",
+        ["attributes"] = {
+          ["id"] = "cs_page_2_"..player.steam_id,
+          ["active"] = false,
+        },
+        ["children"] = {
+          {
+            ["tag"] ="Image",
+            ["attributes"] = {
+              ["id"] = "cs_page_2_"..player.steam_id,
+              ["image"] = "CS_P2_4k",
+              ["raycastTarget"] = "true"
+            },
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] = "cs_attributes_and_talents_"..player.steam_id,
+              ["width"] = rescale(900, width, height),
+              ["height"] = rescale(950, width, height),
+            },
+          }
+        }
       },
       {
         ["tag"] ="Button",
@@ -248,1182 +1447,53 @@ function UIData.active_panel(player, active, functionOwnerGuid)
         ["children"] = {}
       },
       {
-        ["tag"] ="InputField",
+        ["tag"] ="Button",
         ["attributes"] = {
-          ["id"] ="cs_char_name_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
-          ["placeholder"] ="Name",
-          ["characterLimit"] ="60",
-          ["width"] = rescale(380,width,WIDTH),
-          ["height"] = rescale(42,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("68 -18", width, height),
-          ["fontSize"] = 25,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
+          ["id"] ="cs_page_change_r_"..player.steam_id,
+          ["width"] = rescale(s,width,WIDTH),
+          ["height"] = rescale(s,height,HEIGHT),
+          ["rectAlignment"] ="LowerRight",
+          ["offsetXY"] = xyOffset("-2 2", width, height),
+          ["onClick"] = string.format("%s/changeCSPage(1)", functionOwnerGuid),
+          ["sprite"] ="arrow_box_r"
         },
-        ["children"] = {}
       },
       {
-        ["tag"] ="InputField",
+        ["tag"] ="Button",
         ["attributes"] = {
-          ["id"] ="cs_level_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
-          ["placeholder"] ="lvl",
-          ["characterLimit"] ="2",
-          ["width"] = rescale(50,width,WIDTH),
-          ["height"] = rescale(42,height,HEIGHT),
-          ["rectAlignment"] ="UpperRight",
-          ["offsetXY"] = xyOffset("-380 -18", width, height),
-          ["fontSize"] = 25,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
+          ["id"] ="cs_page_change_l_"..player.steam_id,
+          ["width"] = rescale(s,width,WIDTH),
+          ["height"] = rescale(s,height,HEIGHT),
+          ["rectAlignment"] ="LowerRight",
+          ["offsetXY"] = xyOffset("-34 2", width, height),
+          ["onClick"] = string.format("%s/changeCSPage(-1)", functionOwnerGuid),
+          ["sprite"] ="arrow_box_l"
         },
-        ["children"] = {}
       },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_class_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
-          ["placeholder"] ="class",
-          ["characterLimit"] ="60",
-          ["width"] = rescale(230,width,WIDTH),
-          ["height"] = rescale(42,height,HEIGHT),
-          ["rectAlignment"] ="UpperRight",
-          ["offsetXY"] = xyOffset("-88 -18", width, height),
-          ["fontSize"] = 25,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_ac_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
-          ["placeholder"] ="ac",
-          ["characterLimit"] ="2",
-          ["width"] = rescale(60,width,WIDTH),
-          ["height"] = rescale(50,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("500 -110", width, height),
-          ["fontSize"] = 33,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_initiative_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
-          ["placeholder"] ="init",
-          ["characterLimit"] ="2",
-          ["width"] = rescale(90,width,WIDTH),
-          ["height"] = rescale(80,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("647 -100", width, height),
-          ["fontSize"] = 60,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_speed_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
-          ["placeholder"] ="speed",
-          ["characterLimit"] ="2",
-          ["width"] = rescale(90,width,WIDTH),
-          ["height"] = rescale(80,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("827 -100", width, height),
-          ["fontSize"] = 60,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_hp_current_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
-          ["placeholder"] ="HP",
-          ["characterLimit"] ="3",
-          ["width"] = rescale(100,width,WIDTH),
-          ["height"] = rescale(65,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("490 -310", width, height),
-          ["fontSize"] = 45,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_hp_max_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
-          ["placeholder"] ="HP",
-          ["characterLimit"] ="3",
-          ["width"] = rescale(100,width,WIDTH),
-          ["height"] = rescale(65,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("660 -310", width, height),
-          ["fontSize"] = 45,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_hp_temp_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
-          ["placeholder"] ="HP",
-          ["characterLimit"] ="3",
-          ["width"] = rescale(100,width,WIDTH),
-          ["height"] = rescale(65,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("830 -310", width, height),
-          ["fontSize"] = 45,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_hit_dice_current_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
-          ["placeholder"] ="cur",
-          ["characterLimit"] ="2",
-          ["width"] = rescale(70,width,WIDTH),
-          ["height"] = rescale(65,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("510 -475", width, height),
-          ["fontSize"] = 45,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_hit_dice_d_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
-          ["placeholder"] ="D",
-          ["characterLimit"] ="2",
-          ["width"] = rescale(70,width,WIDTH),
-          ["height"] = rescale(65,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("600 -475", width, height),
-          ["fontSize"] = 45,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_str_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
-          ["placeholder"] ="str",
-          ["characterLimit"] ="2",
-          ["characterValidation"] ="Integer",
-          ["width"] = rescale(100,width,WIDTH),
-          ["height"] = rescale(65,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("30 -110", width, height),
-          ["fontSize"] = 45,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-          ["alignment"] ="3"
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_str_bonus_"..player.steam_id,
-          ["onClick"] = string.format("%s/rollAtt", functionOwnerGuid),
-          ["width"] = rescale(50,width,WIDTH),
-          ["height"] = rescale(50,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("55 -175", width, height),
-          ["fontSize"] = s,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_dex_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
-          ["placeholder"] ="dex",
-          ["characterLimit"] ="2",
-          ["characterValidation"] ="Integer",
-          ["width"] = rescale(100,width,WIDTH),
-          ["height"] = rescale(65,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("30 -278", width, height),
-          ["fontSize"] = 45,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_dex_bonus_"..player.steam_id,
-          ["onClick"] = string.format("%s/rollAtt", functionOwnerGuid),
-          ["width"] = rescale(50,width,WIDTH),
-          ["height"] = rescale(50,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("55 -345", width, height),
-          ["fontSize"] = s,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_con_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
-          ["placeholder"] ="con",
-          ["characterLimit"] ="2",
-          ["characterValidation"] ="Integer",
-          ["width"] = rescale(100,width,WIDTH),
-          ["height"] = rescale(65,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("30 -446", width, height),
-          ["fontSize"] = 45,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_con_bonus_"..player.steam_id,
-          ["onClick"] = string.format("%s/rollAtt", functionOwnerGuid),
-          ["width"] = rescale(50,width,WIDTH),
-          ["height"] = rescale(50,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("55 -513", width, height),
-          ["fontSize"] = s,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_int_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
-          ["placeholder"] ="int",
-          ["characterLimit"] ="2",
-          ["characterValidation"] ="Integer",
-          ["width"] = rescale(100,width,WIDTH),
-          ["height"] = rescale(65,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("30 -615", width, height),
-          ["fontSize"] = 45,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_int_bonus_"..player.steam_id,
-          ["onClick"] = string.format("%s/rollAtt", functionOwnerGuid),
-          ["width"] = rescale(50,width,WIDTH),
-          ["height"] = rescale(50,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("55 -680", width, height),
-          ["fontSize"] = s,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_wis_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
-          ["placeholder"] ="wis",
-          ["characterLimit"] ="2",
-          ["characterValidation"] ="Integer",
-          ["width"] = rescale(100,width,WIDTH),
-          ["height"] = rescale(65,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("30 -783", width, height),
-          ["fontSize"] = 45,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_wis_bonus_"..player.steam_id,
-          ["onClick"] = string.format("%s/rollAtt", functionOwnerGuid),
-          ["width"] = rescale(50,width,WIDTH),
-          ["height"] = rescale(50,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("55 -850", width, height),
-          ["fontSize"] = s,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_cha_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/attributeChange", functionOwnerGuid),
-          ["placeholder"] ="cha",
-          ["characterLimit"] ="2",
-          ["characterValidation"] ="Integer",
-          ["width"] = rescale(100,width,WIDTH),
-          ["height"] = rescale(65,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("30 -952", width, height),
-          ["fontSize"] = 45,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_cha_bonus_"..player.steam_id,
-          ["onClick"] = string.format("%s/rollAtt", functionOwnerGuid),
-          ["width"] = rescale(50,width,WIDTH),
-          ["height"] = rescale(50,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("55 -1018", width, height),
-          ["fontSize"] = s,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_inspiration_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
-          ["placeholder"] =" ",
-          ["characterLimit"] ="1",
-          ["characterValidation"] ="Integer",
-          ["width"] = rescale(40,width,WIDTH),
-          ["height"] = rescale(40,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("180 -90", width, height),
-          ["fontSize"] = 24,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_proficiency_bonus_"..player.steam_id,
-          ["onEndEdit"] =string.format("%s/proficiencyChange", functionOwnerGuid),
-          ["placeholder"] =" ",
-          ["characterLimit"] ="1",
-          ["characterValidation"] ="Integer",
-          ["width"] = rescale(40,width,WIDTH),
-          ["height"] = rescale(40,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("183 -186", width, height),
-          ["fontSize"] = 24,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="ToggleButton",
-        ["attributes"] = {
-          ["id"] ="cs_st_str_toggle_"..player.steam_id,
-          ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
-          ["width"] = rescale(t, width, WIDTH),
-          ["height"] = rescale(t, height, HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("194 -283", width, height),
-          ["fontSize"] = 24,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-          ["outline"] = "#000000",
-          ["outlineSize"] = "1 1",
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_st_str_bonus_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
-          ["width"] = rescale(40,width,WIDTH),
-          ["height"] = rescale(40,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("207 -269", width, height),
-          ["fontSize"] = 18,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="ToggleButton",
-        ["attributes"] = {
-          ["id"] ="cs_st_dex_toggle_"..player.steam_id,
-          ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
-          ["width"] = rescale(t, width, WIDTH),
-          ["height"] = rescale(t, height, HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("194 -307", width, height),
-          ["fontSize"] = 24,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-          ["outline"] = "#000000",
-          ["outlineSize"] = "1 1",
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_st_dex_bonus_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
-          ["width"] = rescale(40,width,WIDTH),
-          ["height"] = rescale(40,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("207 -293", width, height),
-          ["fontSize"] = 18,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="ToggleButton",
-        ["attributes"] = {
-          ["id"] ="cs_st_con_toggle_"..player.steam_id,
-          ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
-          ["width"] = rescale(t, width, WIDTH),
-          ["height"] = rescale(t, height, HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("194 -332", width, height),
-          ["fontSize"] = 24,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-          ["outline"] = "#000000",
-          ["outlineSize"] = "1 1",
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_st_con_bonus_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
-          ["width"] = rescale(40,width,WIDTH),
-          ["height"] = rescale(40,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("207 -318", width, height),
-          ["fontSize"] = 18,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="ToggleButton",
-        ["attributes"] = {
-          ["id"] ="cs_st_int_toggle_"..player.steam_id,
-          ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
-          ["width"] = rescale(t, width, WIDTH),
-          ["height"] = rescale(t, height, HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("194 -356", width, height),
-          ["fontSize"] = 24,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-          ["outline"] = "#000000",
-          ["outlineSize"] = "1 1",
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_st_int_bonus_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
-          ["width"] = rescale(40,width,WIDTH),
-          ["height"] = rescale(40,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("207 -342", width, height),
-          ["fontSize"] = 18,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="ToggleButton",
-        ["attributes"] = {
-          ["id"] ="cs_st_wis_toggle_"..player.steam_id,
-          ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
-          ["width"] = rescale(t, width, WIDTH),
-          ["height"] = rescale(t, height, HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("194 -381", width, height),
-          ["fontSize"] = 24,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-          ["outline"] = "#000000",
-          ["outlineSize"] = "1 1",
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_st_wis_bonus_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
-          ["width"] = rescale(40,width,WIDTH),
-          ["height"] = rescale(40,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("207 -366", width, height),
-          ["fontSize"] = 18,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="ToggleButton",
-        ["attributes"] = {
-          ["id"] ="cs_st_cha_toggle_"..player.steam_id,
-          ["onValueChanged"] = string.format("%s/savingThrowToggle", functionOwnerGuid),
-          ["width"] = rescale(t, width, WIDTH),
-          ["height"] = rescale(t, height, HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("194 -405", width, height),
-          ["fontSize"] = 24,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-          ["outline"] = "#000000",
-          ["outlineSize"] = "1 1",
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_st_cha_bonus_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSavingThrow", functionOwnerGuid),
-          ["width"] = rescale(40,width,WIDTH),
-          ["height"] = rescale(40,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("207 -391", width, height),
-          ["fontSize"] = 18,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_acrobatics_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -464", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_acrobatics_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -462", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_animal_handling_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -494", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_animal_handling_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -491", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_arcana_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -523", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_arcana_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -520", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_athletics_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -553", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_athletics_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -550", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_deception_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -583", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_deception_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -579", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_history_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -612", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_history_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -609", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_insight_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -641", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_insight_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -638", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_intimidation_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -671", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_intimidation_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -668", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_investigation_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -700", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_investigation_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -697", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_medicine_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -730", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_medicine_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -727", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_nature_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -759", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_nature_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -756", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_perception_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -789", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_perception_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -786", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_performance_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -818", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_performance_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -815", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_persuasion_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -847", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_persuasion_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -844", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_religion_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -877", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_religion_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -874", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_sleight_of_hand_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -907", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_sleight_of_hand_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -904", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_stealth_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -936", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_stealth_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -933", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Image",
-        ["attributes"] = {
-          ["id"] ="cs_skill_survival_toggle_"..player.steam_id,
-          ["onClick"] =string.format("%s/skillToggle", functionOwnerGuid),
-          ["image"] = "NOT_PROFICIENT",
-          ["width"] = rescale(20,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("200 -965", width, height),
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="Text",
-        ["attributes"] = {
-          ["id"] ="cs_skill_survival_"..player.steam_id,
-          ["onClick"] =string.format("%s/rollSkillCheck", functionOwnerGuid),
-          ["width"] = rescale(25,width,WIDTH),
-          ["height"] = rescale(20,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("222 -962", width, height),
-          ["fontSize"] = 15,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="InputField",
-        ["attributes"] = {
-          ["id"] ="cs_passive_perception_"..player.steam_id,
-          ["onValueChanged"] = string.format("%s/pcEditVal", functionOwnerGuid),
-          ["onEndEdit"] = string.format("%s/pcEditVal", functionOwnerGuid),
-          ["placeholder"] ="PP",
-          ["characterLimit"] ="2",
-          ["characterValidation"] ="Integer",
-          ["width"] = rescale(42,width,WIDTH),
-          ["height"] = rescale(36,height,HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("225 -995", width, height),
-          ["fontSize"] = 18,
-          ["resizeTextForBestFit"] = width ~= WIDTH,
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="ToggleButton",
-        ["attributes"] = {
-          ["id"] ="cs_death_save_success_1_"..player.steam_id,
-          ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
-          ["width"] = rescale(t, width, WIDTH),
-          ["height"] = rescale(t, height, HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("851 -481", width, height),
-          ["outline"] = "#000000",
-          ["outlineSize"] = "2 2",
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="ToggleButton",
-        ["attributes"] = {
-          ["id"] ="cs_death_save_success_2_"..player.steam_id,
-          ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
-          ["width"] = rescale(t, width, WIDTH),
-          ["height"] = rescale(t, height, HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("875 -481", width, height),
-          ["outline"] = "#000000",
-          ["outlineSize"] = "2 2",
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="ToggleButton",
-        ["attributes"] = {
-          ["id"] ="cs_death_save_success_3_"..player.steam_id,
-          ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
-          ["width"] = rescale(t, width, WIDTH),
-          ["height"] = rescale(t, height, HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("900 -481", width, height),
-          ["outline"] = "#000000",
-          ["outlineSize"] = "2 2",
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="ToggleButton",
-        ["attributes"] = {
-          ["id"] ="cs_death_save_failure_1_"..player.steam_id,
-          ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
-          ["width"] = rescale(t, width, WIDTH),
-          ["height"] = rescale(t, height, HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("851 -508", width, height),
-          ["outline"] = "#000000",
-          ["outlineSize"] = "2 2",
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="ToggleButton",
-        ["attributes"] = {
-          ["id"] ="cs_death_save_failure_2_"..player.steam_id,
-          ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
-          ["width"] = rescale(t, width, WIDTH),
-          ["height"] = rescale(t, height, HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("875 -508", width, height),
-          ["outline"] = "#000000",
-          ["outlineSize"] = "2 2",
-        },
-        ["children"] = {}
-      },
-      {
-        ["tag"] ="ToggleButton",
-        ["attributes"] = {
-          ["id"] ="cs_death_save_failure_3_"..player.steam_id,
-          ["onValueChanged"] = string.format("%s/deathSaveToggle", functionOwnerGuid),
-          ["width"] = rescale(t, width, WIDTH),
-          ["height"] = rescale(t, height, HEIGHT),
-          ["rectAlignment"] ="UpperLeft",
-          ["offsetXY"] = xyOffset("900 -508", width, height),
-          ["outline"] = "#000000",
-          ["outlineSize"] = "2 2",
-        },
-        ["children"] = {}
-      }
     }
   }
 end
 
 UIData.uiAssets = {
   {
-    name = "Char_Sheet_1",
-    url = "http://cloud-3.steamusercontent.com/ugc/1769324497988994944/E334C29580485F0F98A183C3229F8C78265924E4/"
+    name = "CS_P1_4k",
+    url = "http://cloud-3.steamusercontent.com/ugc/1732178858692403147/D41FA033DE22CDACD9F93358C6506A95606E7105/"
   },
   {
     name = "Small_CS",
     url = "http://cloud-3.steamusercontent.com/ugc/1638705743368599986/C3470C738BB923739B5C8B6742B197735473356B/"
+  },
+  {
+    name = "CS_P2_4k",
+    url = "http://cloud-3.steamusercontent.com/ugc/1709661371285560859/7F4B35BF22945C750DEF8955CFC0C98D0371ABE9/"
+  },
+  {
+    name = "arrow_box_r",
+    url = "http://cloud-3.steamusercontent.com/ugc/1709661371285737036/A04567FD962E1923115CDF03E06A5BC083F0E099/"
+  },
+  {
+    name = "arrow_box_l",
+    url = "http://cloud-3.steamusercontent.com/ugc/1709661371285737375/ADF9723BFD62A739A42FE85515B3559FA5FE7D04/"
   },
   {
     name = "Red_X",
@@ -1431,20 +1501,20 @@ UIData.uiAssets = {
   },
   {
     name = "Dots_button",
-    url = "http://cloud-3.steamusercontent.com/ugc/1769324470151122974/4E0D36ABA5B1CF3A80EC15DB29BEE1FDEAB7FDC5/"
+    url = "http://cloud-3.steamusercontent.com/ugc/1732178858696540145/DD4B4D385541EFF9C27FA19779D93A649D6F6E47/"
   },
   {
     name = "NOT_PROFICIENT",
-    url = "http://cloud-3.steamusercontent.com/ugc/1769324497988718473/6463670C3CF4A8A3593DF81F60654A9B44B5F741/"
+    url = "http://cloud-3.steamusercontent.com/ugc/1732178858696574684/794AA0E42BDB2D7A4E65DA1CE6E85687C35363A3/"
   },
   {
     name = "PROFICIENT",
-    url = "http://cloud-3.steamusercontent.com/ugc/1769324497988719496/A3147C7B558B18048460CD435215E2391005C089/"
+    url = "http://cloud-3.steamusercontent.com/ugc/1732178858696567256/B1567F9E44534A3E1481FBF6D8E91B42BA888978/"
   },
   {
     name = "EXPERTISE",
     url = "http://cloud-3.steamusercontent.com/ugc/1769324497988719895/B4D78A9E9EE576F9332688B752B569E82F359260/"
-  }
+  },
 }
 
 return UIData

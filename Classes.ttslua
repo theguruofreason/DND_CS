@@ -105,6 +105,7 @@ DndCSClasses.skill_to_att = {
   survival = "wis"
 }
 
+-- Depricated
 DndCSClasses.PlayerData = {}
 function DndCSClasses.PlayerData:new(o)
   return setmetatable(o or {}, DndCSClasses.PlayerData)

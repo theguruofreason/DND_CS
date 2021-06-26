@@ -112,6 +112,8 @@ end
 function onLoad(save_state)
   Wait.condition(
   function ()
+  Wait.frames(
+  function ()
     if save_state ~= nil and save_state ~= "" then
       data = JSON.decode(save_state)
       if data.dndCS ~= nil then
@@ -136,9 +138,11 @@ function onLoad(save_state)
     setXml(xml)
     return true
   end,
+  2
+  ) end,
   ensureUiAssetsExist,
   30,
-  function () log("ensureUiAssetsExist timed out", "ERROR") end
+  function () log("ensureUiAssetsExist timed out.", "ERROR") end
   )
 end
 
@@ -308,13 +312,16 @@ function populateCharacterSheetUi(active_panel_xml, steam_id)
   local omissions = {
     "toggle_button_active",
     "advanced_options_toggle",
-    "cs_page_1"
+    "cs_page",
   }
   local elementIdToFunction = uiElementIdToFunction(steam_id)
-  for i, element in pairs(active_panel_xml.children) do
+  local function populateFields(element)
+    if element.children ~= nil then
+      for _, child in pairs(element.children) do populateFields(child) end
+    end
     if elementIdToFunction[element.attributes.id] ~= nil then
-      active_panel_xml.children[i] = elementIdToFunction[element.attributes.id](element)
-    else
+      element = elementIdToFunction[element.attributes.id](element)
+    elseif element.attributes.id ~= nil then
       local found = false
       for _, omission in ipairs(omissions) do
         if string.find(element.attributes.id, omission) then
@@ -327,6 +334,7 @@ function populateCharacterSheetUi(active_panel_xml, steam_id)
       end
     end
   end
+  populateFields(active_panel_xml)
   return active_panel_xml
 end
 
@@ -498,6 +506,17 @@ function calculateSavingThrowBonus(pc_data, att)
   math.floor(pc_data.attributes[att] / 2 - 5) +
   (pc_data.saves[att] == true and pc_data.proficiency_bonus or 0)
   )
+end
+
+function changeCSPage(player, pageMod)
+  local newPage = Data.pc_data[player.steam_id].cs_panel_page + pageMod
+  if newPage < 1 then newPage = UIData.numPages
+  elseif newPage > UIData.numPages then newPage = 1
+  end
+  Data.pc_data[player.steam_id].cs_panel_page = newPage
+  for i = 1, UIData.numPages do
+    UI.setAttribute(string.format("cs_page_%d_"..player.steam_id,i), "active", i == newPage)
+  end
 end
 
 -- # Advanced Options # --
