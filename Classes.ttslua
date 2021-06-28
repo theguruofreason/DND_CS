@@ -111,14 +111,34 @@ function DndCSClasses.PlayerData:new(o)
   return setmetatable(o or {}, DndCSClasses.PlayerData)
 end
 
+DndCSClasses.CharacterClass = {
+  defaults = {
+    {
+      className = "",
+      classLevel = 0,
+      hitDie = 0,
+      subClassName = "",
+    }
+  }
+}
+function DndCSClasses.CharacterClass:new(o)
+  return setmetatable(
+  o or {},
+  {
+    __index = function(table, key)
+      return DndCSClasses.CharacterClass.defaults[key]
+    end
+  })
+end
+
 DndCSClasses.PC = {
   defaults = {
     version = string.format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_FEATURE),
     cs_panel_active = false,
     cs_panel_page = 1,
     char_name = "",
-    level = 1,
-    class = "",
+    classes = {},
+    selected_class = 1,
     inspiration = 0,
     proficiency_bonus = 0,
     attributes = DndCSClasses.Attributes:new(),
@@ -141,8 +161,6 @@ DndCSClasses.PC = {
   },
   direct_editables = {
     "char_name",
-    "level",
-    "class",
     "inspiration",
     "proficiency_bonus",
     "passive_perception",

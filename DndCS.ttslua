@@ -50,6 +50,27 @@ end
 
 -- helper functions --
 
+function findElementById(xml, matchId)
+  function findElement(rootElement, id)
+    if rootElement.attributes ~= nil and rootElement.attributes.id == id then return rootElement end
+    if rootElement.children ~= nil then
+      for i, child in pairs(rootElement.children) do
+        local found = findElement(child, id)
+        if found ~= nil then return found end
+      end
+    end
+    return nil
+  end
+  for _, element in pairs(xml) do
+    local found = findElement(element, matchId)
+    if found ~= nil then return found end
+  end
+end
+
+function setElementById(xml, matchId)
+
+end
+
 function RGBToHex(rgb)
   if rgb ~= nil then
     return fs("[" .. "%02x%02x%02x", rgb[1]*255,rgb[2]*255,rgb[3]*255) .. "]"
@@ -284,6 +305,39 @@ function populateDeathSaveUi(pc_data, saveNum, successOrFailure)
   end
 end
 
+function populateClassUi(steam_id, pc_data)
+  return function(ui_element)
+    if #pc_data.classes == 0 then
+      table.insert(ui_element.children, {
+        tag = "Option",
+        value = "",
+        attributes = {
+          id = "cs_empty_class_"..steam_id
+        },
+        children = {}
+      })
+    end
+    for _, characterClass in pairs(pc_data.classes) do
+      table.insert(ui_element.children, {
+        tag = "Option",
+        value = characterClass.className,
+        attributes = {
+          id = "cs_"..characterClass.className.."_class_"..steam_id
+        },
+        children = {}
+      })
+    end
+    table.insert(ui_element.children, {
+      tag = "Option",
+      value = "New Class",
+      attributes = {
+        id = "cs_new_class_"..steam_id
+      },
+        children = {}
+    })
+  end
+end
+
 function uiElementIdToFunction(steam_id)
   pc_data = Data.pc_data[steam_id]
   functionLookupTable = {}
@@ -304,6 +358,7 @@ function uiElementIdToFunction(steam_id)
   for _, field_name in pairs(DndCSClasses.PC.direct_editables) do
     functionLookupTable["cs_"..field_name.."_"..steam_id] = populateFieldUi(pc_data, field_name)
   end
+  functionLookupTable["cs_class_dropdown_"..steam_id] = populateClassUi(steam_id, pc_data)
   return functionLookupTable
 end
 
@@ -519,6 +574,92 @@ function changeCSPage(player, pageMod)
   end
 end
 
+function classDropdownChange(player, option)
+  local pc_data = Data.pc_data[player.steam_id]
+  if UI.getAttribute("cs_class_entry_"..player.steam_id, "active") then
+    UI.hide("cs_class_entry_"..player.steam_id)
+  end
+  if option == "New Class" then
+    UI.show("cs_class_entry_"..player.steam_id)
+    pc_data.selected_class = #pc_data.classes + 1
+  else
+    for i, class in pairs(pc_data.classes) do
+      if class.className == option then
+        pc_data.selected_class = i
+        UI.setAttribute("cs_level_"..player.steam_id, "text", class.classLevel ~= nil and class.classLevel or 0)
+      end
+    end
+  end
+end
+
+function setClassName(player, name)
+  Data.pc_data[player.steam_id].temp_class_name = name
+end
+
+function setClassLevel(player, level)
+  Data.pc_data[player.steam_id].classes[Data.pc_data[player.steam_id].selected_class].classLevel = level
+end
+
+function saveNewClass(player)
+  local steam_id = player.steam_id
+  assert(Data.pc_data[steam_id].temp_class_name ~= nil, "Cannot save nil className!")
+  for _, class in pairs(Data.pc_data[steam_id].classes) do
+    if class.className == Data.pc_data[steam_id].temp_class_name then
+      log(fs("Class (%s) already exists for player (%s)!", class.className, player.steam_name), "ERROR")
+      return
+    end
+  end
+  local xml = UI.getXmlTable()
+  local classOptions = findElementById(xml, "cs_class_dropdown_"..steam_id).children
+  log(classOptions)
+  if classOptions[1].value == nil then table.remove(classOptions, 1) end
+  for i, element in pairs(classOptions) do
+    if element.attributes.id == "cs_new_class_"..steam_id then
+      local tempNewClassOption = element
+      classOptions[i] = {
+        tag = "Option",
+        value = Data.pc_data[player.steam_id].temp_class_name,
+        attributes = {
+          id = "cs_"..Data.pc_data[player.steam_id].temp_class_name.."_class_"..steam_id
+        }
+      }
+      table.insert(classOptions, tempNewClassOption)
+      break
+    end
+  end
+  local pc_data = Data.pc_data[steam_id]
+  table.insert(pc_data.classes, DndCSClasses.CharacterClass:new({
+    className = Data.pc_data[player.steam_id].temp_class_name,
+  }))
+  Data.pc_data[player.steam_id].temp_class_name = nil
+  Data.pc_data[player.steam_id].selected_class = 1
+  setXml(xml)
+  UI.setAttribute("cs_empty_class_"..steam_id, "active", false)
+  UI.hide("cs_class_entry_"..steam_id)
+  UI.setAttribute("cs_level_"..steam_id, "text", 0)
+end
+
+function removeClass(player)
+  local pc_data = Data.pc_data[player.steam_id]
+  if pc_data.selected_class == #pc_data.classes + 1 then return end
+  local xml = UI.getXmlTable()
+  local classOptions = findElementById(xml, "cs_class_dropdown_"..player.steam_id).children
+  table.remove(classOptions, pc_data.selected_class)
+  table.remove(pc_data.classes, pc_data.selected_class)
+  pc_data.selected_class = pc_data.selected_class - 1
+  if #classOptions == 1 then
+    table.insert(classOptions, 1, {
+        tag = "Option",
+        value = "",
+        attributes = {
+          id = "cs_empty_class_"..player.steam_id
+        },
+        children = {}
+      })
+  end
+  setXml(xml)
+end
+
 -- # Advanced Options # --
 
 function setCharSheetUrl(player, val)
@@ -581,14 +722,27 @@ function parseCharacterSheet(player)
     end
     log(fs("%s: %s", att, tostring(pc_data.saves[att])), "DEBUG")
   end
-  if charData.hp[1].hp_current ~= nil then pc_data.hp_current = charData.hp[1].hp_current end
-  if charData.hp[1].hp_max ~= nil then pc_data.hp_max = charData.hp[1].hp_max end
+  if charData.hp ~= nil then
+    if charData.hp[1].hp_current ~= nil then pc_data.hp_current = charData.hp[1].hp_current end
+    if charData.hp[1].hp_max ~= nil then pc_data.hp_max = charData.hp[1].hp_max end
+  end
   if charData.characteristics[1].speed then pc_data.speed = charData.characteristics[1].speed end
   local features_and_traits = ""
   for _, info in pairs(charData.traits) do
     features_and_traits = features_and_traits..info.."\n"
   end
   pc_data.features_and_traits = features_and_traits
+  if charData.classes ~= nil then
+    pc_data.classes = {}
+    for _, classData in pairs(charData.classes) do
+      pc_data.classes:insert(DndCSClasses.CharacterClass:new({
+        className = classData["class-name"],
+        classLevel = classData["class-level"],
+        hitDie = classData["hit-die"],
+        subClassName = classData["subclass-name"]
+      }))
+    end
+  end
   Data.pc_data[player.steam_id] = pc_data
   xml = UI.getXmlTable()
   active_panel = {}

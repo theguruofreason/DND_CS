@@ -69,6 +69,66 @@ UIData.skills = enum{
   "survival"
 }
 
+function UIData.newClassEntry(player, functionOwnerGuid)
+  return {
+    tag = "Panel",
+    attributes = {
+      id = "cs_class_entry_"..player.steam_id,
+      width = 400,
+      height = 50,
+      active = false,
+    },
+    children = {
+      {
+        tag = "Image",
+        attributes = {
+          width = "100%",
+          height = "100%",
+          raycastTarget = true,
+          image = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAA1BMVEX///+nxBvIAAAASElEQVR4nO3BgQAAAADDoPlTX+AIVQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwDcaiAAFXD1ujAAAAAElFTkSuQmCC",
+          outline = "#000000",
+        }
+      },
+      {
+        tag = "HorizontalLayout",
+        attributes = {
+          rectAlignment = "UpperLeft",
+          offsetXY = "5 -10",
+          width = "90%",
+          height = "90%",
+          spacing = 5,
+          childForceExpandHeight = false,
+        },
+        children = {
+          {
+            tag = "InputField",
+            id = "character_sheet_import_text_" .. player.steam_id,
+            attributes = {
+              flexibleWidth = 12,
+              preferredHeight = s,
+              onEndEdit = string.format("%s/setClassName", functionOwnerGuid),
+              placeholder = "Class Name",
+              resizeTextForBestFit = true,
+            },
+          },
+          {
+            tag = "Button",
+            id = "import_character_sheet_button_" .. player.steam_id,
+            attributes = {
+              flexibleWidth = 1,
+              minWidth = 20,
+              preferredHeight = s,
+              onClick = string.format("%s/saveNewClass", functionOwnerGuid),
+              text = "save",
+              resizeTextForBestFit = true,
+            }
+          }
+        }
+      }
+    }
+  }
+end
+
 function UIData.uiPanel(player)
   return {
     tag = "Panel",
@@ -248,7 +308,7 @@ function UIData.active_panel(player, active, functionOwnerGuid)
             ["tag"] ="InputField",
             ["attributes"] = {
               ["id"] ="cs_level_"..player.steam_id,
-              ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
+              ["onEndEdit"] =string.format("%s/setClassLevel", functionOwnerGuid),
               ["placeholder"] ="lvl",
               ["characterLimit"] ="2",
               ["width"] = rescale(50,width,WIDTH),
@@ -261,12 +321,10 @@ function UIData.active_panel(player, active, functionOwnerGuid)
             ["children"] = {}
           },
           {
-            ["tag"] ="InputField",
+            ["tag"] ="Dropdown",
             ["attributes"] = {
-              ["id"] ="cs_class_"..player.steam_id,
-              ["onEndEdit"] =string.format("%s/pcEditVal", functionOwnerGuid),
-              ["placeholder"] ="class",
-              ["characterLimit"] ="60",
+              ["id"] ="cs_class_dropdown_"..player.steam_id,
+              ["onValueChanged"] =string.format("%s/classDropdownChange", functionOwnerGuid),
               ["width"] = rescale(230,width,WIDTH),
               ["height"] = rescale(42,height,HEIGHT),
               ["rectAlignment"] ="UpperRight",
@@ -275,6 +333,20 @@ function UIData.active_panel(player, active, functionOwnerGuid)
               ["resizeTextForBestFit"] = width ~= WIDTH,
             },
             ["children"] = {}
+          },
+          {
+            ["tag"] ="Button",
+            ["attributes"] = {
+              ["id"] = "cs_remove_class"..player.steam_id,
+              ["onClick"] =string.format("%s/removeClass", functionOwnerGuid),
+              ["width"] = rescale(20,width,WIDTH),
+              ["height"] = rescale(20,height,HEIGHT),
+              ["rectAlignment"] ="UpperRight",
+              ["offsetXY"] = xyOffset("-68 -28", width, height),
+              ["resizeTextForBestFit"] = true,
+              ["color"] = "#ff0000",
+              ["text"] = "-",
+            },
           },
           {
             ["tag"] ="InputField",
@@ -1411,6 +1483,16 @@ function UIData.active_panel(player, active, functionOwnerGuid)
             },
           },
           {
+            ["tag"] ="Text",
+            ["attributes"] = {
+              ["id"] = "cs_features_and_traits_header_"..player.steam_id,
+              ["fontSize"] = rescale(m,width,WIDTH),
+              ["text"] = "Features and Traits",
+              ["alignment"] = "UpperCenter",
+              ["offsetXY"] = xyOffset("0 -30", width, height),
+            }
+          },
+          {
             ["tag"] ="InputField",
             ["attributes"] = {
               ["id"] = "cs_features_and_traits_"..player.steam_id,
@@ -1429,7 +1511,7 @@ function UIData.active_panel(player, active, functionOwnerGuid)
           ["width"] = rescale(s,width,WIDTH),
           ["height"] = rescale(s,height,HEIGHT),
           ["rectAlignment"] ="UpperRight",
-          ["offsetXY"] = "-2 -2",
+          ["offsetXY"] = xyOffset("-2 -2", width, height),
           ["onClick"] = string.format("%s/toggleCSPane", functionOwnerGuid),
           ["sprite"] ="Red_X"
         },
@@ -1472,6 +1554,7 @@ function UIData.active_panel(player, active, functionOwnerGuid)
           ["sprite"] ="arrow_box_l"
         },
       },
+      UIData.newClassEntry(player, functionOwnerGuid),
     }
   }
 end
