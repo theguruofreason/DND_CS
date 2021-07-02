@@ -81,9 +81,17 @@ end
 function enforceSchema(pc_data)
   for key, _ in pairs(pc_data) do
     if DndCSClasses.PC.defaults[key] == nil then
+      log(fs("Field not found in schema, removing: %s", key), "DEBUG")
       pc_data[key] = nil
     end
   end
+  for key, val in pairs(DndCSClasses.PC.defaults) do
+    if pc_data[key] == nil then
+      log(fs("Field absent from loaded data, populating default: \"%s\"", key))
+      pc_data[key] = val
+    end
+  end
+  return pc_data
 end
 
 function setXml(xml_table)
@@ -104,8 +112,7 @@ end
 -- sys functions --
 
 function onSave()
-  data = {dndCS = Data}
-  save_data = JSON.encode(data)
+  save_data = JSON.encode_pretty(Data)
   return save_data
 end
 
@@ -116,10 +123,10 @@ function onLoad(save_state)
   function ()
     if save_state ~= nil and save_state ~= "" then
       data = JSON.decode(save_state)
-      if data.dndCS ~= nil then
-        Data = maybeUpdateData(data.dndCS)
-        for i, pc in pairs(Data.pc_data) do
-          Data[i] = enforceSchema(pc)
+      if data ~= nil then
+        Data = maybeUpdateData(data)
+        for id, pc in pairs(Data.pc_data) do
+          Data.pc_data[id] = enforceSchema(pc)
           setmetatable(pc, {
             __index = function(table, key)
               return DndCSClasses.PC.defaults[key]
@@ -308,7 +315,7 @@ function uiElementIdToFunction(steam_id)
 end
 
 function populateCharacterSheetUi(active_panel_xml, steam_id)
-  player_data = Data.pc_data[steam_id]
+  local player_data = Data.pc_data[steam_id]
   local omissions = {
     "toggle_button_active",
     "advanced_options_toggle",
@@ -519,6 +526,11 @@ function changeCSPage(player, pageMod)
   end
 end
 
+function setFeaturesAndTraits(player, val)
+  local pc_data = Data.pc_data[player.steam_id]
+  pc_data.features_and_traits = val
+end
+
 -- # Advanced Options # --
 
 function setCharSheetUrl(player, val)
@@ -538,6 +550,7 @@ function importCharacterSheet(player, mouse_button, tag_id)
     end
     Data.player_data[player.steam_id].characterSheetJson = getRequest.text
     parseCharacterSheet(player)
+    Data.player_data[player.steam_id].characterSheetJson = nil
     return 1
   end
   startLuaCoroutine(self, "waitForGetCharacterSheet")
@@ -548,13 +561,14 @@ function parseCharacterSheet(player)
   if data.schema_version ~= 1 then log("Schema version not 1. This may not work...", "WARN") end
   local charData = data.character[1]
   local pc_data = Data.pc_data[player.steam_id]
-  pc_data.passive_perception = (charData.passive_perception ~= nil and charData.passive_perception) or 0
-  pc_data.ac = (charData.ac ~= nil and charData.ac) or 0
-  pc_data.proficiency_bonus = (charData.proficiency_bonus ~= nil and tonumber(charData.proficiency_bonus)) or 0
-  pc_data.char_name = (charData.character_name ~= nil and charData.character_name) or ""
-  pc_data.initiative = (charData.initiative_bonus ~= nil and charData.initiative_bonus) or 0
+  if charData.passive_perception ~= nil then pc_data.passive_perception = charData.passive_perception end
+  if charData.ac ~= nil then pc_data.ac = charData.ac end
+  if charData.proficiency_bonus ~= nil then pc_data.proficiency_bonus = tonumber(charData.proficiency_bonus) end
+  if charData.character_name ~= nil then pc_data.char_name = charData.character_name end
+  if charData.initiative_bonus ~= nil then pc_data.initiative = charData.initiative_bonus end
   for att, val in pairs(charData["abilities_bonuses"][1]["abilities"]) do
     pc_data.attributes[att] = val
+    log(fs("%s: %d", att, pc_data.attributes[att]), "DEBUG")
   end
   for skill, val in pairs(charData.skills) do
     skill = skill:gsub("-", "_")

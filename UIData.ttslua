@@ -1414,6 +1414,7 @@ function UIData.active_panel(player, active, functionOwnerGuid)
             ["tag"] ="InputField",
             ["attributes"] = {
               ["id"] = "cs_features_and_traits_"..player.steam_id,
+              ["onEndEdit"] = string.format("%s/setFeaturesAndTraits", functionOwnerGuid),
               ["width"] = rescale(900, width, height),
               ["height"] = rescale(950, width, height),
               ["lineType"] = "MultiLineNewLine",
