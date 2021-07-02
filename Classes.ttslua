@@ -23,13 +23,11 @@ DndCSClasses.Attributes = {
   }
 }
 function DndCSClasses.Attributes:new(o)
-  return setmetatable(
-  o or {},
-  {
-    __index = function(table, key)
-      return DndCSClasses.Attributes.defaults[key]
-    end
-  })
+  o = o or {}
+  for att, val in pairs(self.defaults) do
+    if o[att] == nil then o[att] = val end
+  end
+  return o
 end
 
 DndCSClasses.Saves = {
@@ -43,13 +41,11 @@ DndCSClasses.Saves = {
   }
 }
 function DndCSClasses.Saves:new(o)
-  return setmetatable(
-  o or {},
-  {
-    __index = function(table, key)
-      return DndCSClasses.Saves.defaults[key]
-    end
-  })
+  o = o or {}
+  for att, val in pairs(self.defaults) do
+    if o[att] == nil then o[att] = val end
+  end
+  return o
 end
 
 DndCSClasses.Skills = {
@@ -75,13 +71,11 @@ DndCSClasses.Skills = {
   }
 }
 function DndCSClasses.Skills:new(o)
-  return setmetatable(
-  o or {},
-  {
-    __index = function(table, key)
-      return DndCSClasses.Skills.defaults[key]
-    end
-  })
+  o = o or {}
+  for att, val in pairs(self.defaults) do
+    if o[att] == nil then o[att] = val end
+  end
+  return o
 end
 
 DndCSClasses.skill_to_att = {
@@ -160,12 +154,11 @@ DndCSClasses.PC = {
   }
 }
 function DndCSClasses.PC:new(o)
-  return setmetatable(o or {},
-  {
-    __index = function(table, key)
-      return DndCSClasses.PC.defaults[key]
-    end
-  })
+  o = o or {}
+  for att, val in pairs(self.defaults) do
+    if o[att] == nil then o[att] = val end
+  end
+  return o
 end
 
 return DndCSClasses
