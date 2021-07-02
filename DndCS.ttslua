@@ -276,7 +276,8 @@ end
 function populateFieldUi(pc_data, field_name)
   return function(ui_element)
     if field_name == "initiative" then
-      ui_element.attributes.text = (pc_data[field_name] > 0 and "+"..pc_data[field_name]) or pc_data[field_name]
+      local init = tonumber(pc_data[field_name])
+      ui_element.attributes.text = (init > 0 and "+"..init) or init
       return ui_element
     end
     ui_element.attributes.text = pc_data[field_name]
