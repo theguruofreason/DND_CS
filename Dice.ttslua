@@ -178,9 +178,9 @@ function Dice.monitorDice(steamId)
       end
       coroutine.yield(0)
     until resting == true or start_time + ROLL_TIMEOUT < os.time()
-    Dice.RollStatuses[steamId].rolling = false
+    rollStatus.rolling = false
     Dice.announceRoll(steamId)
-    Dice.RollStatuses[steamId].cleanupTimer = Dice.cleanupDice(rollStatus.dice, steamId)
+    rollStatus.cleanupTimer = Dice.cleanupDice(rollStatus.dice, steamId)
     return 1
   end
   startLuaCoroutine(self, "coroutine_monitorDice")

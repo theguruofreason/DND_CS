@@ -1,4 +1,3 @@
-local Version = require("/DndCS/Version")
 local Logging = require("/DndCS/BetterLogging")
 local enum = require("/DndCS/Enum")
 local log = Logging.log
@@ -105,9 +104,53 @@ function DndCSClasses.PlayerData:new(o)
   return setmetatable(o or {}, DndCSClasses.PlayerData)
 end
 
+DndCSClasses.DiceVal = {
+  defaults = {
+    sides = 6,
+    num = 1,
+    bonus = 0,
+  }
+}
+function DndCSClasses.DiceVal:new(o)
+  o = o or {}
+  for key, val in pairs(DndCSClasses.DiceVal.defaults) do
+    if o[key] == nil then o[key] = val end
+  end
+  return o
+end
+function DndCSClasses.DiceVal:parseFromString(input)
+  local pattern = "(%d+)d(%d+)%s*([+,-])%s*(%d+)"
+  numDice, diceSides, plusOrMinus, bonus = input:match(pattern)
+  if not numDice or not diceSides then
+    if input ~= "" then log(string.format("Invalid damage entry: \"%s\". Must be format \"XdY + Z\".", input), "WARN") end
+    return
+  end
+  bonus = bonus or 0
+  return self:new({
+    sides = diceSides,
+    num = numDice,
+    bonus = tonumber(plusOrMinus..bonus),
+  })
+end
+
+DndCSClasses.Attack = {
+  defaults = {
+    name = "",
+    toHitBonus = 0,
+    damage = DndCSClasses.DiceVal:new(),
+    type = ""
+  }
+}
+function DndCSClasses.Attack:new(o)
+  o = o or {}
+  for key, val in pairs(DndCSClasses.Attack.defaults) do
+    if o[key] == nil then o[key] = val end
+  end
+  return o
+end
+
 DndCSClasses.PC = {
   defaults = {
-    version = string.format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_FEATURE),
     cs_panel_active = false,
     cs_panel_page = 1,
     char_name = "",
@@ -130,7 +173,11 @@ DndCSClasses.PC = {
     hit_dice_d = 8,
     death_save_successes = 0,
     death_save_failures = 0,
-    attacks = {},
+    attacks = {
+      DndCSClasses.Attack:new(),
+      DndCSClasses.Attack:new(),
+      DndCSClasses.Attack:new(),
+    },
     features_and_traits = "",
   },
   direct_editables = {

@@ -1,3 +1,32 @@
-VERSION_MAJOR = 0
-VERSION_MINOR = 1
-VERSION_FEATURE = 0
+local DndCSClasses = require("/DndCS/Classes")
+Version = {}
+Version.VERSION_MAJOR = 0
+Version.VERSION_MINOR = 1
+Version.VERSION_FEATURE = 0
+Version.vString = string.format("%d.%d.%d", Version.VERSION_MAJOR, Version.VERSION_MINOR, Version.VERSION_FEATURE)
+
+Version.updateFuncs = {}
+
+-- 0.1.0 -> 0.1.1 --
+function Version.update010to011()
+  return function (pc_data)
+    pc_data.attacks = {
+      DndCSClasses.Attack:new(),
+      DndCSClasses.Attack:new(),
+      DndCSClasses.Attack:new(),
+    }
+    pc_data.version = "0.1.1"
+    return pc_data
+  end
+end
+Version.updateFuncs["0.1.0"] = Version.update010to011()
+
+function Version.updatePCData(pc_data)
+  if not pc_data.version then pc_data.version = "0.1.0" end
+  while Version.updateFuncs[pc_data.version] ~= nil do
+    pc_data = Version.updateFuncs[pc_data.version](pc_data)
+  end
+  return pc_data
+end
+
+return Version

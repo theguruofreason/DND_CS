@@ -1392,6 +1392,186 @@ function UIData.active_panel(player, active, functionOwnerGuid)
               ["outlineSize"] = "2 2",
             },
             ["children"] = {}
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] = "cs_attack_1_"..player.steam_id,
+              ["onEndEdit"] = string.format("%s/changeAttackName", functionOwnerGuid),
+              ["width"] = rescale(395, width, WIDTH),
+              ["height"] = rescale(s, height, HEIGHT),
+              ["placeholder"] = "attack name",
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("512 -650", width, height),
+              ["colors"] = "#E2E2E2|#FFFFFF|#C8C8C8",
+              ["resizeTextForBestFit"] = true,
+            }
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] = "cs_attack_bonus_1_"..player.steam_id,
+              ["onEndEdit"] = string.format("%s/changeAttackBonus", functionOwnerGuid),
+              ["width"] = rescale(95, width, WIDTH),
+              ["height"] = rescale(s, height, HEIGHT),
+              ["characterValidation"] = "Integer",
+              ["characterLimit"] = 6,
+              ["placeholder"] = "to-hit bonus",
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("512 -712", width, height),
+              ["colors"] = "#E2E2E2|#FFFFFF|#C8C8C8",
+              ["resizeTextForBestFit"] = true,
+            }
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] = "cs_attack_damage_1_"..player.steam_id,
+              ["onEndEdit"] = string.format("%s/changeAttackDamage", functionOwnerGuid),
+              ["width"] = rescale(90, width, WIDTH),
+              ["height"] = rescale(s, height, HEIGHT),
+              ["placeholder"] = "damage",
+              ["characterLimit"] = 10,
+              ["tooltip"] = "Enter damage in format \"XdY + Z\"",
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("625 -712", width, height),
+              ["colors"] = "#E2E2E2|#FFFFFF|#C8C8C8",
+              ["resizeTextForBestFit"] = true,
+            }
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] = "cs_attack_damage_type_1_"..player.steam_id,
+              ["onEndEdit"] = string.format("%s/changeAttackDamageType", functionOwnerGuid),
+              ["width"] = rescale(180, width, WIDTH),
+              ["height"] = rescale(s, height, HEIGHT),
+              ["placeholder"] = "damage type",
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("725 -712", width, height),
+              ["colors"] = "#E2E2E2|#FFFFFF|#C8C8C8",
+              ["resizeTextForBestFit"] = true,
+            }
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] = "cs_attack_2_"..player.steam_id,
+              ["onEndEdit"] = string.format("%s/changeAttackName", functionOwnerGuid),
+              ["width"] = rescale(395, width, WIDTH),
+              ["height"] = rescale(s, height, HEIGHT),
+              ["placeholder"] = "attack name",
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("512 -774", width, height),
+              ["colors"] = "#E2E2E2|#FFFFFF|#C8C8C8",
+              ["resizeTextForBestFit"] = true,
+            }
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] = "cs_attack_bonus_2_"..player.steam_id,
+              ["onEndEdit"] = string.format("%s/changeAttackBonus", functionOwnerGuid),
+              ["width"] = rescale(95, width, WIDTH),
+              ["height"] = rescale(s, height, HEIGHT),
+              ["characterValidation"] = "Integer",
+              ["characterLimit"] = 6,
+              ["placeholder"] = "to-hit bonus",
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("512 -835", width, height),
+              ["colors"] = "#E2E2E2|#FFFFFF|#C8C8C8",
+              ["resizeTextForBestFit"] = true,
+            }
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] = "cs_attack_damage_2_"..player.steam_id,
+              ["onEndEdit"] = string.format("%s/changeAttackDamage", functionOwnerGuid),
+              ["width"] = rescale(90, width, WIDTH),
+              ["height"] = rescale(s, height, HEIGHT),
+              ["placeholder"] = "damage",
+              ["characterLimit"] = 10,
+              ["tooltip"] = "Enter damage in format \"XdY + Z\"",
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("625 -835", width, height),
+              ["colors"] = "#E2E2E2|#FFFFFF|#C8C8C8",
+              ["resizeTextForBestFit"] = true,
+            }
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] = "cs_attack_damage_type_2_"..player.steam_id,
+              ["onEndEdit"] = string.format("%s/changeAttackDamageType", functionOwnerGuid),
+              ["width"] = rescale(180, width, WIDTH),
+              ["height"] = rescale(s, height, HEIGHT),
+              ["placeholder"] = "damage type",
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("725 -835", width, height),
+              ["colors"] = "#E2E2E2|#FFFFFF|#C8C8C8",
+              ["resizeTextForBestFit"] = true,
+            }
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] = "cs_attack_3_"..player.steam_id,
+              ["onEndEdit"] = string.format("%s/changeAttackName", functionOwnerGuid),
+              ["width"] = rescale(395, width, WIDTH),
+              ["height"] = rescale(s, height, HEIGHT),
+              ["placeholder"] = "attack name",
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("512 -901", width, height),
+              ["colors"] = "#E2E2E2|#FFFFFF|#C8C8C8",
+              ["resizeTextForBestFit"] = true,
+            }
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] = "cs_attack_bonus_3_"..player.steam_id,
+              ["onEndEdit"] = string.format("%s/changeAttackBonus", functionOwnerGuid),
+              ["width"] = rescale(95, width, WIDTH),
+              ["height"] = rescale(s, height, HEIGHT),
+              ["characterValidation"] = "Integer",
+              ["characterLimit"] = 6,
+              ["placeholder"] = "to-hit bonus",
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("512 -963", width, height),
+              ["colors"] = "#E2E2E2|#FFFFFF|#C8C8C8",
+              ["resizeTextForBestFit"] = true,
+            }
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] = "cs_attack_damage_3_"..player.steam_id,
+              ["onEndEdit"] = string.format("%s/changeAttackDamage", functionOwnerGuid),
+              ["width"] = rescale(90, width, WIDTH),
+              ["height"] = rescale(s, height, HEIGHT),
+              ["placeholder"] = "damage",
+              ["characterLimit"] = 10,
+              ["tooltip"] = "Enter damage in format \"XdY + Z\"",
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("625 -963", width, height),
+              ["colors"] = "#E2E2E2|#FFFFFF|#C8C8C8",
+              ["resizeTextForBestFit"] = true,
+            }
+          },
+          {
+            ["tag"] ="InputField",
+            ["attributes"] = {
+              ["id"] = "cs_attack_damage_type_3_"..player.steam_id,
+              ["onEndEdit"] = string.format("%s/changeAttackDamageType", functionOwnerGuid),
+              ["width"] = rescale(180, width, WIDTH),
+              ["height"] = rescale(s, height, HEIGHT),
+              ["placeholder"] = "damage type",
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("725 -963", width, height),
+              ["colors"] = "#E2E2E2|#FFFFFF|#C8C8C8",
+              ["resizeTextForBestFit"] = true,
+            }
           }
         }
       },
