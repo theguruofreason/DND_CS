@@ -289,6 +289,34 @@ function populateDeathSaveUi(pc_data, saveNum, successOrFailure)
   end
 end
 
+function populateAttackNameUi(pc_data, num)
+  return function(ui_element)
+    ui_element.value = pc_data.attacks[num].name
+    return ui_element
+  end
+end
+
+function populateAttackToHitUi(pc_data, num)
+  return function(ui_element)
+    ui_element.value = pc_data.attacks[num].toHitBonus
+    return ui_element
+  end
+end
+
+function populateAttackDamageUi(pc_data, num)
+  return function(ui_element)
+    ui_element.value = DndCSClasses.DiceVal:toString(pc_data.attacks[num].damage)
+    return ui_element
+  end
+end
+
+function populateAttackDamageTypeUi(pc_data, num)
+  return function(ui_element)
+    ui_element.value = pc_data.attacks[num].type
+    return ui_element
+  end
+end
+
 function uiElementIdToFunction(steam_id)
   pc_data = Data.pc_data[steam_id]
   functionLookupTable = {}
@@ -305,6 +333,10 @@ function uiElementIdToFunction(steam_id)
   for i=1,3 do
     functionLookupTable[fs("cs_death_save_failure_%d_%s", i, steam_id)] = populateDeathSaveUi(pc_data, i, "death_save_failures")
     functionLookupTable[fs("cs_death_save_success_%d_%s", i, steam_id)] = populateDeathSaveUi(pc_data, i, "death_save_successes")
+    functionLookupTable[fs("cs_attack_%d_%s", i, steam_id)] = populateAttackNameUi(pc_data, i)
+    functionLookupTable[fs("cs_attack_bonus_%d_%s", i, steam_id)] = populateAttackToHitUi(pc_data, i)
+    functionLookupTable[fs("cs_attack_damage_%d_%s", i, steam_id)] = populateAttackDamageUi(pc_data, i)
+    functionLookupTable[fs("cs_attack_damage_type_%d_%s", i, steam_id)] = populateAttackDamageTypeUi(pc_data, i)
   end
   for _, field_name in pairs(DndCSClasses.PC.direct_editables) do
     functionLookupTable["cs_"..field_name.."_"..steam_id] = populateFieldUi(pc_data, field_name)
@@ -318,6 +350,8 @@ function populateCharacterSheetUi(active_panel_xml, steam_id)
     "toggle_button_active",
     "advanced_options_toggle",
     "cs_page",
+    "damage_roll",
+    "hit_roll"
   }
   local elementIdToFunction = uiElementIdToFunction(steam_id)
   local function populateFields(element)
@@ -530,28 +564,63 @@ function setFeaturesAndTraits(player, val)
 end
 
 function changeAttackName(player, val, id)
-  attackNum, _ = tonumber(id:match("_([1-3])_"))
-  val = val or ""
+  local attackNum, _ = tonumber(id:match("_([1-3])_"))
+  local val = val or ""
   Data.pc_data[player.steam_id].attacks[attackNum].name = val
   log(Data.pc_data[player.steam_id].attacks)
 end
 
 function changeAttackBonus(player, val, id)
-  attackNum, _ = tonumber(id:match("_([1-3])_"))
-  val = val or 0
-  Data.pc_data[player.steam_id].attacks[attackNum].toHitBonus = val
+  local attackNum, _ = tonumber(id:match("_([1-3])_"))
+  local val = val or 0
+  Data.pc_data[player.steam_id].attacks[attackNum].toHitBonus = tonumber(val)
 end
 
 function changeAttackDamage(player, val, id)
-  attackNum, _ = tonumber(id:match("_([1-3])_"))
-  val = val or ""
+  local attackNum, _ = tonumber(id:match("_([1-3])_"))
+  local val = val or ""
   Data.pc_data[player.steam_id].attacks[attackNum].damage = DndCSClasses.DiceVal:parseFromString(val)
 end
 
 function changeAttackDamageType(player, val, id)
-  attackNum, _ = tonumber(id:match("_([1-3])_"))
-  val = val or ""
+  local attackNum, _ = tonumber(id:match("_([1-3])_"))
+  local val = val or ""
   Data.pc_data[player.steam_id].attacks[attackNum].type = val
+end
+
+function rollHit(player, _, id)
+  local attackNum, _ = tonumber(id:match("_([1-3])_"))
+  local attack = Data.pc_data[player.steam_id].attacks[attackNum]
+  if attack.name == "" or attack.name == nil or attack.toHitBonus == nil then
+    log(fs("%s tried to roll to hit with attack %d, but attack is invalid.", player.steam_name, attackNum))
+    return
+  end
+  local message = fs(RGBToHex(stringColorToRGB(player.color)).."%s[-] rolled to hit with %s: ", player.steam_name, attack.name)
+  Dice.click(player.steam_id, Dice.DIE_TYPE[20], Dice.RollStatus:new({
+    message = message,
+    bonus = tonumber(attack.toHitBonus),
+    baseTransform = player.getHandTransform(),
+    allowMultiroll = true,
+    individualBonus = true,
+    showMaxMin = true
+  }))
+end
+
+function rollDamage(player, _, id)
+  local attackNum, _ = tonumber(id:match("_([1-3])_"))
+  local attack = Data.pc_data[player.steam_id].attacks[attackNum]
+  if attack.name == "" or attack.name == nil or attack.damage.num == nil or attack.damage.num < 1 then
+    log(fs("%s tried to roll to hit with attack %d, but attack is invalid.", player.steam_name, attackNum))
+    log(attack)
+    return
+  end
+  local message = fs(RGBToHex(stringColorToRGB(player.color)).."%s[-] attacks with %s for %s damage: ", player.steam_name, attack.name, attack.type)
+  Dice.rollMany(player.steam_id, Dice.DIE_TYPE[attack.damage.sides], Dice.RollStatus:new({
+        message = message,
+        bonus = tonumber(attack.damage.bonus),
+        baseTransform = player.getHandTransform(),
+        showTotal = true,
+      }), attack.damage.num)
 end
 
 -- # Advanced Options # --

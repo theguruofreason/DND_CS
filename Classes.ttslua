@@ -127,10 +127,17 @@ function DndCSClasses.DiceVal:parseFromString(input)
   end
   bonus = bonus or 0
   return self:new({
-    sides = diceSides,
-    num = numDice,
+    sides = tonumber(diceSides),
+    num = tonumber(numDice),
     bonus = tonumber(plusOrMinus..bonus),
   })
+end
+function DndCSClasses.DiceVal:toString(diceVal)
+  local diceString = string.format("%dd%d", diceVal.num, diceVal.sides)
+  if diceVal.bonus ~= 0 then
+    diceString = diceString .. (diceVal.bonus > 0 and " + " or " - ") .. diceVal.bonus
+  end
+  return diceString
 end
 
 DndCSClasses.Attack = {
@@ -151,6 +158,7 @@ end
 
 DndCSClasses.PC = {
   defaults = {
+    version = "0.1.0",
     cs_panel_active = false,
     cs_panel_page = 1,
     char_name = "",

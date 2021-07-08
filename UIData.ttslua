@@ -1394,6 +1394,30 @@ function UIData.active_panel(player, active, functionOwnerGuid)
             ["children"] = {}
           },
           {
+            ["tag"] ="Button",
+            ["attributes"] = {
+              ["id"] = "cs_attack_1_hit_roll_"..player.steam_id,
+              ["onClick"] = string.format("%s/rollHit", functionOwnerGuid),
+              ["width"] = rescale(25, width, WIDTH),
+              ["height"] = rescale(25, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("565 -623", width, height),
+              ["sprite"] = "Die",
+            }
+          },
+          {
+            ["tag"] ="Button",
+            ["attributes"] = {
+              ["id"] = "cs_attack_1_damage_roll_"..player.steam_id,
+              ["onClick"] = string.format("%s/rollDamage", functionOwnerGuid),
+              ["width"] = rescale(25, width, WIDTH),
+              ["height"] = rescale(25, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("595 -623", width, height),
+              ["sprite"] = "Explosion_32",
+            }
+          },
+          {
             ["tag"] ="InputField",
             ["attributes"] = {
               ["id"] = "cs_attack_1_"..player.steam_id,
@@ -1468,6 +1492,30 @@ function UIData.active_panel(player, active, functionOwnerGuid)
             }
           },
           {
+            ["tag"] ="Button",
+            ["attributes"] = {
+              ["id"] = "cs_attack_2_hit_roll_"..player.steam_id,
+              ["onClick"] = string.format("%s/rollHit", functionOwnerGuid),
+              ["width"] = rescale(25, width, WIDTH),
+              ["height"] = rescale(25, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("565 -747", width, height),
+              ["sprite"] = "Die",
+            }
+          },
+          {
+            ["tag"] ="Button",
+            ["attributes"] = {
+              ["id"] = "cs_attack_2_damage_roll_"..player.steam_id,
+              ["onClick"] = string.format("%s/rollDamage", functionOwnerGuid),
+              ["width"] = rescale(25, width, WIDTH),
+              ["height"] = rescale(25, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("595 -747", width, height),
+              ["sprite"] = "Explosion_32",
+            }
+          },
+          {
             ["tag"] ="InputField",
             ["attributes"] = {
               ["id"] = "cs_attack_bonus_2_"..player.steam_id,
@@ -1525,6 +1573,30 @@ function UIData.active_panel(player, active, functionOwnerGuid)
               ["offsetXY"] = xyOffset("512 -901", width, height),
               ["colors"] = "#E2E2E2|#FFFFFF|#C8C8C8",
               ["resizeTextForBestFit"] = true,
+            }
+          },
+          {
+            ["tag"] ="Button",
+            ["attributes"] = {
+              ["id"] = "cs_attack_3_hit_roll_"..player.steam_id,
+              ["onClick"] = string.format("%s/rollHit", functionOwnerGuid),
+              ["width"] = rescale(25, width, WIDTH),
+              ["height"] = rescale(25, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("565 -874", width, height),
+              ["sprite"] = "Die",
+            }
+          },
+          {
+            ["tag"] ="Button",
+            ["attributes"] = {
+              ["id"] = "cs_attack_3_damage_roll_"..player.steam_id,
+              ["onClick"] = string.format("%s/rollDamage", functionOwnerGuid),
+              ["width"] = rescale(25, width, WIDTH),
+              ["height"] = rescale(25, height, HEIGHT),
+              ["rectAlignment"] ="UpperLeft",
+              ["offsetXY"] = xyOffset("595 -874", width, height),
+              ["sprite"] = "Explosion_32",
             }
           },
           {
@@ -1648,9 +1720,10 @@ function UIData.active_panel(player, active, functionOwnerGuid)
           ["width"] = rescale(s,width,WIDTH),
           ["height"] = rescale(s,height,HEIGHT),
           ["rectAlignment"] ="LowerRight",
-          ["offsetXY"] = xyOffset("-34 2", width, height),
+          ["rotation"] = "0 0 180",
+          ["offsetXY"] = xyOffset("-64 32", width, height),
           ["onClick"] = string.format("%s/changeCSPage(-1)", functionOwnerGuid),
-          ["sprite"] ="arrow_box_l"
+          ["sprite"] ="arrow_box_r"
         },
       },
     }
@@ -1675,10 +1748,6 @@ UIData.uiAssets = {
     url = "http://cloud-3.steamusercontent.com/ugc/1709661371285737036/A04567FD962E1923115CDF03E06A5BC083F0E099/"
   },
   {
-    name = "arrow_box_l",
-    url = "http://cloud-3.steamusercontent.com/ugc/1709661371285737375/ADF9723BFD62A739A42FE85515B3559FA5FE7D04/"
-  },
-  {
     name = "Red_X",
     url = "https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Red_x.svg/1024px-Red_x.svg.png"
   },
@@ -1697,6 +1766,14 @@ UIData.uiAssets = {
   {
     name = "EXPERTISE",
     url = "http://cloud-3.steamusercontent.com/ugc/1769324497988719895/B4D78A9E9EE576F9332688B752B569E82F359260/"
+  },
+  {
+    name = "Die",
+    url = "http://cloud-3.steamusercontent.com/ugc/1709662497869284424/00337D3F80CF13330446EE4C95202BBBEB4EE3AA/"
+  },
+  {
+    name = "Explosion_32",
+    url = "http://cloud-3.steamusercontent.com/ugc/1709662497869315151/7896109DFF98165FD9D9528A4DDF2A1ED8B70468/"
   },
 }
 

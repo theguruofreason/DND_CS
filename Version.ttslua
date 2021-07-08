@@ -10,6 +10,7 @@ Version.updateFuncs = {}
 -- 0.1.0 -> 0.1.1 --
 function Version.update010to011()
   return function (pc_data)
+    log("Updating to version 0.1.1")
     pc_data.attacks = {
       DndCSClasses.Attack:new(),
       DndCSClasses.Attack:new(),
