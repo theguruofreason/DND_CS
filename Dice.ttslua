@@ -99,6 +99,21 @@ end
 
 -- Main Functions --
 
+function Dice.rollMany(steamId, newDieType, rollStatus, dieNum)
+  rollStatus.allowMultiroll = true
+  function click_coroutine()
+    i = 0
+    repeat
+      Dice.click(steamId, newDieType, rollStatus)
+      i = i + 1
+      coroutine.yield(0)
+    until i == dieNum
+    Dice.RollStatuses[steamId].allowMultiroll = false
+    return 1
+  end
+  startLuaCoroutine(self, "click_coroutine")
+end
+
 function Dice.click(steamId, newDieType, rollStatus)
   if Dice.RollStatuses[steamId] == nil then
     Dice.RollStatuses[steamId] = rollStatus
@@ -124,7 +139,10 @@ function Dice.click(steamId, newDieType, rollStatus)
   "Cannot generate roll with no baseTransform."
   )
   if (MAX_DICE > 0 and #rollStatus.dice >= MAX_DICE) or
-  ((#rollStatus.dice > 0) and (not rollStatus.allowMultiroll)) then return end
+  ((#rollStatus.dice > 0) and (not rollStatus.allowMultiroll)) then
+    log("Multiroll prevented.", "INFO")
+    return
+  end
   local yRot = rollStatus.baseTransform.rotation.y
   for i, die in ipairs(rollStatus.dice) do
     die.setPositionSmooth(rollStatus.baseTransform.position + calcDiePosOffsetInRow(i, #rollStatus.dice + 1, yRot), false, true)
@@ -195,15 +213,17 @@ function Dice.announceRoll(steamId)
   local rolls = {}
 
   for i, die in ipairs(dice) do
-    local value = die.getValue()
-    total = total + value
-    table.insert(rolls, (rollStatus.bonus and rollStatus.individualBonus and (value + bonus) or value))
-    message = message..(rollStatus.colorDie and RGBToHex(die.getColorTint())..value.."[-]" or value)
-    if #rollStatus.dice > 1 and rollStatus.individualBonus and rollStatus.bonus ~= 0 then
-      message = message..string.format(" ("..(bonus >= 0 and "+%d) = %d" or "%d) = %d"), bonus, value + bonus)
+    if die ~= nil then
+      local value = die.getValue()
+      total = total + value
+      table.insert(rolls, (rollStatus.bonus and rollStatus.individualBonus and (value + bonus) or value))
+      message = message..(rollStatus.colorDie and RGBToHex(die.getColorTint())..value.."[-]" or value)
+      if #rollStatus.dice > 1 and rollStatus.individualBonus and rollStatus.bonus ~= 0 then
+        message = message..string.format(" ("..(bonus >= 0 and "+%d) = %d" or "%d) = %d"), bonus, value + bonus)
+      end
+      if rollStatus.individualBonus then total = total + bonus end
+      message = message..(i ~= #dice and ", " or "")
     end
-    if rollStatus.individualBonus then total = total + bonus end
-    message = message..(i ~= #dice and ", " or "")
   end
   if rollStatus.bonus ~= 0 and (not rollStatus.individualBonus or #rollStatus.dice == 1) then
     message = message .. string.format(" ("..(bonus >= 0 and "+%d)" or "%d)"), bonus)
@@ -231,7 +251,7 @@ function Dice.cleanupDice(dice, steamId)
   return Wait.time(
   function()
     for _, die in pairs(dice) do
-      die.destruct()
+      if die ~= nil then die.destruct() end
     end
     Dice.RollStatuses[steamId] = nil
   end,
