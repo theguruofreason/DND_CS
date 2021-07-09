@@ -593,6 +593,8 @@ function rollHit(player, _, id)
   local attack = Data.pc_data[player.steam_id].attacks[attackNum]
   if attack.name == "" or attack.name == nil or attack.toHitBonus == nil then
     log(fs("%s tried to roll to hit with attack %d, but attack is invalid.", player.steam_name, attackNum))
+    broadcastToColor(fs("You tried to roll to to hit with attack %d, but the attack is invalid. Name and To-Hit Bonus are required. See chat for details.", attackNum), player.color)
+    printToColor(logString(attack), player.color)
     return
   end
   local message = fs(RGBToHex(stringColorToRGB(player.color)).."%s[-] rolled to hit with %s: ", player.steam_name, attack.name)
@@ -609,9 +611,10 @@ end
 function rollDamage(player, _, id)
   local attackNum, _ = tonumber(id:match("_([1-3])_"))
   local attack = Data.pc_data[player.steam_id].attacks[attackNum]
-  if attack.name == "" or attack.name == nil or attack.damage.num == nil or attack.damage.num < 1 then
+  if attack.name == nil or attack.name == "" or attack.damage.num == nil or attack.damage.num < 1 then
     log(fs("%s tried to roll to hit with attack %d, but attack is invalid.", player.steam_name, attackNum))
-    log(attack)
+    broadcastToColor(fs("You tried to roll to damage with attack %d, but the attack is invalid. Name and damage are required. See chat for details.", attackNum), player.color)
+    printToColor(logString(attack), player.color)
     return
   end
   local message = fs(RGBToHex(stringColorToRGB(player.color)).."%s[-] attacks with %s for %s damage: ", player.steam_name, attack.name, attack.type)
