@@ -119,13 +119,16 @@ function DndCSClasses.DiceVal:new(o)
   return o
 end
 function DndCSClasses.DiceVal:parseFromString(input)
-  local pattern = "(%d+)d(%d+)%s*([+,-])%s*(%d+)"
-  numDice, diceSides, plusOrMinus, bonus = input:match(pattern)
-  if not numDice or not diceSides then
+  local diePattern = "(%d+)d(%d+)"
+  local bonusPattern = "([+,-])%s*(%d+)"
+  local dieStart, _, numDice, diceSides = input:find(diePattern)
+  local bonusStart, _, plusOrMinus, bonus = input:find(bonusPattern)
+  if numDice == nil or diceSides == nil or (bonusStart and (bonusStart <= dieStart)) then
     if input ~= "" then log(string.format("Invalid damage entry: \"%s\". Must be format \"XdY + Z\".", input), "WARN") end
     return
   end
   bonus = bonus or 0
+  plusOrMinus = plusOrMinus or ""
   return self:new({
     sides = tonumber(diceSides),
     num = tonumber(numDice),
