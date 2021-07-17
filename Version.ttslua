@@ -2,12 +2,13 @@ local DndCSClasses = require("/DndCS/Classes")
 Version = {}
 Version.VERSION_MAJOR = 0
 Version.VERSION_MINOR = 1
-Version.VERSION_FEATURE = 0
+Version.VERSION_FEATURE = 1
 Version.vString = string.format("%d.%d.%d", Version.VERSION_MAJOR, Version.VERSION_MINOR, Version.VERSION_FEATURE)
 
 Version.updateFuncs = {}
 
 -- 0.1.0 -> 0.1.1 --
+-- Add Attacks --
 function Version.update010to011()
   return function (pc_data)
     log("Updating to version 0.1.1")
