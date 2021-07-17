@@ -1,5 +1,6 @@
 local Logging = require("/DndCS/BetterLogging")
 local enum = require("/DndCS/Enum")
+local Dice = require("/DndCS/Dice")
 local log = Logging.log
 
 -- DnDCS classes --
@@ -125,7 +126,11 @@ function DndCSClasses.DiceVal:parseFromString(input)
   local bonusStart, _, plusOrMinus, bonus = input:find(bonusPattern)
   if numDice == nil or diceSides == nil or (bonusStart and (bonusStart <= dieStart)) then
     if input ~= "" then log(string.format("Invalid damage entry: \"%s\". Must be format \"XdY + Z\".", input), "WARN") end
-    return
+    numDice = 0
+    diceSides = 0
+  end
+  if Dice.DIE_TYPE[diceSides] == nil then
+    log(string.format("Die type not found for attack damage entry: (%s).", diceSides), "WARN")
   end
   bonus = bonus or 0
   plusOrMinus = plusOrMinus or ""

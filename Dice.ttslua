@@ -8,10 +8,10 @@ Dice = {}
 Dice.RollStatus = {
   rolling = false,
   dice = {},
-  waiting_to_roll = false,
   message = "",
   bonus = 0,
   allowMultiroll = false,
+  allowedDiceTypes = {},
   onlyAnnounceToColor = nil,
   timerName = nil,
   cleanupTimer = nil,
@@ -21,22 +21,22 @@ Dice.RollStatus = {
   maxMin = false,
   colorDie = true
 }
-function Dice.RollStatus:new(o)
-  return setmetatable(
-  o or {},
-  {
-    __index = function(table, key)
-      return Dice.RollStatus[key]
-    end
-  })
-end
 function Dice.RollStatus:mergeFrom(o)
-    assert(o.__index == Dice.RollStatus.__index, "Cannot merge non-RollStatus with RollStatus.")
-    for key, val in pairs(o) do
+  assert(o.__index == Dice.RollStatus.__index, "Cannot merge non-RollStatus with RollStatus.")
+  for key, val in pairs(o) do
+    if key ~= "dice" then
       self.key = val
     end
   end
--- Note that this will only merge set values, not values from metatable
+end
+function Dice.RollStatus:new(o)
+  o = o or {}
+  for key, val in pairs(Dice.RollStatus) do
+    if o[key] == nil then o[key] = val end
+  end
+  return o
+end
+-- Note that this will only merge set values.
 
 -- Globals --
 
@@ -44,7 +44,7 @@ ROLL_DELAY = 2
 MULTIROLL_DELAY = 0.1
 ROLL_TIMEOUT = 10
 DICE_CLEANUP_DELAY = 5
-MAX_DICE = 10 -- WARNING: Set to 0 responsibly.
+MAX_DICE = 20 -- WARNING: Set to 0 responsibly.
 MAX_WIDTH = 10
 XYZ_OFFSET = Vector()
 
@@ -117,32 +117,33 @@ end
 function Dice.click(steamId, newDieType, rollStatus)
   if Dice.RollStatuses[steamId] == nil then
     Dice.RollStatuses[steamId] = rollStatus
-  else
-    if Dice.RollStatuses[steamId].rolling then return end
-    if (
-    (#Dice.RollStatuses[steamId].dice) and
-    (Dice.RollStatuses[steamId].cleanupTimer)) then
-      for _, die in pairs(Dice.RollStatuses[steamId].dice) do
-        die.destruct()
-      end
-      Wait.stop(Dice.RollStatuses[steamId].cleanupTimer)
-      Dice.RollStatuses[steamId] = rollStatus
-    elseif (rollStatus.allowMultiroll) then
-      Dice.RollStatuses[steamId]:mergeFrom(rollStatus)
-    else
-      return
-    end
   end
-  local rollStatus = Dice.RollStatuses[steamId]
+  if (MAX_DICE > 0 and #Dice.RollStatuses[steamId] + 1 >= MAX_DICE) or
+  ((#Dice.RollStatuses[steamId] > 0) and (not Dice.RollStatuses[steamId].allowMultiroll)) then
+    log("Multiroll prevented.", "INFO")
+    return
+  end
   assert(
   rollStatus.baseTransform ~= nil,
   "Cannot generate roll with no baseTransform."
   )
-  if (MAX_DICE > 0 and #rollStatus.dice >= MAX_DICE) or
-  ((#rollStatus.dice > 0) and (not rollStatus.allowMultiroll)) then
-    log("Multiroll prevented.", "INFO")
+  if Dice.RollStatuses[steamId] ~= nil and Dice.RollStatuses[steamId].allowedDiceTypes[newDieType] == nil then
+    log(string.format("Roll with disallowed die type (%s) prevented.", newDieType), "INFO")
     return
   end
+  if Dice.RollStatuses[steamId].rolling then return end
+  if ((#Dice.RollStatuses[steamId].dice) and (Dice.RollStatuses[steamId].cleanupTimer)) then
+    for _, die in pairs(Dice.RollStatuses[steamId].dice) do
+      die.destruct()
+    end
+    Wait.stop(Dice.RollStatuses[steamId].cleanupTimer)
+    Dice.RollStatuses[steamId] = rollStatus
+  elseif (Dice.RollStatuses[steamId].allowMultiroll) then
+    Dice.RollStatuses[steamId]:mergeFrom(rollStatus)
+  else
+    return
+  end
+  local rollStatus = Dice.RollStatuses[steamId]
   local yRot = rollStatus.baseTransform.rotation.y
   for i, die in ipairs(rollStatus.dice) do
     die.setPositionSmooth(rollStatus.baseTransform.position + calcDiePosOffsetInRow(i, #rollStatus.dice + 1, yRot), false, true)
@@ -186,10 +187,12 @@ function Dice.monitorDice(steamId)
   rollStatus = Dice.RollStatuses[steamId]
   function coroutine_monitorDice()
     local start_time = os.time()
+    local numInvalidDie = 0
     repeat
       local resting = true
       for _, die in ipairs(rollStatus.dice) do
-        if die ~= nil and die.resting == false then
+        if die == nil then numInvalidDie = numInvalidDie + 1
+        elseif die.resting == false then
           resting = false
           break
         end
@@ -197,6 +200,7 @@ function Dice.monitorDice(steamId)
       coroutine.yield(0)
     until resting == true or start_time + ROLL_TIMEOUT < os.time()
     rollStatus.rolling = false
+    if numInvalidDie == #rollStatus.dice then return 1 end
     Dice.announceRoll(steamId)
     rollStatus.cleanupTimer = Dice.cleanupDice(rollStatus.dice, steamId)
     return 1

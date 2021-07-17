@@ -468,6 +468,7 @@ function rollAtt(player, mouse_button, tag_id)
     bonus = bonus,
     baseTransform = player.getHandTransform(),
     allowMultiroll = true,
+    allowedDiceTypes = {[Dice.DIE_TYPE[20]] = true},
     individualBonus = true,
     showMaxMin = true
   }))
@@ -483,6 +484,7 @@ function rollSavingThrow(player, mouse_button, tag_id)
     bonus = bonus,
     baseTransform = player.getHandTransform(),
     allowMultiroll = true,
+    allowedDiceTypes = {[Dice.DIE_TYPE[20]] = true},
     individualBonus = true,
     showMaxMin = true
   }))
@@ -498,6 +500,7 @@ function rollSkillCheck(player, mouse_button, tag_id)
     bonus = bonus,
     baseTransform = player.getHandTransform(),
     allowMultiroll = true,
+    allowedDiceTypes = {[Dice.DIE_TYPE[20]] = true},
     individualBonus = true,
     showMaxMin = true
   }))
@@ -593,7 +596,7 @@ function rollHit(player, _, id)
   local attack = Data.pc_data[player.steam_id].attacks[attackNum]
   if attack.name == "" or attack.name == nil or attack.toHitBonus == nil then
     log(fs("%s tried to roll to hit with attack %d, but attack is invalid.", player.steam_name, attackNum))
-    broadcastToColor(fs("You tried to roll to to hit with attack %d, but the attack is invalid. Name and To-Hit Bonus are required. See chat for details.", attackNum), player.color)
+    broadcastToColor(fs("You tried to roll to to hit with attack %d, but the attack is invalid. Name and To-Hit Bonus are required. See chat details.", attackNum), player.color)
     printToColor(logString(attack), player.color)
     return
   end
@@ -603,6 +606,7 @@ function rollHit(player, _, id)
     bonus = tonumber(attack.toHitBonus),
     baseTransform = player.getHandTransform(),
     allowMultiroll = true,
+    allowedDiceTypes = {[Dice.DIE_TYPE[20]] = true},
     individualBonus = true,
     showMaxMin = true
   }))
@@ -611,9 +615,24 @@ end
 function rollDamage(player, _, id)
   local attackNum, _ = tonumber(id:match("_([1-3])_"))
   local attack = Data.pc_data[player.steam_id].attacks[attackNum]
-  if attack.name == nil or attack.name == "" or attack.damage.num == nil or attack.damage.num < 1 then
-    log(fs("%s tried to roll to hit with attack %d, but attack is invalid.", player.steam_name, attackNum))
-    broadcastToColor(fs("You tried to roll to damage with attack %d, but the attack is invalid. Name and damage are required. See chat for details.", attackNum), player.color)
+  local errMsg = fs("You tried to roll to damage with attack %d, but the attack is invalid.", attackNum)
+  local error = false
+  log(attack)
+  if attack.name == nil or attack.name == "" then
+    errMsg = errMsg .. "\nAttack name is cannot be blank."
+    error = true
+  end
+  if attack.damage.num == nil or attack.damage.num < 1 then
+    errMsg = errMsg .. "\nDamage is required with at least one die."
+    error = true
+  end
+  if Dice.DIE_TYPE[attack.damage.sides] == nil then
+    errMsg = errMsg .. "\nEntered die type is invalid."
+    error = true
+  end
+  if error then
+    log(fs("%s tried to roll to hit with attack %d, but the attack is invalid.", player.steam_name, attackNum))
+    broadcastToColor(errMsg .. "\nSee chat for details.", player.color)
     printToColor(logString(attack), player.color)
     return
   end
