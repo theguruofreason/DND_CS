@@ -127,20 +127,17 @@ function Dice.click(steamId, newDieType, rollStatus)
   rollStatus.baseTransform ~= nil,
   "Cannot generate roll with no baseTransform."
   )
-  if Dice.RollStatuses[steamId] ~= nil and Dice.RollStatuses[steamId].allowedDiceTypes[newDieType] == nil then
-    log(string.format("Roll with disallowed die type (%s) prevented.", newDieType), "INFO")
-    return
-  end
   if Dice.RollStatuses[steamId].rolling then return end
   if ((#Dice.RollStatuses[steamId].dice) and (Dice.RollStatuses[steamId].cleanupTimer)) then
-    for _, die in pairs(Dice.RollStatuses[steamId].dice) do
-      die.destruct()
-    end
-    Wait.stop(Dice.RollStatuses[steamId].cleanupTimer)
+    Dice.cleanupDice(steamId)
     Dice.RollStatuses[steamId] = rollStatus
   elseif (Dice.RollStatuses[steamId].allowMultiroll) then
     Dice.RollStatuses[steamId]:mergeFrom(rollStatus)
   else
+    return
+  end
+  if Dice.RollStatuses[steamId] ~= nil and #Dice.RollStatuses[steamId].allowedDiceTypes ~= 0 and Dice.RollStatuses[steamId].allowedDiceTypes[newDieType] == nil then
+    log(string.format("Roll with disallowed die type (%s) prevented.", newDieType), "INFO")
     return
   end
   local rollStatus = Dice.RollStatuses[steamId]
@@ -202,7 +199,7 @@ function Dice.monitorDice(steamId)
     rollStatus.rolling = false
     if numInvalidDie == #rollStatus.dice then return 1 end
     Dice.announceRoll(steamId)
-    rollStatus.cleanupTimer = Dice.cleanupDice(rollStatus.dice, steamId)
+    rollStatus.cleanupTimer = Wait.time(function () Dice.cleanupDice(steamId) end, DICE_CLEANUP_DELAY)
     return 1
   end
   startLuaCoroutine(self, "coroutine_monitorDice")
@@ -251,16 +248,13 @@ function Dice.announceRoll(steamId)
   end
 end
 
-function Dice.cleanupDice(dice, steamId)
-  return Wait.time(
-  function()
-    for _, die in pairs(dice) do
-      if die ~= nil then die.destruct() end
-    end
-    Dice.RollStatuses[steamId] = nil
-  end,
-  DICE_CLEANUP_DELAY
-  )
+function Dice.cleanupDice(steamId)
+  local dice = Dice.RollStatuses[steamId].dice
+  for _, die in pairs(dice) do
+    if die ~= nil then die.destruct() end
+  end
+  Wait.stop(Dice.RollStatuses[steamId].cleanupTimer)
+  Dice.RollStatuses[steamId] = nil
 end
 
 return Dice

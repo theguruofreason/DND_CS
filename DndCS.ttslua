@@ -617,7 +617,6 @@ function rollDamage(player, _, id)
   local attack = Data.pc_data[player.steam_id].attacks[attackNum]
   local errMsg = fs("You tried to roll to damage with attack %d, but the attack is invalid.", attackNum)
   local error = false
-  log(attack)
   if attack.name == nil or attack.name == "" then
     errMsg = errMsg .. "\nAttack name is cannot be blank."
     error = true
