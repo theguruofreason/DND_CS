@@ -166,7 +166,7 @@ end
 
 DndCSClasses.PC = {
   defaults = {
-    version = "0.1.0",
+    version = "0.1.1",
     cs_panel_active = false,
     cs_panel_page = 1,
     char_name = "",

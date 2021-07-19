@@ -110,6 +110,10 @@ function maybeUpdateData(data)
   return data
 end
 
+function getNameForRoll(player)
+  return (Data.pc_data[player.steam_id].char_name ~= "" and Data.pc_data[player.steam_id].char_name) or player.steam_name
+end
+
 -- sys functions --
 
 function onSave()
@@ -462,7 +466,7 @@ function rollAtt(player, mouse_button, tag_id)
   att = tag_id:match("cs_(%a+)_bonus")
   local pc_data = Data.pc_data[player.steam_id]
   local bonus = math.floor(pc_data.attributes[att] / 2 - 5)
-  local message = fs(RGBToHex(stringColorToRGB(player.color)).."%s[-] rolled a %s check: ", player.steam_name, att:upper())
+  local message = fs(RGBToHex(stringColorToRGB(player.color)).."%s[-] rolled a %s check: ", getNameForRoll(player), att:upper())
   Dice.click(player.steam_id, Dice.DIE_TYPE[20], Dice.RollStatus:new({
     message = message,
     bonus = bonus,
@@ -478,7 +482,7 @@ function rollSavingThrow(player, mouse_button, tag_id)
   local att = tag_id:match("st_(%a+)_bonus")
   local pc_data = Data.pc_data[player.steam_id]
   local bonus = calculateSavingThrowBonus(pc_data, att)
-  local message = fs(RGBToHex(stringColorToRGB(player.color)).."%s[-] rolled a %s saving throw: ", player.steam_name, att:upper())
+  local message = fs(RGBToHex(stringColorToRGB(player.color)).."%s[-] rolled a %s saving throw: ", getNameForRoll(player), att:upper())
   Dice.click(player.steam_id, Dice.DIE_TYPE[20], Dice.RollStatus:new({
     message = message,
     bonus = bonus,
@@ -494,7 +498,7 @@ function rollSkillCheck(player, mouse_button, tag_id)
   local skill = tag_id:match("skill_(.-)_"..player.steam_id)
   local pc_data = Data.pc_data[player.steam_id]
   local bonus = calculateSkillBonus(pc_data, skill)
-  local message = fs(RGBToHex(stringColorToRGB(player.color)).."%s[-] rolled a(n) %s skill check: ", player.steam_name, skill:gsub("_"," "))
+  local message = fs(RGBToHex(stringColorToRGB(player.color)).."%s[-] rolled a(n) %s skill check: ", getNameForRoll(player), skill:gsub("_"," "))
   Dice.click(player.steam_id, Dice.DIE_TYPE[20], Dice.RollStatus:new({
     message = message,
     bonus = bonus,
@@ -600,7 +604,8 @@ function rollHit(player, _, id)
     printToColor(logString(attack), player.color)
     return
   end
-  local message = fs(RGBToHex(stringColorToRGB(player.color)).."%s[-] rolled to hit with %s: ", player.steam_name, attack.name)
+  local attackerName = (Data.pc_data[player.steam_id].char_name ~= "" and Data.pc_data[player.steam_id].char_name) or player.steam_name
+  local message = fs(RGBToHex(stringColorToRGB(player.color)).."%s[-] rolled to hit with %s: ", getNameForRoll(player), attack.name)
   Dice.click(player.steam_id, Dice.DIE_TYPE[20], Dice.RollStatus:new({
     message = message,
     bonus = tonumber(attack.toHitBonus),
@@ -635,7 +640,7 @@ function rollDamage(player, _, id)
     printToColor(logString(attack), player.color)
     return
   end
-  local message = fs(RGBToHex(stringColorToRGB(player.color)).."%s[-] attacks with %s for %s damage: ", player.steam_name, attack.name, attack.type)
+  local message = fs(RGBToHex(stringColorToRGB(player.color)).."%s[-] attacks with %s for %s damage: ", getNameForRoll(player), attack.name, attack.type)
   Dice.rollMany(player.steam_id, Dice.DIE_TYPE[attack.damage.sides], Dice.RollStatus:new({
         message = message,
         bonus = tonumber(attack.damage.bonus),
