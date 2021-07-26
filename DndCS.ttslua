@@ -651,12 +651,35 @@ end
 
 -- # Advanced Options # --
 
-function setCharSheetUrl(player, val)
-  Data.player_data[player.steam_id].characterSheetUrl = val
+IMPORT_TYPES = enum {
+  "http",
+  "json"
+}
+
+function setCharSheetImportText(player, val)
+  Data.pc_data[player.steam_id].characterSheetImportText = val
+end
+
+function determineImportType(importText)
+  local f, _ = importText:find("http")
+  if f == 1 then
+    return IMPORT_TYPES["http"]
+  else
+    return IMPORT_TYPES["json"]
+  end
 end
 
 function importCharacterSheet(player, mouse_button, tag_id)
-  local url = Data.player_data[player.steam_id].characterSheetUrl
+  local importText = Data.pc_data[player.steam_id].characterSheetImportText
+  local importType = determineImportType(importText)
+  if importType == IMPORT_TYPES["http"] then
+    importFromWeb(player, importText)
+  elseif importType == IMPORT_TYPES["json"] then
+    parseCharacterSheet(player, importText)
+  end
+end
+
+function importFromWeb(player, url)
   local getRequest = WebRequest.get(url)
   function waitForGetCharacterSheet()
     while not getRequest.is_done do
@@ -666,16 +689,15 @@ function importCharacterSheet(player, mouse_button, tag_id)
       log(getRequest.error, "ERROR")
       return 1
     end
-    Data.player_data[player.steam_id].characterSheetJson = getRequest.text
-    parseCharacterSheet(player)
-    Data.player_data[player.steam_id].characterSheetJson = nil
+    parseCharacterSheet(player, getRequest.text)
     return 1
   end
   startLuaCoroutine(self, "waitForGetCharacterSheet")
 end
 
-function parseCharacterSheet(player)
-  local data = JSON.decode(Data.player_data[player.steam_id].characterSheetJson)
+function parseCharacterSheet(player, json)
+  print(json)
+  local data = JSON.decode(json)
   if data.schema_version ~= 1 then log("Schema version not 1. This may not work...", "WARN") end
   local charData = data.character[1]
   local pc_data = Data.pc_data[player.steam_id]

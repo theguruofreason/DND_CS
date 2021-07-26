@@ -143,9 +143,9 @@ function UIData.advanced_options_panel(player, active, functionOwnerGuid)
                 attributes = {
                   flexibleWidth = 8,
                   preferredHeight = s,
-                  onEndEdit = string.format("%s/setCharSheetUrl", functionOwnerGuid),
-                  placeholder = "character sheet URL",
-                  tooltip = "URL for character sheet JSON. Upload your sheet to the cloud and paste the URL here.",
+                  onEndEdit = string.format("%s/setCharSheetImportText", functionOwnerGuid),
+                  placeholder = "URL for character sheet JSON, or the raw text itself.",
+                  lineType = "MultiLineNewLine",
                   resizeTextForBestFit = true,
                 },
               },
